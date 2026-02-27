@@ -1,0 +1,7 @@
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/BingWallE.csproj.AssemblyReference.cache
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/Avalonia/Resources.Inputs.cache
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/Avalonia/resources
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/BingWallE.GeneratedMSBuildEditorConfig.editorconfig
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/BingWallE.AssemblyInfoInputs.cache
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/BingWallE.AssemblyInfo.cs
+/home/christoph/Source/BingWallE/BingWallE/obj/Debug/net9.0/BingWallE.csproj.CoreCompileInputs.cache

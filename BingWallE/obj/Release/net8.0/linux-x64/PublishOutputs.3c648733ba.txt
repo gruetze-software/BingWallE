@@ -1,0 +1,2 @@
+/home/christoph/Source/BingWallE/BingWallE/bin/Release/net8.0/linux-x64/publish/bingwalle.pdb
+/home/christoph/Source/BingWallE/BingWallE/bin/Release/net8.0/linux-x64/publish/bingwalle

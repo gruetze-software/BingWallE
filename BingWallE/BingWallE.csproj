@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+    <AssemblyName>bingwalle</AssemblyName>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <Authors>Grütze-Software</Authors>
+    <Product>Bing WallE</Product>
+    <PackageIcon>icon.png</PackageIcon>
+    <ApplicationIcon>Assets/icon.ico</ApplicationIcon>
+    <Description>Small Bing-Wallpaper Downloader in .NET 8.0</Description>
+    <Copyright>Copyright © 2026 Grütze-Software</Copyright>
+    <Maintainer>schaefer.christoph@posteo.de</Maintainer>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>bingwalle</PackageId>
+    <PackageProjectUrl>https://github.com/gruetze-software/C64U-Slim-Viewer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/gruetze-software/C64U-Slim-Viewer.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.10" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.10" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.10" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.10" />
+    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+    <PackageReference Include="Avalonia.Diagnostics" Version="11.3.10">
+      <IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
+      <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="MessageBox.Avalonia" Version="3.3.1.1" />
+  </ItemGroup>
+</Project>
