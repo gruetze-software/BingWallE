@@ -16,3 +16,9 @@ settings.json
 # Betriebssystem-Müll
 .DS_Store
 Thumbs.db
+BingWallE/publish/bingwalle
+BingWallE/publish/bingwalle.pdb
+BingWallE/publish-linux/bingwalle
+BingWallE/publish-linux/bingwalle.pdb
+BingWallE/publish-win/bingwalle.exe
+BingWallE/publish-win/bingwalle.pdb
