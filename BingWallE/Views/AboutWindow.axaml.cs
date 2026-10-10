@@ -3,13 +3,18 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using BingWallE.Models;
+using BingWallE.Localization;
 
 namespace BingWallE.Views;
 
 public partial class AboutWindow : Window
 {
-    public AboutWindow()
+    private readonly UiText _text;
+    public AboutWindow() : this(new UiText()) { }
+    public AboutWindow(UiText text)
     {
+        _text = text;
+        _text.ApplyResources();
         InitializeComponent();
         ProductName.Text = AppInfo.DisplayName;
     }
@@ -19,6 +24,6 @@ public partial class AboutWindow : Window
         if (sender is not Button { Tag: string target } ||
             !Uri.TryCreate(target, UriKind.Absolute, out var uri) || uri.Scheme != "https" || uri.Host != "github.com") return;
         try { Process.Start(new ProcessStartInfo(uri.AbsoluteUri) { UseShellExecute = true }); }
-        catch (Exception ex) { Trace.WriteLine(ex); LinkStatus.Text = "Der Browser konnte nicht geöffnet werden: " + ex.Message; }
+        catch (Exception ex) { Trace.WriteLine(ex); LinkStatus.Text = _text.Get("Der Browser konnte nicht geöffnet werden: ") + _text.Get("Die Aktion ist fehlgeschlagen. Weitere Informationen stehen in der Diagnoseausgabe."); }
     }
 }

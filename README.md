@@ -8,7 +8,9 @@
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
 BingWallE is a desktop collector for Bing wallpapers, built with C#, .NET 8 and
-Avalonia 11.3.10. The application interface is currently in German.
+Avalonia 11.3.10. The interface is available in **German and English**. Select **Sprache / Language**
+in the main window to switch immediately; your choice is saved for the next start.
+Bing image titles and credits follow the selected Bing region.
 
 ## Features
 
@@ -172,19 +174,6 @@ Apple Silicon. Test reports and packages are available as workflow artifacts.
 Version 1.0 uses the `v1.0` tag. Its tag build publishes the GitHub release only after
 all four build variants succeed. All packages and `SHA256SUMS.txt` are attached.
 Release notes are available in [docs/RELEASE-1.0.md](docs/RELEASE-1.0.md) (German).
-
-## Logos and About dialog
-
-Open **Info** in the top-right corner to see the version, project links and the
-Grütze-Software logo also used in AmiDiskLab.
-
-<img src="BingWallE/Assets/gruetze-software.png" width="88" alt="Grütze-Software" />
-
-The BingWallE logo depicts stacked landscape pictures and a sun. Its editable vector
-source is [branding/bingwalle.svg](branding/bingwalle.svg). Run
-`python scripts/generate-icons.py` to regenerate PNG, Windows ICO and macOS ICNS files;
-this requires `Pillow` and `resvg-py`. Generated icons are committed to the repository,
-so regular builds do not require Python tools.
 
 ## Diagnostic output
 

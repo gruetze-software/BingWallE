@@ -3,11 +3,14 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using BingWallE.Views;
+using BingWallE.Localization;
+using BingWallE.ViewModels;
 
 namespace BingWallE.Services;
 
 public sealed class AvaloniaAppDialogs(Func<Window?> getWindow) : IAppDialogs
 {
+    private UiText Text => (getWindow()?.DataContext as MainWindowViewModel)?.Text ?? new UiText();
     public void ApplyTheme(string theme)
     {
         if (Avalonia.Application.Current is { } app)
@@ -35,13 +38,13 @@ public sealed class AvaloniaAppDialogs(Func<Window?> getWindow) : IAppDialogs
         if (getWindow()?.StorageProvider is not { } provider) return null;
         var folders = await provider.OpenFolderPickerAsync(new FolderPickerOpenOptions
         {
-            Title = "Zielordner auswählen", AllowMultiple = false
+            Title = Text.Get("Zielordner auswählen"), AllowMultiple = false
         });
         return folders.Count > 0 ? folders[0].TryGetLocalPath() : null;
     }
 
     public async Task ShowInfoAsync(string title)
     {
-        if (getWindow() is { } owner) await new AboutWindow().ShowDialog(owner);
+        if (getWindow() is { } owner) await new AboutWindow(Text).ShowDialog(owner);
     }
 }

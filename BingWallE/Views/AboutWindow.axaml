@@ -1,7 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="BingWallE.Views.AboutWindow"
-        Icon="/Assets/bingwalle.ico" Title="Über BingWallE"
+        Icon="/Assets/bingwalle.ico" Title="{DynamicResource Text049}"
         Background="{DynamicResource AboutBackground}" Width="520" Height="660" CanResize="False" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary>
@@ -16,29 +16,29 @@
             <StackPanel Spacing="12">
                 <Image Source="/Assets/bingwalle.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="96" Height="96" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="ProductName" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center"/>
-                <TextBlock Text="Entdecken. Auswählen. Behalten." FontSize="15" HorizontalAlignment="Center"/>
-                <TextBlock Text="Dein Sammler für die Bilder des Tages von Bing. Mit Galerie, großer Vorschau, verschiedenen Regionen und Downloads bis UHD."
+                <TextBlock Text="{DynamicResource Text047}" FontSize="15" HorizontalAlignment="Center"/>
+                <TextBlock Text="{DynamicResource Text071}"
                            TextWrapping="Wrap" TextAlignment="Center" Opacity="0.8" Margin="8,0"/>
                 <Separator Margin="0,6"/>
                 <Grid ColumnDefinitions="100,*" Margin="12,0">
                     <Image Source="/Assets/gruetze-software.png" Width="88" Height="88"/>
                     <StackPanel Grid.Column="1" Spacing="5" VerticalAlignment="Center" Margin="12,0,0,0">
-                        <TextBlock Text="Entwickelt von" FontSize="12" Opacity="0.7"/>
+                        <TextBlock Text="{DynamicResource Text072}" FontSize="12" Opacity="0.7"/>
                         <TextBlock Text="Grütze-Software" FontSize="19" FontWeight="SemiBold"/>
                         <TextBlock Text="© 2026 Christoph Schaefer" FontSize="12"/>
                     </StackPanel>
                 </Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="10" Margin="0,6">
-                    <Button Content="Projekt auf GitHub" Tag="https://github.com/gruetze-software/BingWallE" Click="OpenLink"/>
+                    <Button Content="{DynamicResource Text073}" Tag="https://github.com/gruetze-software/BingWallE" Click="OpenLink"/>
                     <Button Content="Grütze-Software" Tag="https://github.com/gruetze-software" Click="OpenLink"/>
                 </StackPanel>
                 <Separator/>
                 <TextBlock Text="C# · .NET · Avalonia   |   Windows · Linux · macOS" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
-                <TextBlock Text="Quellcode: MIT-Lizenz. Bilder und Bildinformationen stammen von Bing; die jeweiligen Urheber sind in der Vorschau angegeben. BingWallE ist ein unabhängiges Projekt von Grütze-Software."
+                <TextBlock Text="{DynamicResource Text074}"
                            TextWrapping="Wrap" TextAlignment="Center" FontSize="12" Opacity="0.7"/>
                 <TextBlock x:Name="LinkStatus" TextWrapping="Wrap" FontSize="12"/>
             </StackPanel>
         </ScrollViewer>
-        <Button Grid.Row="1" Content="Schließen" IsDefault="True" IsCancel="True" HorizontalAlignment="Center" MinWidth="120" Margin="0,16,0,0" Click="CloseDialog"/>
+        <Button Grid.Row="1" Content="{DynamicResource Text068}" IsDefault="True" IsCancel="True" HorizontalAlignment="Center" MinWidth="120" Margin="0,16,0,0" Click="CloseDialog"/>
     </Grid>
 </Window>

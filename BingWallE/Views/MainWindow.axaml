@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:BingWallE.ViewModels"
+        xmlns:models="using:BingWallE.Models"
         x:Class="BingWallE.Views.MainWindow" x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/bingwalle.ico" Title="{Binding AppTitle}" Width="1040" Height="820" MinWidth="720" MinHeight="640"
         WindowStartupLocation="CenterScreen" Background="{DynamicResource GalleryBackground}">
@@ -36,7 +37,7 @@
     </Window.Styles>
     <Grid>
         <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
-            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <Image Source="/Assets/bingwalle.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="56" Height="56"/>
                     <StackPanel Spacing="4" VerticalAlignment="Center">
@@ -46,24 +47,28 @@
                                 <TextBlock Text="{Binding DisplayVersion}" FontSize="12" FontWeight="SemiBold"/>
                             </Border>
                         </StackPanel>
-                        <TextBlock Text="Entdecken. Auswählen. Behalten." Classes="secondary" FontSize="13"/>
+                        <TextBlock Text="{DynamicResource Text047}" Classes="secondary" FontSize="13"/>
                     </StackPanel>
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                    <Button Content="Info" Command="{Binding ShowInfoCommand}" ToolTip.Tip="Über BingWallE"/>
-                    <TextBlock Text="Design" Classes="secondary" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" Width="115" AutomationProperties.Name="Farbschema"/>
+                    <Button Content="{DynamicResource Text048}" Command="{Binding ShowInfoCommand}" ToolTip.Tip="{DynamicResource Text049}"/>
+                    <TextBlock Text="{DynamicResource Text050}" Classes="secondary" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" Width="115" AutomationProperties.Name="{DynamicResource Text051}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,10,0,0">
+                    <TextBlock Text="{DynamicResource Text084}" VerticalAlignment="Center" Classes="secondary"/>
+                    <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" IsEnabled="{Binding IsIdle}" Width="115" AutomationProperties.Name="{DynamicResource Text084}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
                 </StackPanel>
             </Grid>
             <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
                 <Grid ColumnDefinitions="*,*,Auto">
                     <StackPanel Spacing="5" Margin="0,0,14,0">
-                        <TextBlock Text="REGION" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
-                        <ComboBox ItemsSource="{Binding Markets}" SelectedItem="{Binding SelectedMarket}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="Bing-Region"/>
+                        <TextBlock Text="{DynamicResource Text052}" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
+                        <ComboBox ItemsSource="{Binding Markets}" SelectedItem="{Binding SelectedMarket}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="{DynamicResource Text053}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="5" Margin="0,0,16,0">
-                        <TextBlock Text="DOWNLOAD-AUFLÖSUNG" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
-                        <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="Download-Auflösung"/>
+                        <TextBlock Text="{DynamicResource Text054}" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
+                        <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="{DynamicResource Text055}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
                     </StackPanel>
                     <Button Grid.Column="2" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}" VerticalAlignment="Bottom" MinWidth="130" Classes="primary"/>
                 </Grid>
@@ -71,9 +76,9 @@
             <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,16,0,12">
                 <TextBlock Text="{Binding GallerySubtitle}" Classes="secondary" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
-                    <Button Content="Alle" Command="{Binding SelectAllCommand}" Padding="10,5"/>
-                    <Button Content="Keine" Command="{Binding SelectNoneCommand}" Padding="10,5"/>
-                    <Button Content="Nur neue" Command="{Binding SelectNewCommand}" Padding="10,5"/>
+                    <Button Content="{DynamicResource Text056}" Command="{Binding SelectAllCommand}" Padding="10,5"/>
+                    <Button Content="{DynamicResource Text057}" Command="{Binding SelectNoneCommand}" Padding="10,5"/>
+                    <Button Content="{DynamicResource Text058}" Command="{Binding SelectNewCommand}" Padding="10,5"/>
                 </StackPanel>
             </Grid>
             <Grid Grid.Row="3">
@@ -84,7 +89,7 @@
                             <DataTemplate x:DataType="vm:ImageItemViewModel">
                                 <Border Classes="card" Classes.selected="{Binding IsSelected}" Width="292" Margin="5,0,5,12" CornerRadius="10" Background="{DynamicResource CardBackground}" ClipToBounds="True">
                                     <StackPanel>
-                                        <Button Classes="photo" Click="OpenPreview" ToolTip.Tip="Große Vorschau und Bildinformationen öffnen" AutomationProperties.Name="Bildvorschau öffnen">
+                                        <Button Classes="photo" Click="OpenPreview" ToolTip.Tip="{DynamicResource Text059}" AutomationProperties.Name="{DynamicResource Text060}">
                                             <Image Source="{Binding Preview}" Height="164" Stretch="UniformToFill"/>
                                         </Button>
                                         <StackPanel Margin="13,10,13,12" Spacing="5">
@@ -92,7 +97,7 @@
                                             <TextBlock Text="{Binding DisplayDate}" Classes="secondary" FontSize="12"/>
                                             <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                                                 <TextBlock Text="{Binding SaveLabel}" ToolTip.Tip="{Binding DownloadError}" Classes="secondary" FontSize="11" VerticalAlignment="Center"/>
-                                                <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" MinHeight="24" ToolTip.Tip="Zum Download auswählen" AutomationProperties.Name="Zum Download auswählen"/>
+                                                <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" MinHeight="24" ToolTip.Tip="{DynamicResource Text061}" AutomationProperties.Name="{DynamicResource Text061}"/>
                                             </Grid>
                                         </StackPanel>
                                     </StackPanel>
@@ -102,17 +107,17 @@
                     </ItemsControl>
                 </ScrollViewer>
                 <StackPanel IsVisible="{Binding IsEmpty}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" MaxWidth="420">
-                    <TextBlock Text="Deine nächste Entdeckung wartet." FontSize="21" FontWeight="SemiBold" TextAlignment="Center"/>
-                    <TextBlock Text="Lade die aktuellen Bing-Bilder mit Aktualisieren. Ein Klick auf ein Motiv öffnet die große Vorschau." Classes="secondary" TextWrapping="Wrap" TextAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource Text062}" FontSize="21" FontWeight="SemiBold" TextAlignment="Center"/>
+                    <TextBlock Text="{DynamicResource Text063}" Classes="secondary" TextWrapping="Wrap" TextAlignment="Center"/>
                 </StackPanel>
             </Grid>
             <Border Grid.Row="4" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" Margin="0,10,0,0" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
                 <StackPanel Spacing="10">
                     <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                        <TextBlock Text="Speicherort" Classes="secondary" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Text="{DynamicResource Text064}" Classes="secondary" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
                         <TextBlock Grid.Column="1" Text="{Binding TargetFolder}" ToolTip.Tip="{Binding TargetFolder}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
-                        <Button Grid.Column="2" Content="Ändern" Command="{Binding SelectFolderCommand}" Padding="10,5" Margin="8,0"/>
-                        <Button Grid.Column="3" Content="Ordner öffnen" Command="{Binding OpenFolderCommand}" Padding="10,5"/>
+                        <Button Grid.Column="2" Content="{DynamicResource Text065}" Command="{Binding SelectFolderCommand}" Padding="10,5" Margin="8,0"/>
+                        <Button Grid.Column="3" Content="{DynamicResource Text066}" Command="{Binding OpenFolderCommand}" Padding="10,5"/>
                     </Grid>
                     <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressValue}" IsIndeterminate="{Binding IsIndeterminate}" IsVisible="{Binding IsRunning}" Height="4" Foreground="{DynamicResource AccentBrush}"/>
                     <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
@@ -121,7 +126,7 @@
                             <TextBlock Text="{Binding StatusMessage}" Classes="secondary" FontSize="12" TextWrapping="Wrap"/>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                            <Button Content="Erneut versuchen" IsVisible="{Binding CanRetry}" Command="{Binding RetryCommand}"/>
+                            <Button Content="{DynamicResource Text067}" IsVisible="{Binding CanRetry}" Command="{Binding RetryCommand}"/>
                             <Button Content="{Binding DownloadLabel}" IsEnabled="{Binding HasSelection}" Command="{Binding DownloadSelectedCommand}" Classes="primary"/>
                         </StackPanel>
                     </Grid>
@@ -136,7 +141,7 @@
                             <TextBlock Text="{Binding PreviewItem.Title}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding PreviewItem.DisplayDate}" Classes="secondary"/>
                         </StackPanel>
-                        <Button Grid.Column="1" Content="Schließen" Command="{Binding ClosePreviewCommand}" VerticalAlignment="Top" Margin="12,0,0,0"/>
+                        <Button Grid.Column="1" Content="{DynamicResource Text068}" Command="{Binding ClosePreviewCommand}" VerticalAlignment="Top" Margin="12,0,0,0"/>
                     </Grid>
                     <Border Grid.Row="1" Background="{DynamicResource SubtleBackground}" CornerRadius="8">
                         <Grid>
@@ -149,8 +154,8 @@
                         <ProgressBar IsVisible="{Binding IsPreviewLoading}" IsIndeterminate="True" Height="4"/>
                         <TextBlock Text="{Binding PreviewStatus}" TextWrapping="Wrap" FontSize="12" Classes="secondary"/>
                         <Grid ColumnDefinitions="*,Auto">
-                            <CheckBox Content="Für den Download auswählen" IsChecked="{Binding PreviewItem.IsSelected}"/>
-                            <Button Grid.Column="1" Content="Vorschau erneut laden" IsVisible="{Binding PreviewFailed}" Command="{Binding RetryPreviewCommand}"/>
+                            <CheckBox Content="{DynamicResource Text069}" IsChecked="{Binding PreviewItem.IsSelected}"/>
+                            <Button Grid.Column="1" Content="{DynamicResource Text070}" IsVisible="{Binding PreviewFailed}" Command="{Binding RetryPreviewCommand}"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

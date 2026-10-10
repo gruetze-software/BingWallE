@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using BingWallE.Models;
+using BingWallE.Localization;
 using BingWallE.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -29,18 +30,22 @@ public partial class MainWindowViewModel : ViewModelBase
     private CancellationTokenSource? _previewCts;
     private string? _retryOperation;
 
-    public string AppTitle => $"{AppInfo.DisplayName} · Bildersammlung";
+    public UiText Text { get; } = new();
+    private string T(string text, params object[] args) => Text.Get(text, args);
+    public string AppTitle => $"{AppInfo.DisplayName} · {T("Bildersammlung")}";
+    public SelectionOption[] Languages { get; } = [new("de", "Deutsch"), new("en", "English")];
+    [ObservableProperty] private SelectionOption _selectedLanguage;
     public string DisplayVersion => AppInfo.Version;
-    public SelectionOption[] Markets { get; } =
+    public SelectionOption[] Markets { get; private set; } =
     [
         new("de-DE", "Deutschland"), new("en-US", "USA"), new("en-GB", "Großbritannien"),
         new("fr-FR", "Frankreich"), new("it-IT", "Italien"), new("es-ES", "Spanien"),
         new("ja-JP", "Japan"), new("en-CA", "Kanada"), new("en-AU", "Australien"),
         new("en-IN", "Indien"), new("pt-BR", "Brasilien"), new("zh-CN", "China")
     ];
-    public SelectionOption[] Resolutions { get; } =
+    public SelectionOption[] Resolutions { get; private set; } =
     [new("1920x1080", "Full HD · 1920 × 1080"), new("1366x768", "HD · 1366 × 768"), new("UHD", "UHD · falls verfügbar")];
-    public SelectionOption[] Themes { get; } = [new("System", "System"), new("Light", "Hell"), new("Dark", "Dunkel")];
+    public SelectionOption[] Themes { get; private set; } = [new("System", "System"), new("Light", "Hell"), new("Dark", "Dunkel")];
     [ObservableProperty] private SelectionOption _selectedMarket;
     [ObservableProperty] private SelectionOption _selectedResolution;
     [ObservableProperty] private SelectionOption _selectedTheme;
@@ -76,13 +81,18 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool HasSelection => SelectedCount > 0;
     public bool IsEmpty => Wallpapers.Count == 0;
     public int SelectedCount => Wallpapers.Count(x => x.IsSelected);
-    public string SelectionSummary => $"{SelectedCount} von {Wallpapers.Count} Bildern ausgewählt";
-    public string DownloadLabel => SelectedCount == 1 ? "1 Bild herunterladen" : $"{SelectedCount} Bilder herunterladen";
+    public string SelectionSummary => T("{0} von {1} Bildern ausgewählt", SelectedCount, Wallpapers.Count);
+    public string DownloadLabel => SelectedCount == 1 ? T("1 Bild herunterladen") : T("{0} Bilder herunterladen", SelectedCount);
 
     public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs)
     {
         _bing = bing; _images = images; _settings = settings; _dialogs = dialogs;
         var saved = settings.Load();
+        Text.SetLanguage(saved.Language);
+        _selectedLanguage = Languages.First(x => x.Value == Text.Language);
+        TranslateOptions();
+        Text.ApplyResources();
+        _statusMessage = T(_statusMessage); _buttonText = T(_buttonText); _gallerySubtitle = T(_gallerySubtitle);
         _targetFolder = saved.WallpaperPath;
         _selectedMarket = Markets.FirstOrDefault(x => x.Value == saved.Market) ?? Markets[0];
         _selectedResolution = Resolutions.FirstOrDefault(x => x.Value == saved.Resolution) ?? Resolutions[0];
@@ -93,7 +103,7 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (var old in _observed.Where(x => !Wallpapers.Contains(x)).ToArray())
             { old.PropertyChanged -= ItemChanged; _observed.Remove(old); }
             foreach (var item in Wallpapers.Where(x => !_observed.Contains(x)))
-            { item.PropertyChanged += ItemChanged; _observed.Add(item); }
+            { item.SetLanguage(Text.Language); item.PropertyChanged += ItemChanged; _observed.Add(item); }
             NotifySelection();
             OnPropertyChanged(nameof(IsEmpty));
         };
@@ -113,7 +123,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         Trace.WriteLine($"[{DateTimeOffset.Now:O}] Operation START: {message}");
         _cts = new CancellationTokenSource();
-        HasError = false; IsRunning = true; ButtonText = "Abbrechen";
+        HasError = false; IsRunning = true; ButtonText = T("Abbrechen");
         ProgressValue = 0; IsIndeterminate = indeterminate;
         StatusMessage = message; StatusColor = Brushes.Gray;
         return _cts;
@@ -121,14 +131,26 @@ public partial class MainWindowViewModel : ViewModelBase
     private void EndOperation()
     {
         Trace.WriteLine($"[{DateTimeOffset.Now:O}] Operation END: {StatusMessage}");
-        _cts = null; IsRunning = false; IsIndeterminate = false; ButtonText = "Aktualisieren";
+        _cts = null; IsRunning = false; IsIndeterminate = false; ButtonText = T("Aktualisieren");
     }
     private string ErrorMessage(Exception ex) => ex switch
     {
-        OperationCanceledException => "Zeitüberschreitung. Bitte erneut versuchen.",
-        HttpRequestException { StatusCode: HttpStatusCode.NotFound } => "Diese Bildauflösung ist bei Bing nicht verfügbar. Bitte Full HD wählen.",
-        _ => $"Fehler: {ex.Message}"
+        OperationCanceledException => T("Zeitüberschreitung. Bitte erneut versuchen."),
+        HttpRequestException { StatusCode: HttpStatusCode.NotFound } => T("Diese Bildauflösung ist bei Bing nicht verfügbar. Bitte Full HD wählen."),
+        _ => T("Fehler: {0}", FriendlyError(ex))
     };
+    private string FriendlyError(Exception ex)
+    {
+        var translated = Text.Translate(ex.Message);
+        if (UiText.Entries.Any(x => x.De == ex.Message || x.En == ex.Message)) return translated;
+        return ex switch
+        {
+            UnauthorizedAccessException => T("Zugriff verweigert. Bitte die Ordnerberechtigungen prüfen."),
+            HttpRequestException => T("Netzwerkfehler. Bitte die Verbindung prüfen und erneut versuchen."),
+            IOException => T("Dateifehler. Bitte Speicherort und freien Speicherplatz prüfen."),
+            _ => T("Die Aktion ist fehlgeschlagen. Weitere Informationen stehen in der Diagnoseausgabe.")
+        };
+    }
     private void ReportError(Exception ex)
     {
         Trace.WriteLine($"[{DateTimeOffset.Now:O}] Operation FAILED: {ex}");
@@ -141,12 +163,12 @@ public partial class MainWindowViewModel : ViewModelBase
         if (IsRunning) { Trace.WriteLine("User requested cancellation."); _cts?.Cancel(); return; }
         ClosePreview();
         _retryOperation = "scan";
-        using var cancellation = BeginOperation("Bilder auf Bing suchen …", true);
+        using var cancellation = BeginOperation(T("Bilder auf Bing suchen …"), true);
         try
         {
             ClearGallery();
             var market = SelectedMarket;
-            await foreach (var preview in _bing.ScanAsync(market.Value, cancellation.Token, message => StatusMessage = message))
+            await foreach (var preview in _bing.ScanAsync(market.Value, cancellation.Token, message => StatusMessage = Text.Progress(message)))
             {
                 cancellation.Token.ThrowIfCancellationRequested();
                 using var stream = new MemoryStream(preview.PreviewBytes);
@@ -156,12 +178,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 ProgressValue = Wallpapers.Count / 8d * 100;
             }
             cancellation.Token.ThrowIfCancellationRequested();
-            GallerySubtitle = $"{market.Label} · {Wallpapers.Count} Bilder · aktuelle Bing-Auswahl";
-            StatusMessage = IsEmpty ? "Bing hat für diese Region keine Bilder geliefert." : "Suche abgeschlossen. Bilder zum Download auswählen.";
+            GallerySubtitle = T("{0} · {1} Bilder · aktuelle Bing-Auswahl", market.Label, Wallpapers.Count);
+            StatusMessage = IsEmpty ? T("Bing hat für diese Region keine Bilder geliefert.") : T("Suche abgeschlossen. Bilder zum Download auswählen.");
             ProgressValue = 100; _retryOperation = null;
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-        { StatusMessage = "Suche abgebrochen. Bereits geladene Bilder bleiben verfügbar."; }
+        { StatusMessage = T("Suche abgebrochen. Bereits geladene Bilder bleiben verfügbar."); }
         catch (Exception ex) { ReportError(ex); }
         finally { EndOperation(); }
     }
@@ -171,18 +193,18 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (IsRunning) return;
         var selected = Wallpapers.Where(w => w.IsSelected).ToList();
-        if (selected.Count == 0) { StatusMessage = "Bitte zuerst Bilder auswählen."; return; }
+        if (selected.Count == 0) { StatusMessage = T("Bitte zuerst Bilder auswählen."); return; }
         var folder = TargetFolder ?? "";
         var resolution = SelectedResolution.Value;
         var completed = 0;
         _retryOperation = "download";
-        using var cancellation = BeginOperation($"{selected.Count} Bilder herunterladen …", false);
+        using var cancellation = BeginOperation(T("{0} Bilder herunterladen …", selected.Count), false);
         try
         {
             foreach (var item in selected)
             {
                 item.DownloadError = null;
-                StatusMessage = $"Bild {completed + 1} von {selected.Count}: {item.Title}";
+                StatusMessage = T("Bild {0} von {1}: {2}", completed + 1, selected.Count, item.Title);
                 Trace.WriteLine($"Download START {completed + 1}/{selected.Count}, resolution={resolution}");
                 try { await _images.DownloadAsync(folder, WallpaperVariants.ForResolution(item.Image, resolution), cancellation.Token); }
                 catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { throw; }
@@ -190,12 +212,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 item.IsSaved = true; item.IsSelected = false;
                 completed++; ProgressValue = 100d * completed / selected.Count;
             }
-            StatusMessage = $"Download abgeschlossen: {completed} Bilder gespeichert.";
+            StatusMessage = T("Download abgeschlossen: {0} Bilder gespeichert.", completed);
             _retryOperation = null;
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-        { StatusMessage = $"Download abgebrochen: {completed} von {selected.Count} Bildern gespeichert."; }
-        catch (Exception ex) { ReportError(ex); StatusMessage += $" ({completed} von {selected.Count} Bildern gespeichert.)"; }
+        { StatusMessage = T("Download abgebrochen: {0} von {1} Bildern gespeichert.", completed, selected.Count); }
+        catch (Exception ex) { ReportError(ex); StatusMessage = Text.Join(StatusMessage, T(" ({0} von {1} Bildern gespeichert.)", completed, selected.Count)); }
         finally { EndOperation(); }
     }
 
@@ -252,7 +274,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (item == null || IsRunning) return;
         ClosePreview();
-        PreviewItem = item; PreviewFailed = false; PreviewStatus = "Große Vorschau wird geladen …";
+        PreviewItem = item; PreviewFailed = false; PreviewStatus = T("Große Vorschau wird geladen …");
         using var cancellation = new CancellationTokenSource();
         _previewCts = cancellation; IsPreviewLoading = true;
         try
@@ -296,7 +318,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 WallpaperPath = TargetFolder ?? new AppSettings().WallpaperPath,
                 Market = SelectedMarket.Value,
                 Resolution = SelectedResolution.Value,
-                Theme = SelectedTheme.Value
+                Theme = SelectedTheme.Value,
+                Language = SelectedLanguage.Value
             });
         }
         catch (Exception ex) { _retryOperation = null; ReportError(ex); }
@@ -311,15 +334,34 @@ public partial class MainWindowViewModel : ViewModelBase
     partial void OnSelectedMarketChanged(SelectionOption value)
     {
         ClosePreview(); ClearGallery();
-        GallerySubtitle = value.Label + " · bereit zum Entdecken";
-        StatusMessage = "Region geändert. Mit Aktualisieren neue Bilder laden.";
+        GallerySubtitle = T("{0} · bereit zum Entdecken", value.Label);
+        StatusMessage = T("Region geändert. Mit Aktualisieren neue Bilder laden.");
         HasError = false; _retryOperation = null; SavePreferences();
     }
     partial void OnSelectedResolutionChanged(SelectionOption value)
     {
         foreach (var item in Wallpapers) RefreshSaved(item);
         HasError = false; _retryOperation = null; SavePreferences();
-        StatusMessage = "Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.";
+        StatusMessage = T("Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.");
     }
     partial void OnSelectedThemeChanged(SelectionOption value) { _dialogs.ApplyTheme(value.Value); SavePreferences(); }
+    private void TranslateOptions()
+    {
+        foreach (var option in Markets.Concat(Resolutions).Concat(Themes)) option.Label = Text.Translate(option.Label);
+    }
+    partial void OnSelectedLanguageChanged(SelectionOption value)
+    {
+        Text.SetLanguage(value.Value);
+        Text.ApplyResources();
+        TranslateOptions();
+        OnPropertyChanged(nameof(AppTitle));
+        StatusMessage = Text.Translate(StatusMessage); ButtonText = Text.Translate(ButtonText);
+        PreviewStatus = Text.Translate(PreviewStatus);
+        GallerySubtitle = Wallpapers.Count > 0
+            ? T("{0} · {1} Bilder · aktuelle Bing-Auswahl", SelectedMarket.Label, Wallpapers.Count)
+            : T("{0} · bereit zum Entdecken", SelectedMarket.Label);
+        foreach (var item in Wallpapers) { item.SetLanguage(Text.Language); item.DownloadError = item.DownloadError == null ? null : Text.Translate(item.DownloadError); }
+        NotifySelection(); SavePreferences();
+    }
+
 }

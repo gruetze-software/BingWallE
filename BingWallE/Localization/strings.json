@@ -1,0 +1,447 @@
+[
+  {
+    "key": "Text001",
+    "de": "Bildersammlung",
+    "en": "Wallpaper collection"
+  },
+  {
+    "key": "Text002",
+    "de": "Deutschland",
+    "en": "Germany"
+  },
+  {
+    "key": "Text003",
+    "de": "USA",
+    "en": "USA"
+  },
+  {
+    "key": "Text004",
+    "de": "Großbritannien",
+    "en": "United Kingdom"
+  },
+  {
+    "key": "Text005",
+    "de": "Frankreich",
+    "en": "France"
+  },
+  {
+    "key": "Text006",
+    "de": "Italien",
+    "en": "Italy"
+  },
+  {
+    "key": "Text007",
+    "de": "Spanien",
+    "en": "Spain"
+  },
+  {
+    "key": "Text008",
+    "de": "Japan",
+    "en": "Japan"
+  },
+  {
+    "key": "Text009",
+    "de": "Kanada",
+    "en": "Canada"
+  },
+  {
+    "key": "Text010",
+    "de": "Australien",
+    "en": "Australia"
+  },
+  {
+    "key": "Text011",
+    "de": "Indien",
+    "en": "India"
+  },
+  {
+    "key": "Text012",
+    "de": "Brasilien",
+    "en": "Brazil"
+  },
+  {
+    "key": "Text013",
+    "de": "China",
+    "en": "China"
+  },
+  {
+    "key": "Text014",
+    "de": "UHD · falls verfügbar",
+    "en": "UHD · if available"
+  },
+  {
+    "key": "Text015",
+    "de": "System",
+    "en": "System"
+  },
+  {
+    "key": "Text016",
+    "de": "Hell",
+    "en": "Light"
+  },
+  {
+    "key": "Text017",
+    "de": "Dunkel",
+    "en": "Dark"
+  },
+  {
+    "key": "Text018",
+    "de": "Wähle eine Region und entdecke die aktuellen Bing-Bilder.",
+    "en": "Choose a region and discover the latest Bing images."
+  },
+  {
+    "key": "Text019",
+    "de": "Aktualisieren",
+    "en": "Refresh"
+  },
+  {
+    "key": "Text020",
+    "de": "Abbrechen",
+    "en": "Cancel"
+  },
+  {
+    "key": "Text021",
+    "de": "Die letzten acht Tage, bereit zum Sammeln.",
+    "en": "The last eight days, ready to collect."
+  },
+  {
+    "key": "Text022",
+    "de": "{0} von {1} Bildern ausgewählt",
+    "en": "{0} of {1} images selected"
+  },
+  {
+    "key": "Text023",
+    "de": "1 Bild herunterladen",
+    "en": "Download 1 image"
+  },
+  {
+    "key": "Text024",
+    "de": "{0} Bilder herunterladen",
+    "en": "Download {0} images"
+  },
+  {
+    "key": "Text025",
+    "de": "Zeitüberschreitung. Bitte erneut versuchen.",
+    "en": "Request timed out. Please try again."
+  },
+  {
+    "key": "Text026",
+    "de": "Diese Bildauflösung ist bei Bing nicht verfügbar. Bitte Full HD wählen.",
+    "en": "This resolution is not available from Bing. Please choose Full HD."
+  },
+  {
+    "key": "Text027",
+    "de": "Fehler: {0}",
+    "en": "Error: {0}"
+  },
+  {
+    "key": "Text028",
+    "de": "Bilder auf Bing suchen …",
+    "en": "Searching Bing for images …"
+  },
+  {
+    "key": "Text029",
+    "de": "{0} · {1} Bilder · aktuelle Bing-Auswahl",
+    "en": "{0} · {1} images · latest Bing selection"
+  },
+  {
+    "key": "Text030",
+    "de": "Bing hat für diese Region keine Bilder geliefert.",
+    "en": "Bing returned no images for this region."
+  },
+  {
+    "key": "Text031",
+    "de": "Suche abgeschlossen. Bilder zum Download auswählen.",
+    "en": "Search complete. Select images to download."
+  },
+  {
+    "key": "Text032",
+    "de": "Suche abgebrochen. Bereits geladene Bilder bleiben verfügbar.",
+    "en": "Search canceled. Images already loaded remain available."
+  },
+  {
+    "key": "Text033",
+    "de": "Bitte zuerst Bilder auswählen.",
+    "en": "Please select images first."
+  },
+  {
+    "key": "Text034",
+    "de": "{0} Bilder herunterladen …",
+    "en": "Downloading {0} images …"
+  },
+  {
+    "key": "Text035",
+    "de": "Bild {0} von {1}: {2}",
+    "en": "Image {0} of {1}: {2}"
+  },
+  {
+    "key": "Text036",
+    "de": "Download abgeschlossen: {0} Bilder gespeichert.",
+    "en": "Download complete: {0} images saved."
+  },
+  {
+    "key": "Text037",
+    "de": "Download abgebrochen: {0} von {1} Bildern gespeichert.",
+    "en": "Download canceled: {0} of {1} images saved."
+  },
+  {
+    "key": "Text038",
+    "de": " ({0} von {1} Bildern gespeichert.)",
+    "en": " ({0} of {1} images saved.)"
+  },
+  {
+    "key": "Text039",
+    "de": "Große Vorschau wird geladen …",
+    "en": "Loading large preview …"
+  },
+  {
+    "key": "Text040",
+    "de": "{0} · bereit zum Entdecken",
+    "en": "{0} · ready to explore"
+  },
+  {
+    "key": "Text041",
+    "de": "Region geändert. Mit Aktualisieren neue Bilder laden.",
+    "en": "Region changed. Use Refresh to load new images."
+  },
+  {
+    "key": "Text042",
+    "de": "Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.",
+    "en": "Resolution changed. Existing files have been checked again."
+  },
+  {
+    "key": "Text043",
+    "de": "Keine weiteren Bildinformationen von Bing verfügbar.",
+    "en": "No further image information is available from Bing."
+  },
+  {
+    "key": "Text044",
+    "de": "Download fehlgeschlagen",
+    "en": "Download failed"
+  },
+  {
+    "key": "Text045",
+    "de": "Bereits gespeichert",
+    "en": "Already saved"
+  },
+  {
+    "key": "Text046",
+    "de": "Neu in deiner Sammlung",
+    "en": "New to your collection"
+  },
+  {
+    "key": "Text047",
+    "de": "Entdecken. Auswählen. Behalten.",
+    "en": "Discover. Choose. Keep."
+  },
+  {
+    "key": "Text048",
+    "de": "Info",
+    "en": "About"
+  },
+  {
+    "key": "Text049",
+    "de": "Über BingWallE",
+    "en": "About BingWallE"
+  },
+  {
+    "key": "Text050",
+    "de": "Design",
+    "en": "Theme"
+  },
+  {
+    "key": "Text051",
+    "de": "Farbschema",
+    "en": "Color theme"
+  },
+  {
+    "key": "Text052",
+    "de": "REGION",
+    "en": "REGION"
+  },
+  {
+    "key": "Text053",
+    "de": "Bing-Region",
+    "en": "Bing region"
+  },
+  {
+    "key": "Text054",
+    "de": "DOWNLOAD-AUFLÖSUNG",
+    "en": "DOWNLOAD RESOLUTION"
+  },
+  {
+    "key": "Text055",
+    "de": "Download-Auflösung",
+    "en": "Download resolution"
+  },
+  {
+    "key": "Text056",
+    "de": "Alle",
+    "en": "All"
+  },
+  {
+    "key": "Text057",
+    "de": "Keine",
+    "en": "None"
+  },
+  {
+    "key": "Text058",
+    "de": "Nur neue",
+    "en": "Only new"
+  },
+  {
+    "key": "Text059",
+    "de": "Große Vorschau und Bildinformationen öffnen",
+    "en": "Open large preview and image details"
+  },
+  {
+    "key": "Text060",
+    "de": "Bildvorschau öffnen",
+    "en": "Open image preview"
+  },
+  {
+    "key": "Text061",
+    "de": "Zum Download auswählen",
+    "en": "Select for download"
+  },
+  {
+    "key": "Text062",
+    "de": "Deine nächste Entdeckung wartet.",
+    "en": "Your next discovery awaits."
+  },
+  {
+    "key": "Text063",
+    "de": "Lade die aktuellen Bing-Bilder mit Aktualisieren. Ein Klick auf ein Motiv öffnet die große Vorschau.",
+    "en": "Use Refresh to load the latest Bing images. Click an image to open a large preview."
+  },
+  {
+    "key": "Text064",
+    "de": "Speicherort",
+    "en": "Destination"
+  },
+  {
+    "key": "Text065",
+    "de": "Ändern",
+    "en": "Change"
+  },
+  {
+    "key": "Text066",
+    "de": "Ordner öffnen",
+    "en": "Open folder"
+  },
+  {
+    "key": "Text067",
+    "de": "Erneut versuchen",
+    "en": "Retry"
+  },
+  {
+    "key": "Text068",
+    "de": "Schließen",
+    "en": "Close"
+  },
+  {
+    "key": "Text069",
+    "de": "Für den Download auswählen",
+    "en": "Select for download"
+  },
+  {
+    "key": "Text070",
+    "de": "Vorschau erneut laden",
+    "en": "Reload preview"
+  },
+  {
+    "key": "Text071",
+    "de": "Dein Sammler für die Bilder des Tages von Bing. Mit Galerie, großer Vorschau, verschiedenen Regionen und Downloads bis UHD.",
+    "en": "Your collector for Bing's daily images. Browse a gallery with large previews, multiple regions and downloads up to UHD."
+  },
+  {
+    "key": "Text072",
+    "de": "Entwickelt von",
+    "en": "Developed by"
+  },
+  {
+    "key": "Text073",
+    "de": "Projekt auf GitHub",
+    "en": "Project on GitHub"
+  },
+  {
+    "key": "Text074",
+    "de": "Quellcode: MIT-Lizenz. Bilder und Bildinformationen stammen von Bing; die jeweiligen Urheber sind in der Vorschau angegeben. BingWallE ist ein unabhängiges Projekt von Grütze-Software.",
+    "en": "Source code: MIT License. Images and image information are provided by Bing; credits appear in the preview. BingWallE is an independent project by Grütze-Software."
+  },
+  {
+    "key": "Text075",
+    "de": "Der Browser konnte nicht geöffnet werden: ",
+    "en": "Could not open the browser: "
+  },
+  {
+    "key": "Text076",
+    "de": "Kein Zielordner ausgewählt.",
+    "en": "No destination folder selected."
+  },
+  {
+    "key": "Text077",
+    "de": "Zielordner auswählen",
+    "en": "Choose a destination folder"
+  },
+  {
+    "key": "Text078",
+    "de": "Bing hat unvollständige Bilddaten geliefert.",
+    "en": "Bing returned incomplete image data."
+  },
+  {
+    "key": "Text079",
+    "de": "Bitte einen gültigen Zielordner auswählen.",
+    "en": "Please select a valid destination folder."
+  },
+  {
+    "key": "Text080",
+    "de": "Unbekannte Auflösung.",
+    "en": "Unknown resolution."
+  },
+  {
+    "key": "Text081",
+    "de": "Bing bietet für dieses Bild keine alternative Auflösung an.",
+    "en": "Bing does not offer an alternative resolution for this image."
+  },
+  {
+    "key": "Text082",
+    "de": "Bing: Tag {0} von 8 – Bilddaten laden …",
+    "en": "Bing: day {0} of 8 – loading image details …"
+  },
+  {
+    "key": "Text083",
+    "de": "Bing: Tag {0} von 8 – Vorschau laden …",
+    "en": "Bing: day {0} of 8 – loading preview …"
+  },
+  {
+    "key": "Text084",
+    "de": "Sprache",
+    "en": "Language"
+  },
+  {
+    "key": "Text085",
+    "de": "Sprache geändert.",
+    "en": "Language changed."
+  },
+  {
+    "key": "Text086",
+    "de": "Zugriff verweigert. Bitte die Ordnerberechtigungen prüfen.",
+    "en": "Access denied. Please check the folder permissions."
+  },
+  {
+    "key": "Text087",
+    "de": "Netzwerkfehler. Bitte die Verbindung prüfen und erneut versuchen.",
+    "en": "Network error. Please check your connection and try again."
+  },
+  {
+    "key": "Text088",
+    "de": "Dateifehler. Bitte Speicherort und freien Speicherplatz prüfen.",
+    "en": "File error. Please check the destination and available disk space."
+  },
+  {
+    "key": "Text089",
+    "de": "Die Aktion ist fehlgeschlagen. Weitere Informationen stehen in der Diagnoseausgabe.",
+    "en": "The operation failed. See the diagnostic output for details."
+  }
+]
