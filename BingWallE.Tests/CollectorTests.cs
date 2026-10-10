@@ -129,7 +129,7 @@ public class CollectorTests
 
     private static MainWindowViewModel Create(HttpClient client, string folder) => new(
         new BingWallpaperClient(client), new WallpaperStore(client),
-        new TestSettings { Value = new AppSettings { WallpaperPath = folder } }, new TestDialogs());
+        new TestSettings { Value = new AppSettings { WallpaperPath = folder, Market = "de-DE" } }, new TestDialogs());
 
     private sealed class WaitingPreviewClient : IBingWallpaperClient
     {
