@@ -8,8 +8,13 @@
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
-  
+
     <Application.Styles>
-        <FluentTheme />
+        <FluentTheme>
+            <FluentTheme.Palettes>
+                <ColorPaletteResources x:Key="Light" Accent="#216F69"/>
+                <ColorPaletteResources x:Key="Dark" Accent="#68CBBE"/>
+            </FluentTheme.Palettes>
+        </FluentTheme>
     </Application.Styles>
 </Application>

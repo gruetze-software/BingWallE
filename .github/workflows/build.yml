@@ -1,0 +1,113 @@
+name: Build, test and release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  build:
+    name: ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+            platform: windows
+            arch: x64
+          - os: ubuntu-22.04
+            rid: linux-x64
+            platform: linux
+            arch: x64
+          - os: macos-14
+            rid: osx-arm64
+            platform: macos
+            arch: arm64
+          - os: macos-14
+            rid: osx-x64
+            platform: macos
+            arch: x64
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore BingWallE.sln
+      - name: Build
+        run: dotnet build BingWallE.sln -c Release --no-restore --warnaserror
+      - name: Test
+        run: dotnet test BingWallE.sln -c Release --no-build --logger trx --results-directory TestResults
+      - name: Version smoke test
+        shell: bash
+        run: |
+          version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
+          test "$(dotnet BingWallE/bin/Release/net8.0/bingwalle.dll --version)" = "BingWallE ${version%.*}"
+      - name: Windows package
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: ./scripts/build-windows.ps1 -Architecture '${{ matrix.arch }}'
+      - name: Linux package
+        if: matrix.platform == 'linux'
+        run: bash scripts/build-linux.sh '${{ matrix.arch }}'
+      - name: macOS package
+        if: matrix.platform == 'macos'
+        run: bash scripts/build-macos.sh '${{ matrix.arch }}'
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: tests-${{ matrix.rid }}
+          path: TestResults/*.trx
+      - name: Upload packages
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: packages-${{ matrix.rid }}
+          path: |
+            artifacts/BingWallE-*.zip
+            artifacts/BingWallE-*.tar.gz
+            artifacts/BingWallE-*.deb
+            artifacts/BingWallE-*.dmg
+          if-no-files-found: error
+
+  release:
+    name: Publish GitHub release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: packages-*
+          merge-multiple: true
+          path: release-assets
+      - name: Checksums and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$RELEASE_TAG" = 'v1.0'
+          (cd release-assets && sha256sum BingWallE-* > SHA256SUMS.txt)
+          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title 'BingWallE 1.0' --notes-file docs/RELEASE-1.0.md
+          gh release edit "$RELEASE_TAG" --draft=false --latest

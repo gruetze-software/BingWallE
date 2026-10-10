@@ -22,3 +22,11 @@ BingWallE/publish-linux/bingwalle
 BingWallE/publish-linux/bingwalle.pdb
 BingWallE/publish-win/bingwalle.exe
 BingWallE/publish-win/bingwalle.pdb
+
+# Build and test outputs
+artifacts/
+TestResults/
+*.trx
+publish/
+publish-linux/
+publish-win/

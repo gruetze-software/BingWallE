@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">BingWallE</title>
+  <desc id="desc">Gestapelte Landschaftsbilder mit Bergen und einer goldenen Sonne.</desc>
+  <defs>
+    <linearGradient id="base" x2="1" y2="1"><stop stop-color="#204854"/><stop offset="1" stop-color="#102D33"/></linearGradient>
+    <clipPath id="photo"><rect x="52" y="76" width="156" height="116" rx="10"/></clipPath>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="54" fill="url(#base)"/>
+  <rect x="38" y="51" width="174" height="138" rx="18" transform="rotate(-10 125 120)" fill="#65C9BA"/>
+  <rect x="42" y="65" width="176" height="139" rx="18" fill="#F0FAF6"/>
+  <g clip-path="url(#photo)">
+    <rect x="52" y="76" width="156" height="116" fill="#C9EBE5"/>
+    <circle cx="172" cy="104" r="17" fill="#F4B765"/>
+    <path d="M52 157 99 105 145 158 169 130 208 176V192H52Z" fill="#55B6A9"/>
+    <path d="M52 177 96 147 125 172 164 151 208 181V192H52Z" fill="#247E76"/>
+    <path d="m99 105-15 17 15-6 15 6Z" fill="#F0FAF6"/>
+  </g>
+</svg>

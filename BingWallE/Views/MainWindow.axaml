@@ -1,58 +1,160 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:BingWallE.ViewModels"
-        x:Class="BingWallE.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Title="{Binding AppTitle}"
-        Background="#1C1C1C" Foreground="White"
-        Width="600" Height="450" WindowStartupLocation="CenterScreen">
-
-    <Grid RowDefinitions="Auto, *, Auto" Margin="15">
-        <StackPanel Grid.Row="0" Spacing="8">
-            <DockPanel>
-                <Button Content="..." 
-                    Command="{Binding SelectFolderCommand}" 
-                    DockPanel.Dock="Right" Margin="5,0,0,0"/>
-                <TextBox Text="{Binding TargetFolder}" IsReadOnly="True" Watermark="Saving places..."/>
-            </DockPanel>
-            <Button Content="{Binding ButtonText}" 
-                Command="{Binding StartStopCommand}" 
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Center" 
-                VerticalContentAlignment="Center"
-                CornerRadius="5"
-                Background="DarkSlateBlue" Foreground="White"/>
-            <TextBlock Text="{Binding StatusMessage}" 
-                Foreground="{Binding StatusColor}" 
-                HorizontalAlignment="Center" 
-                FontSize="12"/>
-        </StackPanel>
-
-        <ListBox Grid.Row="1" ItemsSource="{Binding Wallpapers}" Margin="0,10">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid ColumnDefinitions="Auto, Auto, *" Margin="8,4">
-                        <CheckBox IsChecked="{Binding IsSelected}" VerticalAlignment="Center" Margin="0,0,12,0"/>
-                        
-                        <Border Grid.Column="1" Width="100" Height="60" CornerRadius="4" ClipToBounds="True" BoxShadow="0 2 5 0 #40000000">
-                            <Image Source="{Binding Preview}" Stretch="UniformToFill" />
-                        </Border>
-
-                        <StackPanel Grid.Column="2" VerticalAlignment="Center" Margin="15,0,0,0">
-                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="14" TextTrimming="CharacterEllipsis"/>
-                            <TextBlock Text="{Binding Date}" FontSize="11" Opacity="0.6"/>
+        x:Class="BingWallE.Views.MainWindow" x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/bingwalle.ico" Title="{Binding AppTitle}" Width="1040" Height="820" MinWidth="720" MinHeight="640"
+        WindowStartupLocation="CenterScreen" Background="{DynamicResource GalleryBackground}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="GalleryBackground" Color="#F4F6F7"/>
+                    <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="SubtleBackground" Color="#EAF0F0"/>
+                    <SolidColorBrush x:Key="SecondaryText" Color="#53646A"/>
+                    <SolidColorBrush x:Key="CardStroke" Color="#DDE4E6"/>
+                    <SolidColorBrush x:Key="AccentBrush" Color="#216F69"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="GalleryBackground" Color="#151C21"/>
+                    <SolidColorBrush x:Key="CardBackground" Color="#202A30"/>
+                    <SolidColorBrush x:Key="SubtleBackground" Color="#29373D"/>
+                    <SolidColorBrush x:Key="SecondaryText" Color="#B1C1C6"/>
+                    <SolidColorBrush x:Key="CardStroke" Color="#37454C"/>
+                    <SolidColorBrush x:Key="AccentBrush" Color="#68CBBE"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.Styles>
+        <Style Selector="Button"><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="14,9"/></Style>
+        <Style Selector="Button.primary"><Setter Property="Background" Value="#216F69"/><Setter Property="Foreground" Value="White"/></Style>
+        <Style Selector="TextBlock.secondary"><Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/></Style>
+        <Style Selector="Border.card"><Setter Property="BorderBrush" Value="{DynamicResource CardStroke}"/><Setter Property="BorderThickness" Value="2"/></Style>
+        <Style Selector="Border.card.selected"><Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/></Style>
+        <Style Selector="Button.photo"><Setter Property="Padding" Value="0"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/></Style>
+    </Window.Styles>
+    <Grid>
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Image Source="/Assets/bingwalle.png" Width="56" Height="56"/>
+                    <StackPanel Spacing="4" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Text="BingWallE" FontSize="28" FontWeight="SemiBold"/>
+                            <Border Background="{DynamicResource SubtleBackground}" CornerRadius="5" Padding="8,3" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding DisplayVersion}" FontSize="12" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Text="Entdecken. Auswählen. Behalten." Classes="secondary" FontSize="13"/>
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+                    <Button Content="Info" Command="{Binding ShowInfoCommand}" ToolTip.Tip="Über BingWallE"/>
+                    <TextBlock Text="Design" Classes="secondary" VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" Width="115" AutomationProperties.Name="Farbschema"/>
+                </StackPanel>
+            </Grid>
+            <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
+                <Grid ColumnDefinitions="*,*,Auto">
+                    <StackPanel Spacing="5" Margin="0,0,14,0">
+                        <TextBlock Text="REGION" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
+                        <ComboBox ItemsSource="{Binding Markets}" SelectedItem="{Binding SelectedMarket}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="Bing-Region"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="5" Margin="0,0,16,0">
+                        <TextBlock Text="DOWNLOAD-AUFLÖSUNG" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
+                        <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="Download-Auflösung"/>
+                    </StackPanel>
+                    <Button Grid.Column="2" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}" VerticalAlignment="Bottom" MinWidth="130" Classes="primary"/>
+                </Grid>
+            </Border>
+            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,16,0,12">
+                <TextBlock Text="{Binding GallerySubtitle}" Classes="secondary" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6">
+                    <Button Content="Alle" Command="{Binding SelectAllCommand}" Padding="10,5"/>
+                    <Button Content="Keine" Command="{Binding SelectNoneCommand}" Padding="10,5"/>
+                    <Button Content="Nur neue" Command="{Binding SelectNewCommand}" Padding="10,5"/>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="3">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Wallpapers}" IsEnabled="{Binding IsIdle}">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:ImageItemViewModel">
+                                <Border Classes="card" Classes.selected="{Binding IsSelected}" Width="292" Margin="5,0,5,12" CornerRadius="10" Background="{DynamicResource CardBackground}" ClipToBounds="True">
+                                    <StackPanel>
+                                        <Button Classes="photo" Click="OpenPreview" ToolTip.Tip="Große Vorschau und Bildinformationen öffnen" AutomationProperties.Name="Bildvorschau öffnen">
+                                            <Image Source="{Binding Preview}" Height="164" Stretch="UniformToFill"/>
+                                        </Button>
+                                        <StackPanel Margin="13,10,13,12" Spacing="5">
+                                            <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Title}"/>
+                                            <TextBlock Text="{Binding DisplayDate}" Classes="secondary" FontSize="12"/>
+                                            <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                                                <TextBlock Text="{Binding SaveLabel}" ToolTip.Tip="{Binding DownloadError}" Classes="secondary" FontSize="11" VerticalAlignment="Center"/>
+                                                <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" MinHeight="24" ToolTip.Tip="Zum Download auswählen" AutomationProperties.Name="Zum Download auswählen"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+                <StackPanel IsVisible="{Binding IsEmpty}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10" MaxWidth="420">
+                    <TextBlock Text="Deine nächste Entdeckung wartet." FontSize="21" FontWeight="SemiBold" TextAlignment="Center"/>
+                    <TextBlock Text="Lade die aktuellen Bing-Bilder mit Aktualisieren. Ein Klick auf ein Motiv öffnet die große Vorschau." Classes="secondary" TextWrapping="Wrap" TextAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+            <Border Grid.Row="4" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" Margin="0,10,0,0" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                        <TextBlock Text="Speicherort" Classes="secondary" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <TextBlock Grid.Column="1" Text="{Binding TargetFolder}" ToolTip.Tip="{Binding TargetFolder}" FontSize="12" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                        <Button Grid.Column="2" Content="Ändern" Command="{Binding SelectFolderCommand}" Padding="10,5" Margin="8,0"/>
+                        <Button Grid.Column="3" Content="Ordner öffnen" Command="{Binding OpenFolderCommand}" Padding="10,5"/>
+                    </Grid>
+                    <ProgressBar Minimum="0" Maximum="100" Value="{Binding ProgressValue}" IsIndeterminate="{Binding IsIndeterminate}" IsVisible="{Binding IsRunning}" Height="4" Foreground="{DynamicResource AccentBrush}"/>
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="14">
+                        <StackPanel Spacing="4" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding SelectionSummary}" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding StatusMessage}" Classes="secondary" FontSize="12" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Button Content="Erneut versuchen" IsVisible="{Binding CanRetry}" Command="{Binding RetryCommand}"/>
+                            <Button Content="{Binding DownloadLabel}" IsEnabled="{Binding HasSelection}" Command="{Binding DownloadSelectedCommand}" Classes="primary"/>
                         </StackPanel>
                     </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-
-        <Button Grid.Row="2" Content="Download selected" 
-            Command="{Binding DownloadSelectedCommand}" 
-            HorizontalAlignment="Stretch" 
-            HorizontalContentAlignment="Center"
-            VerticalContentAlignment="Center"
-            CornerRadius="5"
-            Height="45" Background="ForestGreen" Foreground="White"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        <Border IsVisible="{Binding IsPreviewOpen}" KeyboardNavigation.TabNavigation="Cycle" Background="#B0000000" Padding="28">
+            <Border Background="{DynamicResource CardBackground}" CornerRadius="12" Padding="20" MaxWidth="1100">
+                <Grid RowDefinitions="Auto,*,Auto">
+                    <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,14">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="{Binding PreviewItem.Title}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding PreviewItem.DisplayDate}" Classes="secondary"/>
+                        </StackPanel>
+                        <Button Grid.Column="1" Content="Schließen" Command="{Binding ClosePreviewCommand}" VerticalAlignment="Top" Margin="12,0,0,0"/>
+                    </Grid>
+                    <Border Grid.Row="1" Background="{DynamicResource SubtleBackground}" CornerRadius="8">
+                        <Grid>
+                            <Image Source="{Binding PreviewItem.Preview}" Stretch="Uniform"/>
+                            <Image Source="{Binding LargePreview}" Stretch="Uniform"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel Grid.Row="2" Spacing="10" Margin="0,14,0,0">
+                        <TextBlock Text="{Binding PreviewItem.Copyright}" TextWrapping="Wrap" Classes="secondary"/>
+                        <ProgressBar IsVisible="{Binding IsPreviewLoading}" IsIndeterminate="True" Height="4"/>
+                        <TextBlock Text="{Binding PreviewStatus}" TextWrapping="Wrap" FontSize="12" Classes="secondary"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <CheckBox Content="Für den Download auswählen" IsChecked="{Binding PreviewItem.IsSelected}"/>
+                            <Button Grid.Column="1" Content="Vorschau erneut laden" IsVisible="{Binding PreviewFailed}" Command="{Binding RetryPreviewCommand}"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
     </Grid>
 </Window>
