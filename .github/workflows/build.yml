@@ -46,6 +46,16 @@ jobs:
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
         with:
           dotnet-version: '8.0.x'
+      - name: Validate release version
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
+          test "$RELEASE_TAG" = "v$version"
+          test -f "docs/RELEASE-$version.md"
       - name: Restore
         run: dotnet restore BingWallE.sln
       - name: Build
@@ -107,7 +117,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test "$RELEASE_TAG" = 'v1.0'
+          version="${RELEASE_TAG#v}"
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test -f "docs/RELEASE-$version.md"
+          expected=("win-x64.zip" "linux-x64.tar.gz" "linux-x64.deb" "macos-arm64.zip" "macos-arm64.dmg" "macos-x64.zip" "macos-x64.dmg")
+          for package in "${expected[@]}"; do
+            test -s "release-assets/BingWallE-$version-$package"
+          done
           (cd release-assets && sha256sum BingWallE-* > SHA256SUMS.txt)
-          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title 'BingWallE 1.0' --notes-file docs/RELEASE-1.0.md
+          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "BingWallE $version" --notes-file "docs/RELEASE-$version.md"
           gh release edit "$RELEASE_TAG" --draft=false --latest
