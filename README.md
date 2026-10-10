@@ -2,7 +2,7 @@
   <img src="branding/bingwalle.png" width="144" alt="BingWallE: landscape pictures with a golden sun" />
 </p>
 
-# BingWallE 1.1
+# BingWallE 1.1.1
 
 [Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
@@ -40,6 +40,36 @@ temporary files to protect existing images if an operation fails.
 BingWallE focuses on collecting images. Automatic downloads and changing the
 desktop wallpaper are not implemented.
 
+## Image information and local tagging
+
+Each gallery card and preview shows the requested download resolution. After a
+successful download it shows the actual pixel dimensions returned by the image.
+UHD dimensions vary by image; the app does not assume that every UHD file is 3840 × 2160.
+
+New downloads embed the Bing title, description, copyright, publication date and
+source links using EXIF (including Windows Explorer fields) and standard XMP.
+The publication date is identified in the comments; it is not used as a camera's
+capture date. Existing photographer/camera metadata is preserved, and no author
+or rating is invented. JPEG image data is not recompressed. Already downloaded
+files gain these fields when selected and downloaded again.
+
+Enable **Recognize image subjects locally as tags** in Settings to add optional
+English subject tags. The first tagged download fetches the 14 MB
+[MobileNetV2 model from the ONNX Model Zoo](https://github.com/onnx/models/tree/main/validated/vision/classification/mobilenet).
+Its SHA-256 checksum is verified before use. It is cached under the current user's
+local application-data directory in `bingwalle/models`; subsequent recognition
+runs offline. Images are never uploaded for recognition.
+
+The model classifies the main subject into 1,000 ImageNet categories. This is a
+small classifier, not a complete scene description system. Only suggestions with
+a model score of at least 50% are added; uncertain results leave subject tags empty.
+Scores are not guarantees of correctness. Generated tags are identified as AI
+suggestions in the comments. Original Bing titles and copyright remain authoritative.
+Disable tagging to download images without loading the model. If a model download
+or recognition fails, the image remains selected for retry and existing files are preserved.
+
+Third-party license notices are included in `licenses/` in the repository and packages.
+
 ## Downloads and first start
 
 Download the package for your platform from the
@@ -48,10 +78,10 @@ Download the package for your platform from the
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.1.0-win-x64.zip` |
-| Linux x64 | `BingWallE-1.1.0-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.1.0-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.1.0-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.1.1-win-x64.zip` |
+| Linux x64 | `BingWallE-1.1.1-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.1.1-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.1.1-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -152,7 +182,7 @@ The default download destination is `BingImages` inside the Pictures folder.
 
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the major and minor version: package version
-`1.1.0` appears as **1.1**. Every package includes the .NET runtime.
+`1.1.0` appears as **1.1**, while a patch release such as `1.1.1` appears as **1.1.1**. Every package includes the .NET runtime.
 
 | Platform | Command on that platform | Output |
 | --- | --- | --- |
@@ -173,11 +203,11 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.1.0`. Pushing a tag
+Version tags use the full package version, for example `v1.1.1`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.1.0](docs/RELEASE-1.1.0.md).
+are attached. See [release notes for 1.1.1](docs/RELEASE-1.1.1.md).
 
 ## Diagnostic output
 

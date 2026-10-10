@@ -35,6 +35,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public string AppTitle => $"{AppInfo.DisplayName} · {T("Bildersammlung")}";
     public SelectionOption[] Languages { get; } = [new("de", "Deutsch"), new("en", "English")];
     [ObservableProperty] private SelectionOption _selectedLanguage;
+    [ObservableProperty] private bool _autoTags;
     public string DisplayVersion => AppInfo.Version;
     public SelectionOption[] Markets { get; private set; } =
     [
@@ -93,6 +94,7 @@ public partial class MainWindowViewModel : ViewModelBase
         TranslateOptions();
         Text.ApplyResources();
         _statusMessage = T(_statusMessage); _buttonText = T(_buttonText); _gallerySubtitle = T(_gallerySubtitle);
+        _autoTags = saved.AutoTags;
         _targetFolder = saved.WallpaperPath;
         _selectedMarket = Markets.FirstOrDefault(x => x.Value == saved.Market) ?? Markets[0];
         _selectedResolution = Resolutions.FirstOrDefault(x => x.Value == saved.Resolution) ?? Resolutions[0];
@@ -103,7 +105,7 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (var old in _observed.Where(x => !Wallpapers.Contains(x)).ToArray())
             { old.PropertyChanged -= ItemChanged; _observed.Remove(old); }
             foreach (var item in Wallpapers.Where(x => !_observed.Contains(x)))
-            { item.SetLanguage(Text.Language); item.PropertyChanged += ItemChanged; _observed.Add(item); }
+            { item.SetLanguage(Text.Language); item.DownloadResolution = SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
             NotifySelection();
             OnPropertyChanged(nameof(IsEmpty));
         };
@@ -206,7 +208,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 item.DownloadError = null;
                 StatusMessage = T("Bild {0} von {1}: {2}", completed + 1, selected.Count, item.Title);
                 Trace.WriteLine($"Download START {completed + 1}/{selected.Count}, resolution={resolution}");
-                try { await _images.DownloadAsync(folder, WallpaperVariants.ForResolution(item.Image, resolution), cancellation.Token); }
+                try
+                {
+                    var result = await _images.DownloadAsync(folder, WallpaperVariants.ForResolution(item.Image, resolution), cancellation.Token,
+                        AutoTags, message => StatusMessage = Text.Translate(message));
+                    item.ActualDimensions = $"{result.Width} × {result.Height}";
+                }
                 catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { throw; }
                 catch (Exception ex) { item.DownloadError = ErrorMessage(ex); throw; }
                 item.IsSaved = true; item.IsSelected = false;
@@ -238,6 +245,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void RefreshSaved(ImageItemViewModel item)
     {
+        if (item.DownloadResolution != SelectedResolution.Value) item.ActualDimensions = null;
+        item.DownloadResolution = SelectedResolution.Value;
         // Unavailable alternative resolutions remain selectable, so download can explain the limitation.
         try { item.IsSaved = _images.Exists(TargetFolder ?? "", WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value)); }
         catch (InvalidOperationException) { item.IsSaved = false; }
@@ -319,7 +328,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 Market = SelectedMarket.Value,
                 Resolution = SelectedResolution.Value,
                 Theme = SelectedTheme.Value,
-                Language = SelectedLanguage.Value
+                Language = SelectedLanguage.Value,
+                AutoTags = AutoTags
             });
         }
         catch (Exception ex) { _retryOperation = null; ReportError(ex); }
@@ -345,6 +355,8 @@ public partial class MainWindowViewModel : ViewModelBase
         StatusMessage = T("Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.");
     }
     partial void OnSelectedThemeChanged(SelectionOption value) { _dialogs.ApplyTheme(value.Value); SavePreferences(); }
+    partial void OnAutoTagsChanged(bool value) => SavePreferences();
+
     private void TranslateOptions()
     {
         foreach (var option in Markets.Concat(Resolutions).Concat(Themes)) option.Label = Text.Translate(option.Label);

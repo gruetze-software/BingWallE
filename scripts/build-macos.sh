@@ -8,7 +8,7 @@ cd "$ROOT"
 PROJECT="$ROOT/BingWallE/BingWallE.csproj"
 VERSION="$(dotnet msbuild "$PROJECT" -nologo -getProperty:Version)"
 [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version: $VERSION" >&2; exit 1; }
-SHORT_VERSION="${VERSION%.*}"
+SHORT_VERSION="${VERSION%.0}"
 mkdir -p "$ROOT/artifacts"
 STAGE="$(mktemp -d "$ROOT/artifacts/stage-macos.XXXXXX")"
 trap 'rm -rf -- "$STAGE"' EXIT
@@ -19,6 +19,7 @@ dotnet publish "$PROJECT" -c Release -r "osx-$ARCH" --self-contained true \
     -p:PublishSingleFile=false -p:DebugType=None -o "$APP/Contents/MacOS"
 cp "$ROOT/BingWallE/Assets/bingwalle.icns" "$APP/Contents/Resources/"
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$APP/Contents/Resources/"
+cp -R "$ROOT/licenses" "$APP/Contents/Resources/"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

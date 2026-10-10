@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.0</Version>
+    <Version>1.1.1</Version>
     <AssemblyName>bingwalle</AssemblyName>
 
 
@@ -35,6 +35,7 @@
 
     <AvaloniaResource Include="Assets\**" />
     <EmbeddedResource Include="Localization/strings.json" />
+    <EmbeddedResource Include="Assets/Recognition/imagenet-labels.txt" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +49,8 @@
       <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
     </PackageReference>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="ExifLibNet" Version="2.1.4" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.30.0" />
 
   </ItemGroup>
 </Project>

@@ -68,7 +68,7 @@ public class CollectorTests
         var count = 0;
         using var client = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(
             ++count == 2 ? HttpStatusCode.ServiceUnavailable : HttpStatusCode.OK)
-        { Content = new ByteArrayContent([1, 2, 3]) })));
+        { Content = new ByteArrayContent(TestImages.Jpeg) })));
         var vm = Create(client, scope.Path);
         var first = new ImageItemViewModel(Image) { IsSelected = true };
         var second = new ImageItemViewModel(Image with { Title = "Second" }) { IsSelected = true };

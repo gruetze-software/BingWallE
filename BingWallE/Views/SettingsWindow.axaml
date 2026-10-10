@@ -4,7 +4,7 @@
         xmlns:models="using:BingWallE.Models"
         x:Class="BingWallE.Views.SettingsWindow" x:DataType="vm:MainWindowViewModel"
         Title="{DynamicResource SettingsTitle}" Icon="/Assets/bingwalle.ico"
-        Width="540" Height="650" MinWidth="460" MinHeight="520"
+        Width="540" Height="740" MinWidth="460" MinHeight="520"
         WindowStartupLocation="CenterOwner" Background="{DynamicResource SettingsBackground}">
     <Window.Resources>
         <ResourceDictionary>
@@ -49,6 +49,10 @@
                 <StackPanel Spacing="7">
                     <TextBlock Text="{DynamicResource Text055}" FontWeight="SemiBold"/>
                     <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" AutomationProperties.Name="{DynamicResource Text055}"/>
+                </StackPanel>
+                <StackPanel Spacing="7">
+                    <CheckBox Content="{DynamicResource AutoTags}" IsChecked="{Binding AutoTags}"/>
+                    <TextBlock Text="{DynamicResource AutoTagsHelp}" Classes="hint"/>
                 </StackPanel>
                 <StackPanel Spacing="7">
                     <TextBlock Text="{DynamicResource Text050}" FontWeight="SemiBold"/>

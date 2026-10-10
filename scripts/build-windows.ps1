@@ -13,6 +13,7 @@ try {
     dotnet publish $project -c Release -r $rid --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -o $staging
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed' }
     Copy-Item -LiteralPath (Join-Path $repoRoot 'LICENSE'),(Join-Path $repoRoot 'README.md') -Destination $staging
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'licenses') -Destination $staging -Recurse
     $archive = Join-Path $output "BingWallE-$version-$rid.zip"
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $archive -Force
     Write-Output "Created $archive"

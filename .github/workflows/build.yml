@@ -61,12 +61,14 @@ jobs:
       - name: Build
         run: dotnet build BingWallE.sln -c Release --no-restore --warnaserror
       - name: Test
+        env:
+          BINGWALLE_TEST_MODEL: '1'
         run: dotnet test BingWallE.sln -c Release --no-build --logger trx --results-directory TestResults
       - name: Version smoke test
         shell: bash
         run: |
           version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
-          test "$(dotnet BingWallE/bin/Release/net8.0/bingwalle.dll --version)" = "BingWallE ${version%.*}"
+          test "$(dotnet BingWallE/bin/Release/net8.0/bingwalle.dll --version)" = "BingWallE ${version%.0}"
       - name: Windows package
         if: matrix.platform == 'windows'
         shell: pwsh

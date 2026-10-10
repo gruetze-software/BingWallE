@@ -86,6 +86,7 @@
                                         <StackPanel Margin="13,10,13,12" Spacing="5">
                                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Title}"/>
                                             <TextBlock Text="{Binding DisplayDate}" Classes="secondary" FontSize="12"/>
+                                            <TextBlock Text="{Binding ResolutionLabel}" Classes="secondary" FontSize="11"/>
                                             <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                                                 <TextBlock Text="{Binding SaveLabel}" ToolTip.Tip="{Binding DownloadError}" Classes="secondary" FontSize="11" VerticalAlignment="Center"/>
                                                 <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" MinHeight="24" ToolTip.Tip="{DynamicResource Text061}" AutomationProperties.Name="{DynamicResource Text061}"/>
@@ -131,6 +132,7 @@
                         <StackPanel Spacing="4">
                             <TextBlock Text="{Binding PreviewItem.Title}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding PreviewItem.DisplayDate}" Classes="secondary"/>
+                            <TextBlock Text="{Binding PreviewItem.ResolutionLabel}" Classes="secondary" FontSize="12"/>
                         </StackPanel>
                         <Button Grid.Column="1" Content="{DynamicResource Text068}" Command="{Binding ClosePreviewCommand}" VerticalAlignment="Top" Margin="12,0,0,0"/>
                     </Grid>

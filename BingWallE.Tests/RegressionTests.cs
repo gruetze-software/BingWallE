@@ -124,7 +124,7 @@ public class RegressionTests
         var vm = MakeVm(client, target);
         await vm.DownloadSelectedCommand.ExecuteAsync(null);
         var path = System.IO.Path.Combine(target, WallpaperFileName.Create("20261009", "Test: image?"));
-        Check(File.Exists(path) && (await File.ReadAllBytesAsync(path)).SequenceEqual(new byte[] { 1, 2, 3 }), "Incorrect image bytes or path");
+        Check(File.Exists(path) && ExifLibrary.ImageFile.FromFile(path).Properties.Get(ExifLibrary.ExifTag.WindowsTitle).Value.ToString() == "Test: image?", "Incorrect image bytes or path");
         Check(!vm.Wallpapers[0].IsSelected && !vm.IsRunning, "State not reset");
         Check(!Directory.GetFiles(target, "*.tmp").Any(), "Temporary file left behind");
     }
@@ -150,7 +150,7 @@ public class RegressionTests
         vm.Wallpapers.Add(new ImageItemViewModel("https://example.test/image.jpg", "Test: image?", "20261009") { IsSelected = true });
         return vm;
     }
-    static HttpResponseMessage Response() => new(HttpStatusCode.OK) { Content = new ByteArrayContent(new byte[] { 1, 2, 3 }) };
+    static HttpResponseMessage Response() => new(HttpStatusCode.OK) { Content = new ByteArrayContent(TestImages.Jpeg) };
 
 
 }

@@ -5,10 +5,12 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BingWallE.Models;
+using SkiaSharp;
+using System.Collections.Generic;
 
 namespace BingWallE.Services;
 
-public sealed class WallpaperStore(HttpClient httpClient) : IWallpaperStore
+public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger = null) : IWallpaperStore
 {
     public bool Exists(string folder, Wallpaper image) => File.Exists(GetPath(folder, image));
 
@@ -19,7 +21,7 @@ public sealed class WallpaperStore(HttpClient httpClient) : IWallpaperStore
         return Path.Combine(folder, WallpaperVariants.FileName(image));
     }
 
-    public async Task DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken)
+    public async Task<WallpaperDownloadResult> DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken, bool generateTags = false, Action<string>? progress = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var path = GetPath(folder, image);
@@ -28,9 +30,16 @@ public sealed class WallpaperStore(HttpClient httpClient) : IWallpaperStore
         try
         {
             var data = await httpClient.GetByteArrayAsync(image.Url, cancellationToken);
-            await File.WriteAllBytesAsync(temporaryPath, data, cancellationToken);
+            using var codec = SKCodec.Create(new MemoryStream(data)) ?? throw new InvalidDataException("Bing did not return a valid image.");
+            IReadOnlyList<ImageTag> tags = generateTags
+                ? await (tagger ?? throw new InvalidOperationException("Image recognition is unavailable.")).RecognizeAsync(data, cancellationToken, progress)
+                : Array.Empty<ImageTag>();
+            progress?.Invoke("Bildinformationen werden gespeichert …");
+            var tagged = await Task.Run(() => PhotoMetadataWriter.Write(data, image, tags), cancellationToken);
+            await File.WriteAllBytesAsync(temporaryPath, tagged, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             File.Move(temporaryPath, path, overwrite: true);
+            return new WallpaperDownloadResult(codec.Info.Width, codec.Info.Height, tags);
         }
         finally
         {

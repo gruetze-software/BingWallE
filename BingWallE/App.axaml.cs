@@ -31,11 +31,12 @@ public partial class App : Application
                 Timeout = System.TimeSpan.FromSeconds(30)
             };
             System.Diagnostics.Trace.WriteLine($"[{System.DateTimeOffset.Now:O}] BingWallE START. HTTP timeout: 30 seconds per request.");
-            desktop.Exit += (_, _) => httpClient.Dispose();
+            var tagger = new LocalImageTagger(LocalImageTagger.DefaultDirectory);
+            desktop.Exit += (_, _) => { httpClient.Dispose(); tagger.Dispose(); };
             desktop.MainWindow = new MainWindow
             {
                 DataContext = new MainWindowViewModel(new BingWallpaperClient(httpClient),
-                    new WallpaperStore(httpClient), new JsonSettingsStore(JsonSettingsStore.DefaultFilePath),
+                    new WallpaperStore(httpClient, tagger), new JsonSettingsStore(JsonSettingsStore.DefaultFilePath),
                     new AvaloniaAppDialogs(() => desktop.MainWindow)),
             };
         }

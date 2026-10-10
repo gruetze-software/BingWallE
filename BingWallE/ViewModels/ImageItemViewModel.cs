@@ -11,11 +11,19 @@ public partial class ImageItemViewModel : ViewModelBase
     [ObservableProperty] private bool _isSelected;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(SaveLabel))] private bool _isSaved;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(SaveLabel))] private string? _downloadError;
+    [ObservableProperty][NotifyPropertyChangedFor(nameof(ResolutionLabel))] private string _downloadResolution = "1920x1080";
+    [ObservableProperty][NotifyPropertyChangedFor(nameof(ResolutionLabel))] private string? _actualDimensions;
+    public string ResolutionLabel => ActualDimensions != null ? _text.Get("Bild: {0} Pixel", ActualDimensions) : DownloadResolution switch
+    {
+        "1366x768" => _text.Get("Download: HD · 1366 × 768"),
+        "UHD" => _text.Get("Download: UHD · bildabhängige Größe"),
+        _ => _text.Get("Download: Full HD · 1920 × 1080")
+    };
     private readonly UiText _text = new();
     public void SetLanguage(string language)
     {
         _text.SetLanguage(language);
-        OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel));
+        OnPropertyChanged(nameof(ResolutionLabel)); OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel));
     }
     public Wallpaper Image { get; }
     public string Title => Image.Title;

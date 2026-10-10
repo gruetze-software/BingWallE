@@ -478,5 +478,50 @@
     "key": "Done",
     "de": "Fertig",
     "en": "Done"
+  },
+  {
+    "key": "AutoTags",
+    "de": "Bildmotive lokal als Schlagwörter erkennen",
+    "en": "Recognize image subjects locally as tags"
+  },
+  {
+    "key": "AutoTagsHelp",
+    "de": "Einmaliger Modell-Download: 14 MB. Danach erfolgt die Erkennung lokal, ohne Bilder hochzuladen. Englische Schlagwörter sind KI-Schätzungen und können falsch sein.",
+    "en": "One-time model download: 14 MB. Recognition then runs locally without uploading images. English tags are AI suggestions and may be incorrect."
+  },
+  {
+    "key": "ModelDownload",
+    "de": "Bilderkennungsmodell wird geladen (14 MB, einmalig) …",
+    "en": "Downloading image recognition model (14 MB, once) …"
+  },
+  {
+    "key": "Recognizing",
+    "de": "Bildmotive werden lokal erkannt …",
+    "en": "Recognizing image subjects locally …"
+  },
+  {
+    "key": "MetadataSaving",
+    "de": "Bildinformationen werden gespeichert …",
+    "en": "Saving image information …"
+  },
+  {
+    "key": "ActualPixels",
+    "de": "Bild: {0} Pixel",
+    "en": "Image: {0} pixels"
+  },
+  {
+    "key": "ResHD",
+    "de": "Download: HD · 1366 × 768",
+    "en": "Download: HD · 1366 × 768"
+  },
+  {
+    "key": "ResFullHD",
+    "de": "Download: Full HD · 1920 × 1080",
+    "en": "Download: Full HD · 1920 × 1080"
+  },
+  {
+    "key": "ResUHD",
+    "de": "Download: UHD · bildabhängige Größe",
+    "en": "Download: UHD · image-dependent size"
   }
 ]
