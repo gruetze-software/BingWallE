@@ -13,11 +13,14 @@
 
 
     <Authors>Grütze-Software</Authors>
-    <Product>Bing WallE</Product>
+    <Product>BingWallE</Product>
+    <AssemblyTitle>BingWallE — Bing Wallpaper Collector</AssemblyTitle>
+    <Company>Grütze-Software</Company>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 
     <ApplicationIcon>Assets/bingwalle.ico</ApplicationIcon>
-    <Description>Small Bing-Wallpaper Downloader in .NET 8.0</Description>
-    <Copyright>Copyright © 2026 Grütze-Software</Copyright>
+    <Description>Browse and collect Bing wallpapers in HD, Full HD and UHD.</Description>
+    <Copyright>Copyright © 2026 Christoph Schaefer · Grütze-Software</Copyright>
     <Maintainer>schaefer.christoph@posteo.de</Maintainer>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>bingwalle</PackageId>

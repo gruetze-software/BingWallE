@@ -38,7 +38,7 @@
         <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
             <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Image Source="/Assets/bingwalle.png" Width="56" Height="56"/>
+                    <Image Source="/Assets/bingwalle.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="56" Height="56"/>
                     <StackPanel Spacing="4" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <TextBlock Text="BingWallE" FontSize="28" FontWeight="SemiBold"/>

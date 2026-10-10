@@ -16,6 +16,8 @@ dotnet publish "$PROJECT" -c Release -r "linux-$ARCH" --self-contained true \
     -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -o "$PUBLISH"
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$PUBLISH/"
 cp "$ROOT/BingWallE/Assets/bingwalle.png" "$PUBLISH/"
+cp "$ROOT/branding/software.gruetze.bingwalle.metainfo.xml" "$PUBLISH/"
+cp "$ROOT/branding/bingwalle.desktop" "$PUBLISH/"
 chmod 755 "$PUBLISH/bingwalle"
 tar -czf "$ROOT/artifacts/BingWallE-$VERSION-linux-$ARCH.tar.gz" -C "$PUBLISH" .
 PKG="$STAGE/package"
@@ -23,17 +25,8 @@ mkdir -p "$PKG/DEBIAN" "$PKG/usr/bin" "$PKG/usr/share/applications" "$PKG/usr/sh
 install -m 755 "$PUBLISH/bingwalle" "$PKG/usr/bin/bingwalle"
 install -m 644 "$ROOT/BingWallE/Assets/bingwalle.png" "$PKG/usr/share/icons/hicolor/256x256/apps/bingwalle.png"
 install -m 644 "$ROOT/LICENSE" "$PKG/usr/share/doc/bingwalle/copyright"
-cat > "$PKG/usr/share/applications/bingwalle.desktop" <<'DESKTOP'
-[Desktop Entry]
-Name=BingWallE
-Comment=Collect Bing wallpapers
-Comment[de]=Bing-Wallpaper sammeln
-Exec=bingwalle
-Icon=bingwalle
-Terminal=false
-Type=Application
-Categories=Graphics;Utility;
-DESKTOP
+install -m 644 "$ROOT/branding/bingwalle.desktop" "$PKG/usr/share/applications/bingwalle.desktop"
+install -Dm 644 "$ROOT/branding/software.gruetze.bingwalle.metainfo.xml" "$PKG/usr/share/metainfo/software.gruetze.bingwalle.metainfo.xml"
 cat > "$PKG/DEBIAN/control" <<CONTROL
 Package: bingwalle
 Version: $VERSION

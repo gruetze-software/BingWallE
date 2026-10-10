@@ -28,7 +28,10 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <key>CFBundleExecutable</key><string>bingwalle</string>
 <key>CFBundleIdentifier</key><string>software.gruetze.bingwalle</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>$SHORT_VERSION</string>
+<key>CFBundleShortVersionString</key><string>$VERSION</string>
+<key>CFBundleGetInfoString</key><string>BingWallE $VERSION · Grütze-Software</string>
+<key>LSApplicationCategoryType</key><string>public.app-category.photography</string>
+<key>CFBundleDevelopmentRegion</key><string>de</string>
 <key>CFBundleVersion</key><string>$VERSION</string>
 <key>CFBundleIconFile</key><string>bingwalle.icns</string>
 <key>NSHighResolutionCapable</key><true/>

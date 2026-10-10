@@ -14,7 +14,7 @@
     <Grid RowDefinitions="*,Auto" Margin="28">
         <ScrollViewer>
             <StackPanel Spacing="12">
-                <Image Source="/Assets/bingwalle.png" Width="96" Height="96" HorizontalAlignment="Center"/>
+                <Image Source="/Assets/bingwalle.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="96" Height="96" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="ProductName" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                 <TextBlock Text="Entdecken. Auswählen. Behalten." FontSize="15" HorizontalAlignment="Center"/>
                 <TextBlock Text="Dein Sammler für die Bilder des Tages von Bing. Mit Galerie, großer Vorschau, verschiedenen Regionen und Downloads bis UHD."
