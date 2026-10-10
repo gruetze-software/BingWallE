@@ -40,7 +40,7 @@ public sealed class BingWallpaperClient(HttpClient httpClient) : IBingWallpaperC
                 fullUrl + separator + "pid=hp&w=640&h=360", cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             Trace.WriteLine($"[{DateTimeOffset.Now:O}] Bing preview ready: day={day + 1}, bytes={preview.Length}");
-            yield return new WallpaperPreview(new Wallpaper(fullUrl, image.Title ?? "Bing", image.Enddate, image.Urlbase, image.Copyright ?? "", image.Copyrightlink), preview);
+            yield return new WallpaperPreview(new Wallpaper(fullUrl, image.Title ?? "Bing", image.Enddate, image.Urlbase, image.Copyright ?? "", image.Copyrightlink, Market: market), preview);
         }
         Trace.WriteLine($"[{DateTimeOffset.Now:O}] Bing scan COMPLETE: 8 days.");
     }

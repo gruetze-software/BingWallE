@@ -144,7 +144,20 @@
                         </Grid>
                     </Border>
                     <StackPanel Grid.Row="2" Spacing="10" Margin="0,14,0,0">
-                        <TextBlock Text="{Binding PreviewItem.Copyright}" TextWrapping="Wrap" Classes="secondary"/>
+                        <ScrollViewer MaxHeight="180" HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Spacing="7">
+                                <TextBlock Text="{Binding PreviewItem.Description}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding PreviewItem.CopyrightCredit}" IsVisible="{Binding PreviewItem.HasCopyrightCredit}" TextWrapping="Wrap" Classes="secondary" FontSize="12"/>
+                                <TextBlock Text="{DynamicResource PreviewTextTags}" FontWeight="SemiBold" FontSize="12"/>
+                                <TextBlock Text="{Binding PreviewItem.TextKeywords}" IsVisible="{Binding PreviewItem.HasTextKeywords}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{DynamicResource PreviewNoTextTags}" IsVisible="{Binding !PreviewItem.HasTextKeywords}" Classes="secondary" FontSize="12"/>
+                                <StackPanel IsVisible="{Binding PreviewItem.HasModelKeywords}" Spacing="4">
+                                    <TextBlock Text="{DynamicResource PreviewModelTags}" FontWeight="SemiBold" FontSize="12"/>
+                                    <TextBlock Text="{Binding PreviewItem.ModelKeywords}" TextWrapping="Wrap"/>
+                                </StackPanel>
+                                <TextBlock Text="{DynamicResource PreviewTagsHelp}" TextWrapping="Wrap" Classes="secondary" FontSize="11"/>
+                            </StackPanel>
+                        </ScrollViewer>
                         <ProgressBar IsVisible="{Binding IsPreviewLoading}" IsIndeterminate="True" Height="4"/>
                         <TextBlock Text="{Binding PreviewStatus}" TextWrapping="Wrap" FontSize="12" Classes="secondary"/>
                         <Grid ColumnDefinitions="*,Auto">

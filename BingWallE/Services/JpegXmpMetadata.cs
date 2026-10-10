@@ -41,13 +41,14 @@ public static class JpegXmpMetadata
         }
         XNamespace x = "adobe:ns:meta/", rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
         XNamespace dc = "http://purl.org/dc/elements/1.1/", xmp = "http://ns.adobe.com/xap/1.0/";
+        XNamespace bw = "https://github.com/gruetze-software/BingWallE/metadata/1.0/";
         document ??= new XDocument(new XElement(x + "xmpmeta", new XAttribute(XNamespace.Xmlns + "x", x),
             new XElement(rdf + "RDF", new XAttribute(XNamespace.Xmlns + "rdf", rdf))));
         var root = document.Descendants(rdf + "RDF").FirstOrDefault() ?? throw new InvalidDataException("Invalid XMP packet.");
         var copyright = WallpaperCredits.Split(image.Copyright).Copyright;
         foreach (var description in root.Elements(rdf + "Description"))
         {
-            foreach (var name in new[] { dc + "title", dc + "description", dc + "rights", dc + "subject", xmp + "CreatorTool" })
+            foreach (var name in new[] { dc + "title", dc + "description", dc + "rights", dc + "subject", xmp + "CreatorTool", bw + "PublicationDate", bw + "SourceUrl", bw + "InformationUrl", bw + "Market", bw + "Predictions" })
             {
                 if (name == dc + "rights" && string.IsNullOrEmpty(copyright)) continue;
                 description.Elements(name).Remove(); description.Attribute(name)?.Remove();
@@ -58,8 +59,12 @@ public static class JpegXmpMetadata
         root.Add(new XElement(rdf + "Description", new XAttribute(rdf + "about", ""),
             new XAttribute(XNamespace.Xmlns + "dc", dc), new XAttribute(XNamespace.Xmlns + "xmp", xmp),
             Alt(dc + "title", image.Title), Alt(dc + "description", comments), string.IsNullOrEmpty(copyright) ? null : Alt(dc + "rights", copyright),
-            new XElement(dc + "subject", new XElement(rdf + "Bag", new[] { "Bing", "Wallpaper" }.Concat(tags.Select(t => t.Label)).Select(t => new XElement(rdf + "li", t)))),
-            new XElement(xmp + "CreatorTool", AppInfo.DisplayName)));
+            new XElement(dc + "subject", new XElement(rdf + "Bag", WallpaperKeywords.Stored(image, tags).Select(t => new XElement(rdf + "li", t)))),
+            new XElement(xmp + "CreatorTool", AppInfo.DisplayName),
+            new XElement(bw + "PublicationDate", image.Date), new XElement(bw + "SourceUrl", image.Url),
+            new XElement(bw + "InformationUrl", image.CopyrightUrl ?? ""), new XElement(bw + "Market", image.Market),
+            new XElement(bw + "Predictions", new XElement(rdf + "Bag", tags.Select(t => new XElement(rdf + "li",
+                new XAttribute("label", t.Label), new XAttribute("score", t.Score.ToString(System.Globalization.CultureInfo.InvariantCulture))))))));
         var packet = Encoding.UTF8.GetBytes(document.ToString(SaveOptions.DisableFormatting));
         var payloadLength = Prefix.Length + packet.Length + 2;
         if (payloadLength > ushort.MaxValue) throw new InvalidDataException("XMP metadata is too large.");

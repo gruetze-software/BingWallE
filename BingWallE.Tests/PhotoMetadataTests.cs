@@ -36,9 +36,11 @@ public class PhotoMetadataTests
         Assert.Equal(Photo.Title, result.Properties.Get(ExifTag.ImageDescription).Value);
         Assert.Equal("© Jörg Müller", result.Properties.Get(ExifTag.Copyright).Value);
         Assert.Equal("Küste", result.Properties.Get(ExifTag.WindowsSubject).Value);
-        Assert.Contains("Bing publication date: 2026-10-10", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
-        Assert.Contains("AI suggestions", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
-        Assert.Contains("seashore", result.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
+        Assert.Equal("Küste", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
+        Assert.Contains("PublicationDate", Encoding.UTF8.GetString(after));
+        Assert.Contains(Photo.Url, Encoding.UTF8.GetString(after));
+        Assert.DoesNotContain("AI suggestions", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
+        Assert.Contains("Küste", result.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
         Assert.Equal("Original photographer", result.Properties.Get(ExifTag.Artist).Value);
         Assert.DoesNotContain(result.Properties, x => x.Tag == ExifTag.DateTimeOriginal);
         Assert.Contains("Küste &amp; Vögel", Encoding.UTF8.GetString(after));

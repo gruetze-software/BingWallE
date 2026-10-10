@@ -486,8 +486,8 @@
   },
   {
     "key": "AutoTagsHelp",
-    "de": "Einmaliger Modell-Download: 14 MB. Danach erfolgt die Erkennung lokal, ohne Bilder hochzuladen. Englische Schlagwörter sind KI-Schätzungen und können falsch sein.",
-    "en": "One-time model download: 14 MB. Recognition then runs locally without uploading images. English tags are AI suggestions and may be incorrect."
+    "de": "Einmaliger Modell-Download: 14 MB. Erkennung in Vorschau und Download erfolgt lokal, ohne Bilder hochzuladen. KI-Vorschläge können falsch sein. Schlagwörter aus Bing-Texten sind auch ohne Modell verfügbar.",
+    "en": "One-time model download: 14 MB. Preview and download recognition runs locally without uploading images. AI suggestions may be incorrect. Bing text keywords also work without a model."
   },
   {
     "key": "ModelDownload",
@@ -523,5 +523,30 @@
     "key": "ResUHD",
     "de": "Download: UHD · bildabhängige Größe",
     "en": "Download: UHD · image-dependent size"
+  },
+  {
+    "key": "PreviewTextTags",
+    "de": "Schlagwörter aus der Bing-Beschreibung",
+    "en": "Keywords from the Bing description"
+  },
+  {
+    "key": "PreviewModelTags",
+    "de": "Zusätzliche KI-Vorschläge · können unzutreffend sein",
+    "en": "Additional AI suggestions · may be incorrect"
+  },
+  {
+    "key": "PreviewNoTextTags",
+    "de": "Keine passenden Begriffe in der Beschreibung erkannt.",
+    "en": "No matching terms found in the description."
+  },
+  {
+    "key": "PreviewTagsHelp",
+    "de": "Vorschläge für neue Downloads. Bereits gespeicherte Dateien bleiben unverändert. Lokale Bilderkennung ist optional in den Einstellungen aktivierbar.",
+    "en": "Suggestions for new downloads. Existing files remain unchanged. Optional local recognition can be enabled in Settings."
+  },
+  {
+    "key": "PreviewNoPredictions",
+    "de": "Keine sicheren zusätzlichen Bildmotive erkannt.",
+    "en": "No confident additional image subjects recognized."
   }
 ]

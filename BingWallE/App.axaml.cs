@@ -37,7 +37,7 @@ public partial class App : Application
             {
                 DataContext = new MainWindowViewModel(new BingWallpaperClient(httpClient),
                     new WallpaperStore(httpClient, tagger), new JsonSettingsStore(JsonSettingsStore.DefaultFilePath),
-                    new AvaloniaAppDialogs(() => desktop.MainWindow)),
+                    new AvaloniaAppDialogs(() => desktop.MainWindow), tagger),
             };
         }
 

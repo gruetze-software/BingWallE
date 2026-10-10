@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace BingWallE.Models;
 
 public record Wallpaper(string Url, string Title, string Date, string? UrlBase = null,
-    string Copyright = "", string? CopyrightUrl = null, string Resolution = "1920x1080");
+    string Copyright = "", string? CopyrightUrl = null, string Resolution = "1920x1080", string Market = "de-DE");
 public record WallpaperPreview(Wallpaper Image, byte[] PreviewBytes);
 public sealed class SelectionOption(string value, string label) : ObservableObject
 {

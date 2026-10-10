@@ -15,18 +15,13 @@ public static class PhotoMetadataWriter
     {
         var file = ImageFile.FromBuffer(jpeg);
         if (file.Format != ImageFileFormat.JPEG) throw new InvalidDataException("Bing did not return a JPEG image.");
-        var date = DateTime.TryParseExact(image.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day)
-            ? day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : image.Date;
         var credits = WallpaperCredits.Split(image.Copyright);
         var description = string.IsNullOrWhiteSpace(credits.Description) ? image.Title : credits.Description;
-        var comments = $"{image.Copyright}\nBing publication date: {date}\nSource: {image.Url}";
-        if (!string.IsNullOrWhiteSpace(image.CopyrightUrl)) comments += $"\nBing information: {image.CopyrightUrl}";
-        if (tags.Count > 0) comments += "\nAI suggestions (local MobileNetV2; may be incorrect): " +
-            string.Join(", ", tags.Select(x => $"{x.Label} ({x.Score.ToString("P0", CultureInfo.InvariantCulture)})"));
+        var comments = description;
         file.Properties.Set(ExifTag.WindowsTitle, image.Title, Encoding.Unicode);
         file.Properties.Set(ExifTag.WindowsSubject, description, Encoding.Unicode);
         file.Properties.Set(ExifTag.WindowsComment, comments, Encoding.Unicode);
-        file.Properties.Set(ExifTag.WindowsKeywords, string.Join(";", new[] { "Bing", "Wallpaper" }.Concat(tags.Select(x => x.Label))), Encoding.Unicode);
+        file.Properties.Set(ExifTag.WindowsKeywords, string.Join(";", WallpaperKeywords.Stored(image, tags)), Encoding.Unicode);
         file.Properties.Set(new Utf8ExifString(ExifTag.ImageDescription, image.Title));
         file.Properties.Set(ExifTag.UserComment, comments, Encoding.Unicode);
         file.Properties.Set(new Utf8ExifString(ExifTag.Software, AppInfo.DisplayName));

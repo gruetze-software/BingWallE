@@ -25,6 +25,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IWallpaperStore _images;
     private readonly ISettingsStore _settings;
     private readonly IAppDialogs _dialogs;
+    private readonly IImageTagger? _tagger;
     private readonly HashSet<ImageItemViewModel> _observed = new();
     private CancellationTokenSource? _cts;
     private CancellationTokenSource? _previewCts;
@@ -85,9 +86,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public string SelectionSummary => T("{0} von {1} Bildern ausgewählt", SelectedCount, Wallpapers.Count);
     public string DownloadLabel => SelectedCount == 1 ? T("1 Bild herunterladen") : T("{0} Bilder herunterladen", SelectedCount);
 
-    public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs)
+    public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs, IImageTagger? tagger = null)
     {
-        _bing = bing; _images = images; _settings = settings; _dialogs = dialogs;
+        _bing = bing; _images = images; _settings = settings; _dialogs = dialogs; _tagger = tagger;
         var saved = settings.Load();
         Text.SetLanguage(saved.Language);
         _selectedLanguage = Languages.First(x => x.Value == Text.Language);
@@ -213,6 +214,7 @@ public partial class MainWindowViewModel : ViewModelBase
                     var result = await _images.DownloadAsync(folder, WallpaperVariants.ForResolution(item.Image, resolution), cancellation.Token,
                         AutoTags, message => StatusMessage = Text.Translate(message));
                     item.ActualDimensions = $"{result.Width} × {result.Height}";
+                    if (AutoTags) item.ApplyPredictions(result.Tags);
                 }
                 catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { throw; }
                 catch (Exception ex) { item.DownloadError = ErrorMessage(ex); throw; }
@@ -292,6 +294,14 @@ public partial class MainWindowViewModel : ViewModelBase
             cancellation.Token.ThrowIfCancellationRequested();
             using var stream = new MemoryStream(bytes);
             LargePreview = new Bitmap(stream); PreviewStatus = "";
+            if (AutoTags && _tagger != null && !item.HasRecognition)
+            {
+                PreviewStatus = T("Bildmotive werden lokal erkannt …");
+                var predictions = await _tagger.RecognizeAsync(bytes, cancellation.Token);
+                cancellation.Token.ThrowIfCancellationRequested();
+                item.ApplyPredictions(predictions);
+                PreviewStatus = predictions.Count == 0 ? T("Keine sicheren zusätzlichen Bildmotive erkannt.") : "";
+            }
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
         catch (Exception ex)
@@ -355,7 +365,12 @@ public partial class MainWindowViewModel : ViewModelBase
         StatusMessage = T("Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.");
     }
     partial void OnSelectedThemeChanged(SelectionOption value) { _dialogs.ApplyTheme(value.Value); SavePreferences(); }
-    partial void OnAutoTagsChanged(bool value) => SavePreferences();
+    partial void OnAutoTagsChanged(bool value)
+    {
+        if (!value)
+            foreach (var item in Wallpapers) item.ApplyPredictions(Array.Empty<ImageTag>(), false);
+        SavePreferences();
+    }
 
     private void TranslateOptions()
     {

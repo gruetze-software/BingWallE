@@ -1,4 +1,7 @@
 using System.Globalization;
+using System.Collections.Generic;
+using System.Linq;
+using BingWallE.Services;
 using Avalonia.Media.Imaging;
 using BingWallE.Models;
 using BingWallE.Localization;
@@ -24,6 +27,19 @@ public partial class ImageItemViewModel : ViewModelBase
     {
         _text.SetLanguage(language);
         OnPropertyChanged(nameof(ResolutionLabel)); OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel));
+    }
+    private IReadOnlyList<ImageTag> _predictions = System.Array.Empty<ImageTag>();
+    public string Description => WallpaperCredits.Split(Image.Copyright).Description is { Length: > 0 } caption ? caption : Title;
+    public string TextKeywords => string.Join(" · ", WallpaperKeywords.Build(Image, _predictions).Where(x => !x.FromModel).Select(x => x.Label));
+    public string ModelKeywords => string.Join(" · ", WallpaperKeywords.Build(Image, _predictions).Where(x => x.FromModel).Select(x => x.Label));
+    public bool HasTextKeywords => TextKeywords.Length > 0;
+    public bool HasModelKeywords => ModelKeywords.Length > 0;
+    public bool HasRecognition { get; private set; }
+    public void ApplyPredictions(IReadOnlyList<ImageTag> predictions, bool recognized = true)
+    {
+        _predictions = predictions; HasRecognition = recognized;
+        OnPropertyChanged(nameof(TextKeywords)); OnPropertyChanged(nameof(ModelKeywords));
+        OnPropertyChanged(nameof(HasTextKeywords)); OnPropertyChanged(nameof(HasModelKeywords));
     }
     public Wallpaper Image { get; }
     public string Title => Image.Title;
