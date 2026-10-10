@@ -17,8 +17,9 @@ public static class PhotoMetadataWriter
         if (file.Format != ImageFileFormat.JPEG) throw new InvalidDataException("Bing did not return a JPEG image.");
         var date = DateTime.TryParseExact(image.Date, "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var day)
             ? day.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : image.Date;
-        var description = string.IsNullOrWhiteSpace(image.Copyright) ? image.Title : image.Copyright;
-        var comments = $"{description}\nBing publication date: {date}\nSource: {image.Url}";
+        var credits = WallpaperCredits.Split(image.Copyright);
+        var description = string.IsNullOrWhiteSpace(credits.Description) ? image.Title : credits.Description;
+        var comments = $"{image.Copyright}\nBing publication date: {date}\nSource: {image.Url}";
         if (!string.IsNullOrWhiteSpace(image.CopyrightUrl)) comments += $"\nBing information: {image.CopyrightUrl}";
         if (tags.Count > 0) comments += "\nAI suggestions (local MobileNetV2; may be incorrect): " +
             string.Join(", ", tags.Select(x => $"{x.Label} ({x.Score.ToString("P0", CultureInfo.InvariantCulture)})"));
@@ -29,7 +30,7 @@ public static class PhotoMetadataWriter
         file.Properties.Set(new Utf8ExifString(ExifTag.ImageDescription, image.Title));
         file.Properties.Set(ExifTag.UserComment, comments, Encoding.Unicode);
         file.Properties.Set(new Utf8ExifString(ExifTag.Software, AppInfo.DisplayName));
-        if (!string.IsNullOrWhiteSpace(image.Copyright)) file.Properties.Set(new Utf8ExifString(ExifTag.Copyright, image.Copyright));
+        if (!string.IsNullOrWhiteSpace(credits.Copyright)) file.Properties.Set(new Utf8ExifString(ExifTag.Copyright, credits.Copyright));
         // Bing's date is publication, not capture time. Preserve existing artist and camera fields.
         using var output = new MemoryStream();
         file.Save(output);

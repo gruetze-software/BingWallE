@@ -20,7 +20,7 @@
 
     <ApplicationIcon>Assets/bingwalle.ico</ApplicationIcon>
     <Description>Browse and collect Bing wallpapers in HD, Full HD and UHD.</Description>
-    <Copyright>Copyright © 2026 Christoph Schaefer · Grütze-Software</Copyright>
+    <Copyright>Copyright © 2026 Grütze-Software</Copyright>
     <Maintainer>schaefer.christoph@posteo.de</Maintainer>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageId>bingwalle</PackageId>

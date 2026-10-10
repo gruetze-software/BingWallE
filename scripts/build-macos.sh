@@ -38,7 +38,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <key>NSHighResolutionCapable</key><true/>
 <key>LSMinimumSystemVersion</key><string>12.0</string>
 <key>NSPrincipalClass</key><string>NSApplication</string>
-<key>NSHumanReadableCopyright</key><string>© 2026 Christoph Schaefer · Grütze-Software</string>
+<key>NSHumanReadableCopyright</key><string>© 2026 Grütze-Software</string>
 </dict></plist>
 PLIST
 chmod 755 "$APP/Contents/MacOS/bingwalle"

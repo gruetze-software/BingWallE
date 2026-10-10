@@ -30,6 +30,8 @@ public partial class ImageItemViewModel : ViewModelBase
     public string Date => Image.Date;
     public string DisplayDate => System.DateTime.TryParseExact(Date, "yyyyMMdd", CultureInfo.InvariantCulture,
         DateTimeStyles.None, out var day) ? day.ToString(_text.Language == "en" ? "d MMMM yyyy" : "d. MMMM yyyy", _text.Culture) : Date;
+    public string CopyrightCredit => WallpaperCredits.Split(Image.Copyright).Copyright;
+    public bool HasCopyrightCredit => !string.IsNullOrWhiteSpace(CopyrightCredit);
     public string Copyright => string.IsNullOrWhiteSpace(Image.Copyright) ? _text.Get("Keine weiteren Bildinformationen von Bing verfügbar.") : Image.Copyright;
     public string SaveLabel => DownloadError != null ? _text.Get("Download fehlgeschlagen") : IsSaved ? _text.Get("Bereits gespeichert") : _text.Get("Neu in deiner Sammlung");
     public Bitmap? Preview { get; }

@@ -87,6 +87,7 @@
                                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Title}"/>
                                             <TextBlock Text="{Binding DisplayDate}" Classes="secondary" FontSize="12"/>
                                             <TextBlock Text="{Binding ResolutionLabel}" Classes="secondary" FontSize="11"/>
+                                            <TextBlock Text="{Binding CopyrightCredit}" IsVisible="{Binding HasCopyrightCredit}" Classes="secondary" FontSize="10" TextWrapping="Wrap" ToolTip.Tip="{Binding CopyrightCredit}"/>
                                             <Grid ColumnDefinitions="*,Auto" Margin="0,4,0,0">
                                                 <TextBlock Text="{Binding SaveLabel}" ToolTip.Tip="{Binding DownloadError}" Classes="secondary" FontSize="11" VerticalAlignment="Center"/>
                                                 <CheckBox Grid.Column="1" IsChecked="{Binding IsSelected}" MinHeight="24" ToolTip.Tip="{DynamicResource Text061}" AutomationProperties.Name="{DynamicResource Text061}"/>

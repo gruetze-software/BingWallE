@@ -12,6 +12,17 @@ public class PhotoMetadataTests
 {
     private static Wallpaper Photo => new("https://bing.com/image.jpg", "Küste & Vögel", "20261010", "/image", "Küste (© Jörg Müller)", "https://bing.com/info");
 
+    [Theory]
+    [InlineData("Ohrenscharben über der Monterey Bay, Kalifornien, USA (© Hiroya Minakuchi/Minden Pictures)", "Ohrenscharben über der Monterey Bay, Kalifornien, USA", "© Hiroya Minakuchi/Minden Pictures")]
+    [InlineData("Ort (Zusatz) (© Name/Agentur)", "Ort (Zusatz)", "© Name/Agentur")]
+    [InlineData("Beschreibung ohne Copyright", "Beschreibung ohne Copyright", "")]
+    [InlineData("© Name", "", "© Name")]
+    public void SeparatesCopyrightNoticeFromCaption(string input, string description, string credit)
+    {
+        Assert.Equal((description, credit), WallpaperCredits.Split(input));
+        Assert.Equal(credit, new ImageItemViewModel(Photo with { Copyright = input }).CopyrightCredit);
+    }
+
     [Fact]
     public void WritesUnicodeMetadataWithoutRecompressingOrInventingCameraData()
     {
@@ -23,8 +34,8 @@ public class PhotoMetadataTests
         var result = ImageFile.FromBuffer(after);
         Assert.Equal(Photo.Title, result.Properties.Get(ExifTag.WindowsTitle).Value);
         Assert.Equal(Photo.Title, result.Properties.Get(ExifTag.ImageDescription).Value);
-        Assert.Equal(Photo.Copyright, result.Properties.Get(ExifTag.Copyright).Value);
-        Assert.Equal(Photo.Copyright, result.Properties.Get(ExifTag.WindowsSubject).Value);
+        Assert.Equal("© Jörg Müller", result.Properties.Get(ExifTag.Copyright).Value);
+        Assert.Equal("Küste", result.Properties.Get(ExifTag.WindowsSubject).Value);
         Assert.Contains("Bing publication date: 2026-10-10", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
         Assert.Contains("AI suggestions", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
         Assert.Contains("seashore", result.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());

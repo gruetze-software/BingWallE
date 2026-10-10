@@ -44,16 +44,20 @@ public static class JpegXmpMetadata
         document ??= new XDocument(new XElement(x + "xmpmeta", new XAttribute(XNamespace.Xmlns + "x", x),
             new XElement(rdf + "RDF", new XAttribute(XNamespace.Xmlns + "rdf", rdf))));
         var root = document.Descendants(rdf + "RDF").FirstOrDefault() ?? throw new InvalidDataException("Invalid XMP packet.");
+        var copyright = WallpaperCredits.Split(image.Copyright).Copyright;
         foreach (var description in root.Elements(rdf + "Description"))
         {
             foreach (var name in new[] { dc + "title", dc + "description", dc + "rights", dc + "subject", xmp + "CreatorTool" })
-            { description.Elements(name).Remove(); description.Attribute(name)?.Remove(); }
+            {
+                if (name == dc + "rights" && string.IsNullOrEmpty(copyright)) continue;
+                description.Elements(name).Remove(); description.Attribute(name)?.Remove();
+            }
         }
         XElement Alt(XName name, string value) => new(name,
             new XElement(rdf + "Alt", new XElement(rdf + "li", new XAttribute(XNamespace.Xml + "lang", "x-default"), value)));
         root.Add(new XElement(rdf + "Description", new XAttribute(rdf + "about", ""),
             new XAttribute(XNamespace.Xmlns + "dc", dc), new XAttribute(XNamespace.Xmlns + "xmp", xmp),
-            Alt(dc + "title", image.Title), Alt(dc + "description", comments), Alt(dc + "rights", image.Copyright),
+            Alt(dc + "title", image.Title), Alt(dc + "description", comments), string.IsNullOrEmpty(copyright) ? null : Alt(dc + "rights", copyright),
             new XElement(dc + "subject", new XElement(rdf + "Bag", new[] { "Bing", "Wallpaper" }.Concat(tags.Select(t => t.Label)).Select(t => new XElement(rdf + "li", t)))),
             new XElement(xmp + "CreatorTool", AppInfo.DisplayName)));
         var packet = Encoding.UTF8.GetBytes(document.ToString(SaveOptions.DisableFormatting));

@@ -1,6 +1,7 @@
 # BingWallE 1.1.1
 
 - Each image card and large preview now shows its download resolution; completed downloads show their actual pixel dimensions.
+- Copyright notices are extracted from Bing captions and displayed on gallery cards; the copyright field contains the credit itself, without the location description.
 - Downloads include Bing titles, descriptions, copyright and source information in EXIF and XMP metadata, including Windows Explorer's Details fields. The JPEG image is not recompressed.
 - Bing publication dates are labeled in comments. Unknown capture dates, authors and ratings are not invented; existing camera and photographer metadata is preserved.
 - Optional local subject recognition adds English image tags. Enable it in Settings. The first use downloads a checksum-verified 14 MB MobileNetV2 model; images stay on your computer.
