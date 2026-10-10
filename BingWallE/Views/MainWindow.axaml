@@ -37,7 +37,7 @@
     </Window.Styles>
     <Grid>
         <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
-            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <Image Source="/Assets/bingwalle.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="56" Height="56"/>
                     <StackPanel Spacing="4" VerticalAlignment="Center">
@@ -52,25 +52,16 @@
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
                     <Button Content="{DynamicResource Text048}" Command="{Binding ShowInfoCommand}" ToolTip.Tip="{DynamicResource Text049}"/>
-                    <TextBlock Text="{DynamicResource Text050}" Classes="secondary" VerticalAlignment="Center"/>
-                    <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" Width="115" AutomationProperties.Name="{DynamicResource Text051}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
-                </StackPanel>
-                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,10,0,0">
-                    <TextBlock Text="{DynamicResource Text084}" VerticalAlignment="Center" Classes="secondary"/>
-                    <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" IsEnabled="{Binding IsIdle}" Width="115" AutomationProperties.Name="{DynamicResource Text084}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
+                    <Button Content="{DynamicResource SettingsTitle}" Click="OpenSettings" IsEnabled="{Binding IsIdle}"/>
                 </StackPanel>
             </Grid>
             <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
-                <Grid ColumnDefinitions="*,*,Auto">
-                    <StackPanel Spacing="5" Margin="0,0,14,0">
-                        <TextBlock Text="{DynamicResource Text052}" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
-                        <ComboBox ItemsSource="{Binding Markets}" SelectedItem="{Binding SelectedMarket}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="{DynamicResource Text053}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="5" VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource DownloadLanguage}" Classes="secondary" FontSize="11"/>
+                        <TextBlock Text="{Binding SelectedMarket.Label}" FontWeight="SemiBold"/>
                     </StackPanel>
-                    <StackPanel Grid.Column="1" Spacing="5" Margin="0,0,16,0">
-                        <TextBlock Text="{DynamicResource Text054}" FontSize="10" FontWeight="SemiBold" Classes="secondary"/>
-                        <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" IsEnabled="{Binding IsIdle}" HorizontalAlignment="Stretch" AutomationProperties.Name="{DynamicResource Text055}"><ComboBox.ItemTemplate><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></ComboBox.ItemTemplate></ComboBox>
-                    </StackPanel>
-                    <Button Grid.Column="2" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}" VerticalAlignment="Bottom" MinWidth="130" Classes="primary"/>
+                    <Button Grid.Column="1" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}" VerticalAlignment="Center" MinWidth="130" Classes="primary"/>
                 </Grid>
             </Border>
             <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,16,0,12">

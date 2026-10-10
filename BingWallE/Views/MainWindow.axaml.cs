@@ -18,6 +18,12 @@ public partial class MainWindow : Window
         Closed += (_, _) => (DataContext as MainWindowViewModel)?.Shutdown();
     }
 
+    private async void OpenSettings(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel { IsIdle: true } vm)
+            await new SettingsWindow { DataContext = vm }.ShowDialog(this);
+    }
+
     private void OpenPreview(object? sender, RoutedEventArgs e)
     {
         if (sender is Control { DataContext: ImageItemViewModel item } && DataContext is MainWindowViewModel vm)

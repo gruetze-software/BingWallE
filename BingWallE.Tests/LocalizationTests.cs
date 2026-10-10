@@ -10,6 +10,28 @@ namespace BingWallE.Tests;
 public class LocalizationTests
 {
     [Fact]
+    public async Task EnglishDownloadsUseEnglishMarketWithoutChangingAppLanguage()
+    {
+        using var scope = new TestScope();
+        string? requestedMarket = null;
+        using var client = new HttpClient(new Handler((request, _) =>
+        {
+            requestedMarket = request.RequestUri!.Query;
+            return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+            { Content = new StringContent("{\"images\":[]}") });
+        }));
+        var settings = new TestSettings { Value = new AppSettings { Language = "de", Market = "de-DE", WallpaperPath = scope.Path } };
+        var vm = new MainWindowViewModel(new BingWallpaperClient(client), new WallpaperStore(client), settings, new TestDialogs());
+        vm.SelectedMarket = vm.Markets.Single(x => x.Value == "en-US");
+        await vm.StartStopCommand.ExecuteAsync(null);
+        Assert.Contains("mkt=en-US", requestedMarket);
+        Assert.Equal("de", vm.SelectedLanguage.Value);
+        Assert.Equal("en-US", settings.Value.Market);
+        Assert.Equal("de", settings.Value.Language);
+        Assert.Equal("Aktualisieren", vm.ButtonText);
+    }
+
+    [Fact]
     public void SwitchingLanguagePreservesSelectionAndPersistsPreference()
     {
         using var client = new HttpClient(new Handler((_, _) => throw new Exception("Unexpected HTTP")));

@@ -8,9 +8,11 @@
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
 BingWallE is a desktop collector for Bing wallpapers, built with C#, .NET 8 and
-Avalonia 11.3.10. The interface is available in **German and English**. Select **Sprache / Language**
-in the main window to switch immediately; your choice is saved for the next start.
-Bing image titles and credits follow the selected Bing region.
+Avalonia 11.3.10. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, Bing download
+region, resolution and theme. Language changes take effect immediately; your choice is saved for the next start.
+The download region is independent of the application language: choose Germany
+for German Bing titles and filenames, or the USA / United Kingdom for English content.
+Use Refresh after changing the region.
 
 ## Features
 

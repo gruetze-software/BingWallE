@@ -443,5 +443,40 @@
     "key": "Text089",
     "de": "Die Aktion ist fehlgeschlagen. Weitere Informationen stehen in der Diagnoseausgabe.",
     "en": "The operation failed. See the diagnostic output for details."
+  },
+  {
+    "key": "SettingsTitle",
+    "de": "Einstellungen",
+    "en": "Settings"
+  },
+  {
+    "key": "AppLanguage",
+    "de": "Sprache der Anwendung",
+    "en": "Application language"
+  },
+  {
+    "key": "DownloadLanguage",
+    "de": "Sprache und Region der Downloads",
+    "en": "Download language and region"
+  },
+  {
+    "key": "DownloadLanguageHelp",
+    "de": "Bestimmt die Bing-Bildauswahl, Bildtitel und Dateinamen. Deutschland liefert deutsche, USA und Großbritannien englische Inhalte.",
+    "en": "Controls the Bing image selection, titles and filenames. Germany provides German content; the USA and United Kingdom provide English content."
+  },
+  {
+    "key": "SettingsHelp",
+    "de": "Passe BingWallE an deine Sammlung an. Änderungen werden automatisch gespeichert.",
+    "en": "Make BingWallE suit your collection. Changes are saved automatically."
+  },
+  {
+    "key": "RegionRefreshHelp",
+    "de": "Nach einem Regionswechsel die aktuellen Bilder mit „Aktualisieren“ laden.",
+    "en": "After changing the region, use Refresh to load its latest images."
+  },
+  {
+    "key": "Done",
+    "de": "Fertig",
+    "en": "Done"
   }
 ]
