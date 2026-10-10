@@ -1,50 +1,110 @@
 <p align="center">
-  <img src="branding/bingwalle.png" width="144" alt="BingWallE: Landschaftsbilder mit goldener Sonne" />
+  <img src="branding/bingwalle.png" width="144" alt="BingWallE: landscape pictures with a golden sun" />
 </p>
 
 # BingWallE 1.0
 
-[Release herunterladen](https://github.com/gruetze-software/BingWallE/releases/latest) ·
-[Builds und Tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
+[Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
+[Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
-BingWallE lädt Bing-Wallpaper herunter. Die Desktop-Anwendung verwendet C#,
-.NET 8 und Avalonia 11.3.10. Das Repository liegt unter
-[gruetze-software/BingWallE](https://github.com/gruetze-software/BingWallE).
+BingWallE is a desktop collector for Bing wallpapers, built with C#, .NET 8 and
+Avalonia 11.3.10. The application interface is currently in German.
 
-## Funktionen
+## Features
 
-- Galerie mit zwei bis drei Spalten, großen Bildkarten und lesbaren Datumsangaben.
-- Klick auf ein Motiv öffnet eine große Vorschau mit Bildbeschreibung und Copyright.
-  Die Vorschau lässt sich mit „Schließen“ oder Escape schließen.
-- „Alle“, „Keine“ und „Nur neue“ auswählen; gespeicherte Bilder sind gekennzeichnet.
-- Bing-Region aus zwölf Ländern wählen, darunter Deutschland, USA, Japan und Frankreich.
-- HD, Full HD oder UHD auswählen. Alternative Auflösungen hängen von Bing ab;
-  bei fehlenden Varianten zeigt die Anwendung einen Fehler statt still herunterzustufen.
-- Downloads mit Auswahlzähler, Fortschrittsanzeige, Abbruch und Wiederholen nach Fehlern.
-- Speicherort ändern und direkt im Dateimanager öffnen.
-- Helles, dunkles oder automatisches Systemdesign; Einstellungen werden gespeichert.
+- A gallery with two or three columns, large image cards and readable dates.
+- Click an image to open a large preview with its description and copyright.
+  Close the preview using the close button or Escape.
+- Select all images, none, or only new ones; saved images are marked.
+- Choose from twelve Bing regions, including Germany, the USA, Japan and France.
+- Download HD, Full HD or UHD images. Availability depends on Bing; unavailable
+  resolutions produce an error instead of silently falling back to a smaller image.
+- Selection counts, download progress, cancellation and retry after errors.
+- Choose a destination folder and open it directly in your file manager.
+- Light, dark or system appearance, with persistent preferences.
 
-Pro Region werden bis zu acht Tagesbilder abgerufen. Nach einem Regionswechsel
-lädt „Aktualisieren“ die neue Auswahl. Beim Ändern der Auflösung oder des Zielordners
-wird die Dateierkennung aktualisiert: „Bereits gespeichert“ bezieht sich auf die
-aktuell gewählte Auflösung im aktuellen Ordner. HD und UHD erhalten eigene Dateinamen,
-damit vorhandene Full-HD-Bilder nicht überschrieben werden.
+Each region provides up to eight daily images. After switching regions, use
+**Aktualisieren** (Refresh) to load the new selection. Changing the resolution or
+destination refreshes file detection: the saved status refers to the selected
+resolution in the current folder. HD and UHD use separate filenames to avoid
+overwriting existing Full HD images.
 
-Bei einem Downloadfehler stoppt der Stapel. Bereits gespeicherte Bilder bleiben
-abgewählt; „Erneut versuchen“ lädt nur die verbleibende Auswahl. Das Programm
-verwendet temporäre Dateien, damit ein Fehler keine vorhandenen Bilder beschädigt.
+A download error stops the batch. Successfully saved images remain deselected;
+**Erneut versuchen** (Retry) downloads only the remaining selection. Downloads use
+temporary files to protect existing images if an operation fails.
 
-BingWallE ist ein Sammler. Automatisches Herunterladen und das Setzen des
-Desktop-Hintergrunds sind nicht implementiert.
+BingWallE focuses on collecting images. Automatic downloads and changing the
+desktop wallpaper are not implemented.
 
-## Voraussetzungen und Start
+## Downloads and first start
 
-Empfohlen ist das **.NET-8-SDK**. Die `global.json` im Repository-Stamm erlaubt
-auch ein neueres stabiles SDK, falls kein passendes 8er-SDK installiert ist.
-Die Anwendung und Tests zielen weiterhin auf .NET 8; für `dotnet run` und
-`dotnet test` muss die .NET-8-Laufzeit installiert sein.
+Download the package for your platform from the
+[latest release](https://github.com/gruetze-software/BingWallE/releases/latest).
+**The .NET runtime is included; no separate runtime or SDK installation is required.**
 
-Alle folgenden Befehle im Repository-Stamm ausführen:
+| Platform | Package |
+| --- | --- |
+| Windows x64 | `BingWallE-1.0.0-win-x64.zip` |
+| Linux x64 | `BingWallE-1.0.0-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.0.0-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.0.0-macos-x64.dmg` or `.zip` |
+
+On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
+signed with a code-signing certificate.
+
+On Linux, install the DEB on Debian/Ubuntu or extract the TAR.GZ and run
+`./bingwalle`. If needed, mark the extracted executable with `chmod +x bingwalle`.
+A graphical desktop session and the native Avalonia/.NET dependencies are required.
+The DEB also installs the application icon and desktop entry.
+
+All four targets are built and tested by GitHub Actions. The graphical application
+has not been manually tested on every target device. `SHA256SUMS.txt` in the release
+contains checksums for all packages.
+
+### macOS installation and troubleshooting
+
+Choose **arm64** for Apple Silicon or **x64** for an Intel Mac. Open the DMG and drag
+**BingWallE.app** onto the **Applications** shortcut. ZIP packages are also available;
+extract the app and move it to Applications.
+
+The macOS bundles are **ad-hoc signed and verified during the release build**.
+They are not signed with an Apple Developer certificate or notarized by Apple.
+macOS may therefore block the first launch or report that the app is damaged.
+
+First try opening the app, then allow it in **System Settings → Privacy & Security →
+Open Anyway**, if that option is offered. Only do this for a copy downloaded from the
+[official BingWallE release](https://github.com/gruetze-software/BingWallE/releases/latest)
+that you trust.
+
+If the downloaded app is still blocked by quarantine, the same app-specific
+workaround documented for AmiDiskLab can be used in Terminal:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/BingWallE.app"
+```
+
+This removes the quarantine attribute from this app bundle only; it does not
+notarize the app or disable Gatekeeper globally. If the app is elsewhere, replace
+the path. You can type `xattr -dr com.apple.quarantine ` with a trailing space and
+drag **BingWallE.app** into Terminal to insert its path. Start the app again afterwards.
+
+If it still fails to start, check that you selected the correct architecture and
+try launching the executable from Terminal to capture diagnostic output:
+
+```bash
+"/Applications/BingWallE.app/Contents/MacOS/bingwalle"
+```
+
+Include your macOS version, Mac architecture and the error output when reporting
+an issue. A quarantine workaround does not resolve incompatible systems or damaged downloads.
+
+## Build from source
+
+The **.NET 8 SDK** is recommended. The repository's `global.json` also allows a newer
+stable SDK if no matching .NET 8 SDK is installed. The application and tests still
+target .NET 8; `dotnet run` and `dotnet test` require the .NET 8 runtime.
+
+Run the following commands from the repository root:
 
 ```sh
 dotnet restore BingWallE.sln
@@ -52,108 +112,96 @@ dotnet build BingWallE.sln -c Release
 dotnet run --project BingWallE -c Release
 ```
 
-Windows x64, Linux x64 und macOS (Intel und Apple Silicon) werden in der Build-Pipeline gebaut.
-Die grafische Anwendung wurde nicht auf jeder Zielhardware manuell geprüft.
-Linux benötigt eine grafische Desktop-Sitzung und die nativen Avalonia/.NET-Abhängigkeiten.
-
 ## Tests
 
 ```sh
 dotnet test BingWallE.sln -c Release
 ```
 
-Die xUnit-Tests prüfen Auswahl, Auflösungsvarianten, Vorschauabbruch, Wiederholen,
-Abbruch, Fehlerbehandlung, Dateinamen, Bing-Antworten,
-Einstellungen und Ordnerwechsel. Netzwerkantworten werden simuliert, Dateien in
-isolierten temporären Ordnern angelegt. Es werden keine persönlichen Einstellungen
-oder Bilder verändert. Die Tests ersetzen keinen manuellen Oberflächentest.
+The xUnit tests cover selection, resolution variants, preview cancellation, retries,
+cancellation, error handling, filenames, Bing responses, preferences and folder changes.
+Network responses are simulated and files are created in isolated temporary folders.
+Tests do not change personal preferences or images and do not replace manual UI testing.
 
-## Aufbau
+## Project structure
 
-| Bereich | Verantwortung |
+| Area | Responsibility |
 | --- | --- |
-| `Models` | Einstellungen, Bilddaten und plattformübergreifende Dateinamen |
-| `Services/BingWallpaperClient` | Bing-Archiv und Vorschaudaten abrufen |
-| `Services/WallpaperStore` | Vorhandene Bilder erkennen und Downloads sicher speichern |
-| `Services/JsonSettingsStore` | Einstellungen laden und über eine temporäre Datei speichern |
-| `Services/AvaloniaAppDialogs` | Ordnerauswahl und Informationsdialog |
-| `ViewModels` | Bedienabläufe, Auswahl, Statusmeldungen und Vorschaubilder |
-| `Views` | Avalonia-Oberfläche |
-| `App.axaml.cs` | Dienste erzeugen und mit dem ViewModel verbinden |
-| `BingWallE.Tests` | Automatisierte Tests mit austauschbaren Diensten |
+| `Models` | Preferences, image data and cross-platform filenames |
+| `Services/BingWallpaperClient` | Fetch Bing archive entries and previews |
+| `Services/WallpaperStore` | Detect existing images and save downloads safely |
+| `Services/JsonSettingsStore` | Load preferences and save them through a temporary file |
+| `Services/AvaloniaAppDialogs` | Folder picker and About dialog |
+| `ViewModels` | User interactions, selection, status messages and previews |
+| `Views` | Avalonia user interface |
+| `App.axaml.cs` | Create services and connect them to the view model |
+| `BingWallE.Tests` | Automated tests with replaceable services |
 
-Die Dienste werden über Schnittstellen an das ViewModel übergeben. Netzwerk- und
-Dateizugriffe lassen sich dadurch unabhängig von der grafischen Oberfläche testen.
+Services are passed to the view model through interfaces, allowing network and file
+operations to be tested independently of the graphical interface.
 
-Einstellungen liegen unter `Environment.SpecialFolder.ApplicationData` im
-Unterordner `bingwalle/settings.json`, unter Windows normalerweise
-`%APPDATA%/bingwalle/settings.json`. Standardziel ist `BingImages` im Bilderordner.
+Preferences are stored under `Environment.SpecialFolder.ApplicationData` in
+`bingwalle/settings.json`, typically `%APPDATA%/bingwalle/settings.json` on Windows.
+The default download destination is `BingImages` inside the Pictures folder.
 
-## Pakete erstellen
+## Build release packages
 
-Die Skripte ermitteln die Version aus `BingWallE/BingWallE.csproj` und schreiben
-nach `artifacts/`. Die App zeigt die Haupt- und Nebenversion an: Paketversion
-`1.0.0` entspricht der sichtbaren Version **1.0**. Jedes Paket enthält die
-.NET-Laufzeit; Benutzer benötigen kein SDK.
+The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
+to `artifacts/`. The app displays the major and minor version: package version
+`1.0.0` appears as **1.0**. Every package includes the .NET runtime.
 
-| System | Befehl auf dem jeweiligen System | Ausgabe |
+| Platform | Command on that platform | Output |
 | --- | --- | --- |
-| Windows | `pwsh -File scripts/build-windows.ps1` | ZIP mit `bingwalle.exe` |
-| Linux | `bash scripts/build-linux.sh` | TAR.GZ und DEB |
-| macOS Apple Silicon | `bash scripts/build-macos.sh arm64` | APP im ZIP und DMG |
-| macOS Intel | `bash scripts/build-macos.sh x64` | APP im ZIP und DMG |
+| Windows | `pwsh -File scripts/build-windows.ps1` | ZIP containing `bingwalle.exe` |
+| Linux | `bash scripts/build-linux.sh` | TAR.GZ and DEB |
+| macOS Apple Silicon | `bash scripts/build-macos.sh arm64` | APP bundle in ZIP and DMG |
+| macOS Intel | `bash scripts/build-macos.sh x64` | APP bundle in ZIP and DMG |
 
-Windows und Linux unterstützen zusätzlich ARM64 über `-Architecture arm64`
-beziehungsweise das Argument `arm64`; diese Varianten werden im ersten Release
-nicht veröffentlicht. Unter Linux werden `dpkg-deb` und die üblichen nativen
-Desktopbibliotheken benötigt. Das DEB installiert auch den Desktop-Eintrag und
-App-Icon. Der ältere Einstieg `BingWallE/build.sh` ruft das passende Plattformskript auf.
+Windows and Linux scripts also accept ARM64 using `-Architecture arm64` and the
+`arm64` argument respectively; these variants are not published in the first release.
+Linux packaging requires `dpkg-deb`. The older `BingWallE/build.sh` entry point calls
+the appropriate platform script. macOS packaging requires macOS and its `codesign`,
+`hdiutil` and `ditto` tools.
 
-Unter macOS die App aus dem DMG nach „Programme“ ziehen. Die Pakete sind ad-hoc
-signiert, aber nicht Apple-notarisiert. Beim ersten Start kann eine Freigabe unter
-„Datenschutz & Sicherheit“ nötig sein. Windows-Pakete sind nicht mit einem
-Code-Signing-Zertifikat signiert. Eine globale Deaktivierung der Systemsicherheit
-ist nicht erforderlich.
+## Automated builds and releases
 
-## Automatisierte Builds und Releases
+`.github/workflows/build.yml` builds and tests on Windows, Linux and macOS.
+It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
+Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-`.github/workflows/build.yml` baut und testet auf Windows, Linux und macOS.
-Die Pipeline erstellt Windows-ZIP, Linux-TAR.GZ/DEB sowie macOS-ZIP/DMG für Intel
-und Apple Silicon. Testberichte und Pakete stehen als Workflow-Artefakte bereit.
+Version 1.0 uses the `v1.0` tag. Its tag build publishes the GitHub release only after
+all four build variants succeed. All packages and `SHA256SUMS.txt` are attached.
+Release notes are available in [docs/RELEASE-1.0.md](docs/RELEASE-1.0.md) (German).
 
-Für Version 1.0 wird der Tag `v1.0` verwendet. Ein Tag-Build veröffentlicht das
-GitHub-Release erst, wenn alle vier Build-Varianten erfolgreich sind. Alle Pakete
-und eine Datei `SHA256SUMS.txt` werden angehängt. Release-Hinweise stehen unter
-[docs/RELEASE-1.0.md](docs/RELEASE-1.0.md).
+## Logos and About dialog
 
-## Logos und Info-Dialog
-
-Der Info-Dialog ist über **Info** oben rechts erreichbar und zeigt Version,
-Projektlinks und das Grütze-Software-Logo aus AmiDiskLab.
+Open **Info** in the top-right corner to see the version, project links and the
+Grütze-Software logo also used in AmiDiskLab.
 
 <img src="BingWallE/Assets/gruetze-software.png" width="88" alt="Grütze-Software" />
 
-Das neue BingWallE-Logo stellt gestapelte Landschaftsbilder und eine Sonne dar.
-Die editierbare Vektorquelle liegt in [branding/bingwalle.svg](branding/bingwalle.svg).
-Mit `python scripts/generate-icons.py` werden PNG, Windows-ICO und macOS-ICNS
-neu erzeugt; dafür sind `Pillow` und `resvg-py` erforderlich. Die fertigen Icons
-sind eingecheckt, daher benötigen normale Builds keine Python-Werkzeuge.
+The BingWallE logo depicts stacked landscape pictures and a sun. Its editable vector
+source is [branding/bingwalle.svg](branding/bingwalle.svg). Run
+`python scripts/generate-icons.py` to regenerate PNG, Windows ICO and macOS ICNS files;
+this requires `Pillow` and `resvg-py`. Generated icons are committed to the repository,
+so regular builds do not require Python tools.
 
-## Lizenz
+## Diagnostic output
 
-Der Quellcode steht unter der MIT-Lizenz, siehe [LICENSE](LICENSE).
+When starting with F5 in Visual Studio, open **View → Output** and select **Debug**
+in **Show output from**.
 
-## Diagnoseausgabe
+Traces include timestamps, an identifier per HTTP request, the URL, HTTP status,
+duration and byte count. `START` without `HEADERS` means no response headers have
+arrived yet. `HEADERS` without `COMPLETE` means the response body is still being
+transferred. Errors include stack traces. Image contents and HTTP headers are not logged.
 
-Beim Start mit F5 in Visual Studio: **Ansicht → Ausgabe**, dann in
-**Ausgabe anzeigen von** den Eintrag **Debuggen** auswählen.
+Each HTTP request has a 30-second timeout. The interface distinguishes user cancellation
+from a timeout. During a scan, the status line shows the current day and operation
+(image metadata or preview).
 
-Die Traces enthalten Zeitstempel, eine Kennung pro HTTP-Anfrage, URL, HTTP-Status,
-Dauer und Bytezahl. `START` ohne `HEADERS` bedeutet, dass noch kein Antwortkopf
-angekommen ist. `HEADERS` ohne `COMPLETE` bedeutet, dass der Antwortinhalt noch
-übertragen wird. Fehler werden einschließlich Stacktrace protokolliert.
-Bildinhalte und HTTP-Header werden nicht ausgegeben.
+## License
 
-Jede HTTP-Anfrage hat ein Zeitlimit von 30 Sekunden. Benutzerabbruch und
-Zeitüberschreitung werden in der Oberfläche unterschieden. Während des Scans
-zeigt die Statuszeile den aktuellen Tag und den Schritt (Bilddaten/Vorschau).
+The source code is released under the [MIT License](LICENSE). Downloaded images
+remain subject to their respective rights holders' terms; copyright information
+is shown in the preview.
