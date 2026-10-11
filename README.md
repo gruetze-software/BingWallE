@@ -4,6 +4,10 @@
 
 # BingWallE 1.2.0
 
+<img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
+
+<img width="1304" height="1760" alt="grafik" src="https://github.com/user-attachments/assets/b1f7b0dc-14e7-48b3-851e-2dfcf2530e0f" />
+
 [Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
