@@ -548,5 +548,10 @@
     "key": "PreviewNoPredictions",
     "de": "Keine sicheren zusätzlichen Bildmotive erkannt.",
     "en": "No confident additional image subjects recognized."
+  },
+  {
+    "key": "MacSettings",
+    "de": "Einstellungen …",
+    "en": "Settings …"
   }
 ]

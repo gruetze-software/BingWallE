@@ -2,8 +2,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="BingWallE.App"
              xmlns:local="using:BingWallE"
+             Name="BingWallE"
              RequestedThemeVariant="Default">
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <NativeMenu.Menu>
+        <NativeMenu NeedsUpdate="MenuNeedsUpdate">
+            <NativeMenuItem Header="{DynamicResource Text049}" Click="AboutMenuClick" IsEnabled="False"/>
+            <NativeMenuItemSeparator/>
+            <NativeMenuItem Header="{DynamicResource MacSettings}" Click="SettingsMenuClick" Gesture="Meta+OemComma" IsEnabled="False"/>
+            <NativeMenuItem Header="{DynamicResource Text019}" Click="RefreshMenuClick" Gesture="Meta+R" IsEnabled="False"/>
+        </NativeMenu>
+    </NativeMenu.Menu>
 
     <Application.DataTemplates>
         <local:ViewLocator/>

@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using System.Linq;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using BingWallE.ViewModels;
@@ -18,9 +19,11 @@ public partial class MainWindow : Window
         Closed += (_, _) => (DataContext as MainWindowViewModel)?.Shutdown();
     }
 
-    private async void OpenSettings(object? sender, RoutedEventArgs e)
+    private async void OpenSettings(object? sender, RoutedEventArgs e) => await ShowSettingsAsync();
+
+    public async System.Threading.Tasks.Task ShowSettingsAsync()
     {
-        if (DataContext is MainWindowViewModel { IsIdle: true } vm)
+        if (IsEnabled && !OwnedWindows.Any(x => x.IsDialog) && DataContext is MainWindowViewModel { IsIdle: true, IsPreviewOpen: false } vm)
             await new SettingsWindow { DataContext = vm }.ShowDialog(this);
     }
 
