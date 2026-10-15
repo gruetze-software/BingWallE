@@ -553,5 +553,55 @@
     "key": "MacSettings",
     "de": "Einstellungen …",
     "en": "Settings …"
+  },
+  {
+    "key": "AutoRefreshOnStartup",
+    "de": "Beim Start automatisch aktualisieren",
+    "en": "Refresh automatically on startup"
+  },
+  {
+    "key": "ContextShow",
+    "de": "Anzeigen",
+    "en": "Show"
+  },
+  {
+    "key": "ContextOpenPath",
+    "de": "Dateipfad öffnen",
+    "en": "Open Path"
+  },
+  {
+    "key": "ContextDelete",
+    "de": "Lokal löschen",
+    "en": "Delete local"
+  },
+  {
+    "key": "ContextIgnore",
+    "de": "Ignorieren",
+    "en": "Ignore"
+  },
+  {
+    "key": "ContextUnignore",
+    "de": "Wieder berücksichtigen",
+    "en": "Stop ignoring"
+  },
+  {
+    "key": "IgnoredLabel",
+    "de": "Ignoriert",
+    "en": "Ignored"
+  },
+  {
+    "key": "DeleteTitle",
+    "de": "Lokale Datei löschen?",
+    "en": "Delete local file?"
+  },
+  {
+    "key": "DeleteHelp",
+    "de": "Diese Datei wird dauerhaft gelöscht. Andere Auflösungen bleiben erhalten.",
+    "en": "This file will be permanently deleted. Other resolutions are kept."
+  },
+  {
+    "key": "DeleteCompleted",
+    "de": "Lokale Datei gelöscht: {0}",
+    "en": "Local file deleted: {0}"
   }
 ]

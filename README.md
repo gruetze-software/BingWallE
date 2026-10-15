@@ -2,7 +2,7 @@
   <img src="branding/bingwalle.png" width="144" alt="BingWallE: landscape pictures with a golden sun" />
 </p>
 
-# BingWallE 1.2.2
+# BingWallE 1.3.0
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
 
@@ -40,6 +40,22 @@ overwriting existing Full HD images.
 A download error stops the batch. Successfully saved images remain deselected;
 **Erneut versuchen** (Retry) downloads only the remaining selection. Downloads use
 temporary files to protect existing images if an operation fails.
+
+Right-click an image for **Show**, **Open Path**, **Ignore** and **Delete local**.
+Show opens the large preview. Open Path reveals the saved file in Windows Explorer
+or Finder; on Linux it opens the containing folder. File actions refer to the
+currently selected download resolution and are available for saved images.
+Ignore keeps the image visible but excludes it from bulk selection and downloads.
+The choice is saved across refreshes and restarts; **Stop ignoring** reverses it.
+Delete local asks for confirmation before permanently removing that resolution's
+file. Other downloaded resolutions are kept.
+
+Enable **Refresh automatically on startup** in Settings to load the current Bing
+selection when opening the app. This is off by default and never starts downloads.
+The app remembers its normal window size and maximized state when closed. On the
+next launch it restores them, fitting the normal size to the available screen work
+area and display scaling. A minimized window is restored normally or maximized,
+according to its last non-minimized state.
 
 BingWallE focuses on collecting images. Automatic downloads and changing the
 desktop wallpaper are not implemented.
@@ -95,10 +111,10 @@ Download the package for your platform from the
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.2.2-win-x64.zip` |
-| Linux x64 | `BingWallE-1.2.2-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.2.2-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.2.2-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.3.0-win-x64.zip` |
+| Linux x64 | `BingWallE-1.3.0-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.3.0-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.3.0-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -199,7 +215,7 @@ The default download destination is `BingImages` inside the Pictures folder.
 
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the major and minor version: package version
-`1.2.0` appears as **1.2**, while a patch release such as `1.2.2` appears as **1.2.2**. Every package includes the .NET runtime.
+`1.3.0` appears as **1.3**, while a patch release such as `1.3.1` appears as **1.3.1**. Every package includes the .NET runtime.
 
 | Platform | Command on that platform | Output |
 | --- | --- | --- |
@@ -220,11 +236,11 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.2.2`. Pushing a tag
+Version tags use the full package version, for example `v1.3.0`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.2.2](docs/RELEASE-1.2.2.md).
+are attached. See [release notes for 1.3.0](docs/RELEASE-1.3.0.md).
 
 ## Diagnostic output
 

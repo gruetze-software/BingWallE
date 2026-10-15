@@ -34,6 +34,7 @@
         </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
             <StackPanel Spacing="18">
+                <CheckBox Content="{DynamicResource AutoRefreshOnStartup}" IsChecked="{Binding AutoRefreshOnStartup}"/>
                 <StackPanel Spacing="7">
                     <TextBlock Text="{DynamicResource AppLanguage}" FontWeight="SemiBold"/>
                     <ComboBox ItemsSource="{Binding Languages}" SelectedItem="{Binding SelectedLanguage}" AutomationProperties.Name="{DynamicResource AppLanguage}"/>

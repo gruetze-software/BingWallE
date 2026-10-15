@@ -33,6 +33,33 @@ public sealed class AvaloniaAppDialogs(Func<Window?> getWindow) : IAppDialogs
         return Task.CompletedTask;
     }
 
+    public Task ShowFileAsync(string path)
+    {
+        if (!System.IO.File.Exists(path)) throw new System.IO.FileNotFoundException("Local image is missing.", path);
+        var start = new System.Diagnostics.ProcessStartInfo { UseShellExecute = false };
+        if (OperatingSystem.IsWindows())
+        {
+            start.FileName = "explorer.exe";
+            start.ArgumentList.Add("/select,"); start.ArgumentList.Add(System.IO.Path.GetFullPath(path));
+        }
+        else if (OperatingSystem.IsMacOS())
+        {
+            start.FileName = "open"; start.ArgumentList.Add("-R"); start.ArgumentList.Add(System.IO.Path.GetFullPath(path));
+        }
+        else
+        {
+            start.FileName = "xdg-open"; start.ArgumentList.Add(System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(path))!);
+        }
+        System.Diagnostics.Process.Start(start);
+        return Task.CompletedTask;
+    }
+
+    public async Task<bool> ConfirmDeleteAsync(string path)
+    {
+        if (getWindow() is not { } owner) return false;
+        return await new DeleteImageWindow(Text, path).ShowDialog<bool>(owner);
+    }
+
     public async Task<string?> SelectFolderAsync()
     {
         if (getWindow()?.StorageProvider is not { } provider) return null;

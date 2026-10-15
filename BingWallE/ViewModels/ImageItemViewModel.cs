@@ -12,6 +12,7 @@ namespace BingWallE.ViewModels;
 public partial class ImageItemViewModel : ViewModelBase
 {
     [ObservableProperty] private bool _isSelected;
+    [ObservableProperty][NotifyPropertyChangedFor(nameof(SaveLabel))][NotifyPropertyChangedFor(nameof(IgnoreMenuLabel))] private bool _isIgnored;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(SaveLabel))] private bool _isSaved;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(SaveLabel))] private string? _downloadError;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(ResolutionLabel))] private string _downloadResolution = "1920x1080";
@@ -26,7 +27,7 @@ public partial class ImageItemViewModel : ViewModelBase
     public void SetLanguage(string language)
     {
         _text.SetLanguage(language);
-        OnPropertyChanged(nameof(ResolutionLabel)); OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel));
+        OnPropertyChanged(nameof(ResolutionLabel)); OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel)); OnPropertyChanged(nameof(IgnoreMenuLabel));
     }
     private IReadOnlyList<ImageTag> _predictions = System.Array.Empty<ImageTag>();
     public string Description => WallpaperCredits.Split(Image.Copyright).Description is { Length: > 0 } caption ? caption : Title;
@@ -49,7 +50,8 @@ public partial class ImageItemViewModel : ViewModelBase
     public string CopyrightCredit => WallpaperCredits.Split(Image.Copyright).Copyright;
     public bool HasCopyrightCredit => !string.IsNullOrWhiteSpace(CopyrightCredit);
     public string Copyright => string.IsNullOrWhiteSpace(Image.Copyright) ? _text.Get("Keine weiteren Bildinformationen von Bing verfügbar.") : Image.Copyright;
-    public string SaveLabel => DownloadError != null ? _text.Get("Download fehlgeschlagen") : IsSaved ? _text.Get("Bereits gespeichert") : _text.Get("Neu in deiner Sammlung");
+    public string IgnoreMenuLabel => _text.Get(IsIgnored ? "Wieder berücksichtigen" : "Ignorieren");
+    public string SaveLabel => IsIgnored ? _text.Get("Ignoriert") : DownloadError != null ? _text.Get("Download fehlgeschlagen") : IsSaved ? _text.Get("Bereits gespeichert") : _text.Get("Neu in deiner Sammlung");
     public Bitmap? Preview { get; }
 
     public ImageItemViewModel(string fullImageUrl, string title, string date, Bitmap? preview = null)

@@ -14,7 +14,9 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
 {
     public bool Exists(string folder, Wallpaper image) => File.Exists(GetPath(folder, image));
 
-    private static string GetPath(string folder, Wallpaper image)
+    public void Delete(string folder, Wallpaper image) => File.Delete(GetPath(folder, image));
+
+    public string GetPath(string folder, Wallpaper image)
     {
         if (string.IsNullOrWhiteSpace(folder))
             throw new IOException("Bitte einen gültigen Zielordner auswählen.");

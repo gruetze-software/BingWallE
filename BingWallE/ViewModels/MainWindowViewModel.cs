@@ -30,6 +30,21 @@ public partial class MainWindowViewModel : ViewModelBase
     private CancellationTokenSource? _cts;
     private CancellationTokenSource? _previewCts;
     private string? _retryOperation;
+    private readonly HashSet<string> _ignoredImages;
+    private bool _startupInitialized;
+    private bool _localActionRunning;
+    public SavedWindowState WindowSettings { get; private set; }
+    [ObservableProperty] private bool _autoRefreshOnStartup;
+    private static string IgnoreKey(ImageItemViewModel item) => item.Image.Market + "|" + (item.Image.UrlBase ?? item.Date + "|" + item.Title);
+
+    public async Task InitializeAsync()
+    {
+        if (_startupInitialized) return;
+        _startupInitialized = true;
+        if (AutoRefreshOnStartup && IsIdle) await StartStop();
+    }
+    public void SaveWindowState(SavedWindowState state) { WindowSettings = state; SavePreferences(); }
+
 
     public UiText Text { get; } = new();
     private string T(string text, params object[] args) => Text.Get(text, args);
@@ -82,7 +97,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool CanRetry => HasError && IsIdle && _retryOperation is "scan" or "download";
     public bool HasSelection => SelectedCount > 0;
     public bool IsEmpty => Wallpapers.Count == 0;
-    public int SelectedCount => Wallpapers.Count(x => x.IsSelected);
+    public int SelectedCount => Wallpapers.Count(x => x.IsSelected && !x.IsIgnored);
     public string SelectionSummary => T("{0} von {1} Bildern ausgewählt", SelectedCount, Wallpapers.Count);
     public string DownloadLabel => SelectedCount == 1 ? T("1 Bild herunterladen") : T("{0} Bilder herunterladen", SelectedCount);
 
@@ -90,6 +105,9 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _bing = bing; _images = images; _settings = settings; _dialogs = dialogs; _tagger = tagger;
         var saved = settings.Load();
+        _ignoredImages = new(saved.IgnoredImages ?? Array.Empty<string>(), StringComparer.Ordinal);
+        WindowSettings = saved.Window ?? new();
+        _autoRefreshOnStartup = saved.AutoRefreshOnStartup;
         Text.SetLanguage(saved.Language);
         _selectedLanguage = Languages.First(x => x.Value == Text.Language);
         TranslateOptions();
@@ -106,7 +124,7 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (var old in _observed.Where(x => !Wallpapers.Contains(x)).ToArray())
             { old.PropertyChanged -= ItemChanged; _observed.Remove(old); }
             foreach (var item in Wallpapers.Where(x => !_observed.Contains(x)))
-            { item.SetLanguage(Text.Language); item.DownloadResolution = SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
+            { item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item)); if (item.IsIgnored) item.IsSelected = false; item.SetLanguage(Text.Language); item.DownloadResolution = SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
             NotifySelection();
             OnPropertyChanged(nameof(IsEmpty));
         };
@@ -114,7 +132,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void ItemChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (e.PropertyName == nameof(ImageItemViewModel.IsSelected)) NotifySelection();
+        if (e.PropertyName is nameof(ImageItemViewModel.IsSelected) or nameof(ImageItemViewModel.IsIgnored)) NotifySelection();
     }
     private void NotifySelection()
     {
@@ -176,6 +194,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 cancellation.Token.ThrowIfCancellationRequested();
                 using var stream = new MemoryStream(preview.PreviewBytes);
                 var item = new ImageItemViewModel(preview.Image, new Bitmap(stream));
+                item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item));
                 RefreshSaved(item);
                 Wallpapers.Add(item);
                 ProgressValue = Wallpapers.Count / 8d * 100;
@@ -195,7 +214,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task DownloadSelected()
     {
         if (IsRunning) return;
-        var selected = Wallpapers.Where(w => w.IsSelected).ToList();
+        var selected = Wallpapers.Where(w => w.IsSelected && !w.IsIgnored).ToList();
         if (selected.Count == 0) { StatusMessage = T("Bitte zuerst Bilder auswählen."); return; }
         var folder = TargetFolder ?? "";
         var resolution = SelectedResolution.Value;
@@ -239,11 +258,11 @@ public partial class MainWindowViewModel : ViewModelBase
         else HasError = false;
     }
     [RelayCommand(CanExecute = nameof(CanStartOperation))]
-    private void SelectAll() { foreach (var item in Wallpapers) item.IsSelected = true; }
+    private void SelectAll() { foreach (var item in Wallpapers) item.IsSelected = !item.IsIgnored; }
     [RelayCommand(CanExecute = nameof(CanStartOperation))]
     private void SelectNone() { foreach (var item in Wallpapers) item.IsSelected = false; }
     [RelayCommand(CanExecute = nameof(CanStartOperation))]
-    private void SelectNew() { foreach (var item in Wallpapers) { RefreshSaved(item); item.IsSelected = !item.IsSaved; } }
+    private void SelectNew() { foreach (var item in Wallpapers) { RefreshSaved(item); item.IsSelected = !item.IsSaved && !item.IsIgnored; } }
 
     private void RefreshSaved(ImageItemViewModel item)
     {
@@ -252,8 +271,49 @@ public partial class MainWindowViewModel : ViewModelBase
         // Unavailable alternative resolutions remain selectable, so download can explain the limitation.
         try { item.IsSaved = _images.Exists(TargetFolder ?? "", WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value)); }
         catch (InvalidOperationException) { item.IsSaved = false; }
-        item.IsSelected = !item.IsSaved; item.DownloadError = null;
+        item.IsSelected = !item.IsSaved && !item.IsIgnored; item.DownloadError = null;
     }
+    [RelayCommand]
+    private void ToggleIgnore(ImageItemViewModel? item)
+    {
+        if (item == null || !IsIdle || _localActionRunning) return;
+        item.IsIgnored = !item.IsIgnored;
+        if (item.IsIgnored) _ignoredImages.Add(IgnoreKey(item)); else _ignoredImages.Remove(IgnoreKey(item));
+        RefreshSaved(item); SavePreferences();
+    }
+
+    [RelayCommand]
+    private async Task OpenImagePath(ImageItemViewModel? item)
+    {
+        if (item == null || !IsIdle || _localActionRunning) return;
+        try
+        {
+            var image = WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value);
+            await _dialogs.ShowFileAsync(_images.GetPath(TargetFolder ?? "", image));
+        }
+        catch (Exception ex) { _retryOperation = null; ReportError(ex); }
+    }
+
+    [RelayCommand]
+    private async Task DeleteLocal(ImageItemViewModel? item)
+    {
+        if (item == null || !IsIdle || _localActionRunning) return;
+        _localActionRunning = true;
+        try
+        {
+            var folder = TargetFolder ?? "";
+            var image = WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value);
+            if (!_images.Exists(folder, image)) { RefreshSaved(item); return; }
+            if (!await _dialogs.ConfirmDeleteAsync(_images.GetPath(folder, image))) return;
+            if (!IsIdle) return;
+            _images.Delete(folder, image);
+            item.ActualDimensions = null; RefreshSaved(item);
+            StatusMessage = T("Lokale Datei gelöscht: {0}", item.Title);
+        }
+        catch (Exception ex) { _retryOperation = null; ReportError(ex); }
+        finally { _localActionRunning = false; }
+    }
+
     private void ClearGallery()
     {
         foreach (var item in Wallpapers) item.Preview?.Dispose();
@@ -339,7 +399,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 Resolution = SelectedResolution.Value,
                 Theme = SelectedTheme.Value,
                 Language = SelectedLanguage.Value,
-                AutoTags = AutoTags
+                AutoTags = AutoTags,
+                AutoRefreshOnStartup = AutoRefreshOnStartup,
+                IgnoredImages = _ignoredImages.ToArray(),
+                Window = WindowSettings
             });
         }
         catch (Exception ex) { _retryOperation = null; ReportError(ex); }
@@ -365,6 +428,7 @@ public partial class MainWindowViewModel : ViewModelBase
         StatusMessage = T("Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.");
     }
     partial void OnSelectedThemeChanged(SelectionOption value) { _dialogs.ApplyTheme(value.Value); SavePreferences(); }
+    partial void OnAutoRefreshOnStartupChanged(bool value) => SavePreferences();
     partial void OnAutoTagsChanged(bool value)
     {
         if (!value)
