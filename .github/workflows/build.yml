@@ -64,6 +64,13 @@ jobs:
         env:
           BINGWALLE_TEST_MODEL: '1'
         run: dotnet test BingWallE.sln -c Release --no-build --logger trx --results-directory TestResults
+      - name: Recognition shutdown smoke test
+        shell: bash
+        run: |
+          dotnet build tools/RecognitionSmoke/RecognitionSmoke.csproj -c Release --warnaserror
+          for attempt in 1 2 3; do
+            ORT_DISABLE_TELEMETRY=0 dotnet tools/RecognitionSmoke/bin/Release/net8.0/RecognitionSmoke.dll artifacts/shutdown-test-model
+          done
       - name: Version smoke test
         shell: bash
         run: |

@@ -31,6 +31,7 @@ public sealed class LocalImageTagger(string modelDirectory) : IImageTagger, IDis
 
     public async Task<IReadOnlyList<ImageTag>> RecognizeAsync(byte[] image, CancellationToken ct, Action<string>? progress = null)
     {
+        InferenceRuntimePolicy.EnsureConfigured();
         ObjectDisposedException.ThrowIf(_disposed, this);
         using var linked = CancellationTokenSource.CreateLinkedTokenSource(ct, _shutdown.Token);
         ct = linked.Token;
@@ -43,6 +44,7 @@ public sealed class LocalImageTagger(string modelDirectory) : IImageTagger, IDis
                 _session = await Task.Run(() =>
                 {
                     ct.ThrowIfCancellationRequested();
+                    OrtEnv.Instance().DisableTelemetryEvents();
                     using var options = new SessionOptions { IntraOpNumThreads = Math.Min(2, Environment.ProcessorCount) };
                     return new InferenceSession(path, options);
                 }, ct);
