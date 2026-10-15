@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="branding/bingwalle.png" width="144" alt="BingWallE: landscape pictures with a golden sun" />
+  <img src="branding/bingwalle.png" width="192" alt="BingWallE: folded turquoise mountains, a winding river, golden sun and collected photographs" />
 </p>
 
-# BingWallE 1.3.0
+# BingWallE 1.3.1
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
 
@@ -111,10 +111,10 @@ Download the package for your platform from the
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.3.0-win-x64.zip` |
-| Linux x64 | `BingWallE-1.3.0-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.3.0-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.3.0-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.3.1-win-x64.zip` |
+| Linux x64 | `BingWallE-1.3.1-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.3.1-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.3.1-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -236,11 +236,11 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.3.0`. Pushing a tag
+Version tags use the full package version, for example `v1.3.1`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.3.0](docs/RELEASE-1.3.0.md).
+are attached. See [release notes for 1.3.1](docs/RELEASE-1.3.1.md).
 
 ## Diagnostic output
 

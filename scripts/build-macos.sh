@@ -20,6 +20,8 @@ dotnet publish "$PROJECT" -c Release -r "osx-$ARCH" --self-contained true \
 cp "$ROOT/BingWallE/Assets/bingwalle.icns" "$APP/Contents/Resources/"
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$APP/Contents/Resources/"
 cp -R "$ROOT/licenses" "$APP/Contents/Resources/"
+mkdir -p "$APP/Contents/Resources/branding"
+cp "$ROOT/branding/bingwalle.png" "$APP/Contents/Resources/branding/"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

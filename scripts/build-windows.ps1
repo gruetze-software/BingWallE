@@ -14,6 +14,8 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish failed' }
     Copy-Item -LiteralPath (Join-Path $repoRoot 'LICENSE'),(Join-Path $repoRoot 'README.md') -Destination $staging
     Copy-Item -LiteralPath (Join-Path $repoRoot 'licenses') -Destination $staging -Recurse
+    New-Item -ItemType Directory -Path (Join-Path $staging 'branding') -Force | Out-Null
+    Copy-Item -LiteralPath (Join-Path $repoRoot 'branding/bingwalle.png') -Destination (Join-Path $staging 'branding')
     $archive = Join-Path $output "BingWallE-$version-$rid.zip"
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $archive -Force
     Write-Output "Created $archive"

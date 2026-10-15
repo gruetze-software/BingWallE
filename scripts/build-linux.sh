@@ -16,6 +16,8 @@ dotnet publish "$PROJECT" -c Release -r "linux-$ARCH" --self-contained true \
     -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -o "$PUBLISH"
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$PUBLISH/"
 cp -R "$ROOT/licenses" "$PUBLISH/"
+mkdir -p "$PUBLISH/branding"
+cp "$ROOT/branding/bingwalle.png" "$PUBLISH/branding/"
 cp "$ROOT/BingWallE/Assets/bingwalle.png" "$PUBLISH/"
 cp "$ROOT/branding/software.gruetze.bingwalle.metainfo.xml" "$PUBLISH/"
 cp "$ROOT/branding/bingwalle.desktop" "$PUBLISH/"
