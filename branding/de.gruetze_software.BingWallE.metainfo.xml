@@ -33,6 +33,18 @@
   <url type="donation">https://ko-fi.com/gruetzesoftware</url>
   <provides><binary>bingwalle</binary></provides>
   <categories><category>Graphics</category><category>Photography</category></categories>
+  <screenshots>
+    <screenshot type="default">
+      <caption>Browse recent Bing images with photographer credits</caption>
+      <caption xml:lang="de">Aktuelle Bing-Bilder mit Fotografen-Nachweisen entdecken</caption>
+      <image type="source" width="1280" height="900">https://raw.githubusercontent.com/gruetze-software/BingWallE/cfc72571d7225e2b6626e6e70e283802fd9ec8de/branding/screenshots/1.3.3/gallery-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Collect wallpapers in the dark theme</caption>
+      <caption xml:lang="de">Wallpaper im dunklen Design sammeln</caption>
+      <image type="source" width="1280" height="900">https://raw.githubusercontent.com/gruetze-software/BingWallE/cfc72571d7225e2b6626e6e70e283802fd9ec8de/branding/screenshots/1.3.3/gallery-dark.png</image>
+    </screenshot>
+  </screenshots>
   <content_rating type="oars-1.1" />
   <releases><release version="1.3.3" type="development" date="2026-10-18" /><release version="1.3.2" date="2026-10-18" /><release version="1.3.1" date="2026-10-15" /><release version="1.3.0" date="2026-10-15" /><release version="1.2.2" date="2026-10-15" /><release version="1.2.1" date="2026-10-11" /><release version="1.2.0" date="2026-10-10" /><release version="1.1.1" date="2026-10-10" /><release version="1.1.0" date="2026-10-10" /><release version="1.0.0" date="2026-10-10" /></releases>
 </component>

@@ -68,7 +68,8 @@ appstreamcli validate --no-net branding/de.gruetze_software.BingWallE.metainfo.x
 ```
 
 AppStream validation alone does not establish Flathub acceptance or Flatpak
-compatibility. In particular, screenshots and human-created packaging remain open.
+compatibility. The prepared Linux views have pinned upstream image URLs; their
+suitability, actual sandbox testing and human-created packaging remain open.
 
 Completed locally on 18 October 2026:
 
