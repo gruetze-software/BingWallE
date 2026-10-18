@@ -7,8 +7,7 @@ namespace BingWallE.Services;
 
 public sealed class JsonSettingsStore(string filePath) : ISettingsStore
 {
-    public static string DefaultFilePath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "bingwalle", "settings.json");
+    public static string DefaultFilePath => ApplicationPaths.SettingsFile;
 
     public AppSettings Load()
     {

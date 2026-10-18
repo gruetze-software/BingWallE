@@ -2,7 +2,7 @@
   <img src="branding/bingwalle.png" width="192" alt="BingWallE: folded turquoise mountains, a winding river, golden sun and collected photographs" />
 </p>
 
-# BingWallE 1.3.1
+# BingWallE 1.3.2
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
 
@@ -12,7 +12,7 @@
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
 BingWallE is a desktop collector for Bing wallpapers, built with C#, .NET 8 and
-Avalonia 11.3.10. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, Bing download
+Avalonia 11.3.20. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, Bing download
 region, resolution and theme. Language changes take effect immediately; your choice is saved for the next start.
 The download region is independent of the application language: choose Germany
 for German Bing titles and filenames, or the USA / United Kingdom for English content.
@@ -111,10 +111,10 @@ Download the package for your platform from the
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.3.1-win-x64.zip` |
-| Linux x64 | `BingWallE-1.3.1-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.3.1-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.3.1-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.3.2-win-x64.zip` |
+| Linux x64 | `BingWallE-1.3.2-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.3.2-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.3.2-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -236,11 +236,20 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.3.1`. Pushing a tag
+Version tags use the full package version, for example `v1.3.2`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.3.1](docs/RELEASE-1.3.1.md).
+are attached. See [release notes for 1.3.2](docs/RELEASE-1.3.2.md).
+
+## Snap Store preparation
+
+Snap packaging for Ubuntu-compatible Linux desktops is being prepared. It is not
+yet published in the Snap Store. The separate **Build and test Snap** workflow
+produces an amd64 test package without needing a publisher account.
+See [the Snap publishing guide](docs/SNAP-PUBLISHING.md) for account registration,
+local testing, permissions and the first beta upload. Store listing copy is in
+[SNAP-STORE-LISTING.md](docs/SNAP-STORE-LISTING.md).
 
 ## Diagnostic output
 

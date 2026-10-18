@@ -14,5 +14,5 @@ public class AppSettings
     public string Language { get; set; } = "de";
     public string Theme { get; set; } = "System";
     public string WallpaperPath { get; set; } = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "BingImages");
+        BingWallE.Services.ApplicationPaths.PicturesDirectory, "BingImages");
 }

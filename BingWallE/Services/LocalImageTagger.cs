@@ -22,7 +22,7 @@ public sealed class LocalImageTagger(string modelDirectory) : IImageTagger, IDis
     public const string ModelSha256 = "c1c513582d56afceff8516c73804e484c81c6a830712ab6d682253f4a3cd042f";
     public const int ModelLength = 14246826;
     public const string ModelUrl = "https://media.githubusercontent.com/media/onnx/models/c5cae0f1942c8d7727372c7b1f6b485aa39e4421/validated/vision/classification/mobilenet/model/mobilenetv2-7.onnx";
-    public static string DefaultDirectory => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "bingwalle", "models");
+    public static string DefaultDirectory => ApplicationPaths.ModelsDirectory;
     private readonly SemaphoreSlim _gate = new(1, 1);
     private InferenceSession? _session;
     private readonly CancellationTokenSource _shutdown = new();

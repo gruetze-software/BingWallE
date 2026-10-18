@@ -1,0 +1,51 @@
+name: bingwalle
+title: BingWallE
+base: core24
+adopt-info: bingwalle
+grade: stable
+confinement: strict
+license: MIT
+summary: Browse and collect Bing wallpapers in HD, Full HD and UHD
+description: |
+  Discover Bing's daily photographs and keep your favourites in your own collection.
+  Browse recent images from twelve regions, inspect large previews and download
+  selected wallpapers in HD, Full HD or UHD where available.
+
+  Choose German or English for the interface independently of the download region.
+  Image credits and useful keywords are embedded in downloaded JPEGs. Optional
+  local image recognition adds subject suggestions after a one-time model download;
+  images are not uploaded for recognition and runtime telemetry is disabled.
+
+  Includes light and dark themes, remembered window size, optional startup refresh,
+  and image context actions. BingWallE is an independent Grütze-Software project.
+website: https://github.com/gruetze-software/BingWallE
+source-code: https://github.com/gruetze-software/BingWallE
+issues: https://github.com/gruetze-software/BingWallE/issues
+icon: BingWallE/Assets/bingwalle.png
+platforms:
+  amd64:
+
+apps:
+  bingwalle:
+    command: bin/bingwalle-launch
+    desktop: usr/share/applications/bingwalle.desktop
+    extensions: [gnome]
+    plugs: [home, network, removable-media]
+    environment:
+      ORT_DISABLE_TELEMETRY: '1'
+
+parts:
+  bingwalle:
+    plugin: dump
+    source: artifacts/snap-payload
+    override-build: |
+      craftctl default
+      craftctl set version="$(cat "$CRAFT_PART_SRC/opt/bingwalle/VERSION")"
+    stage-packages:
+      - libicu74
+      - libssl3t64
+      - libunwind8
+      - liblttng-ust1t64
+      - libbrotli1
+      - libice6
+      - libsm6

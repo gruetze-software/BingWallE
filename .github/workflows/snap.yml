@@ -1,0 +1,76 @@
+name: Build and test Snap
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'snap/**'
+      - 'scripts/*snap*'
+      - 'BingWallE/**'
+      - 'BingWallE.Tests/**'
+      - '.github/workflows/snap.yml'
+  pull_request:
+    paths:
+      - 'snap/**'
+      - 'scripts/*snap*'
+      - 'BingWallE/**'
+      - 'BingWallE.Tests/**'
+      - '.github/workflows/snap.yml'
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  snap:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build and test application
+        env:
+          BINGWALLE_TEST_MODEL: '1'
+        run: |
+          dotnet build -c Release --warnaserror
+          dotnet test -c Release --no-build
+      - name: Install Snapcraft and GUI test dependencies
+        run: |
+          sudo snap install snapcraft --classic
+          sudo apt-get update
+          sudo apt-get install -y xvfb dbus-x11
+      - name: Prepare and build Snap
+        run: |
+          bash scripts/prepare-snap.sh
+          version=$(cat artifacts/snap-payload/opt/bingwalle/VERSION)
+          sudo snapcraft pack --destructive-mode --output "$PWD/artifacts/bingwalle_${version}_amd64.snap"
+      - name: Install and smoke test strictly confined Snap
+        run: |
+          version=$(cat artifacts/snap-payload/opt/bingwalle/VERSION)
+          sudo snap install --dangerous "artifacts/bingwalle_${version}_amd64.snap"
+          snap connections bingwalle
+          test "$(snap run bingwalle --version)" = "BingWallE ${version%.0}"
+          set +e
+          timeout --signal=TERM 15s dbus-run-session -- xvfb-run -a snap run bingwalle > artifacts/snap-startup.log 2>&1
+          status=$?
+          set -e
+          cat artifacts/snap-startup.log
+          test "$status" -eq 124
+          ! grep -E 'Unhandled exception|error while loading shared libraries|Failed to create.*display' artifacts/snap-startup.log
+      - name: Upload test Snap and diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: bingwalle-snap-amd64
+          path: |
+            artifacts/*.snap
+            artifacts/snap-startup.log
+          if-no-files-found: warn

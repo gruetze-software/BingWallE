@@ -3,3 +3,5 @@
 *.yml text eol=lf
 *.md text eol=lf
 *.ico binary
+
+snap/local/* text eol=lf
