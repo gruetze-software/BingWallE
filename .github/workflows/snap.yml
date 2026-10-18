@@ -59,7 +59,7 @@ jobs:
           snap connections bingwalle
           test "$(snap run bingwalle --version)" = "BingWallE ${version%.0}"
           set +e
-          timeout --signal=TERM 15s dbus-run-session -- xvfb-run -a snap run bingwalle > artifacts/snap-startup.log 2>&1
+          timeout --signal=TERM 15s xvfb-run -a --auth-file "$HOME/.Xauthority" snap run bingwalle > artifacts/snap-startup.log 2>&1
           status=$?
           set -e
           cat artifacts/snap-startup.log
