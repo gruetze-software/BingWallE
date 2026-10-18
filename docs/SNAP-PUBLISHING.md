@@ -12,7 +12,10 @@ email, configure account security, and set the public display name to
 **Grütze-Software**. Choose a publisher username you want associated with releases.
 Do not share passwords, login codes or authentication exports in chat or Git.
 
-Register **bingwalle**, if available, at https://snapcraft.io/account/register-snap.
+Register **bingwalle**, if available, at https://dashboard.snapcraft.io/register-snap/.
+If asked, explain that you maintain the upstream open-source Bing wallpaper
+collector at https://github.com/gruetze-software/BingWallE. A pending name review
+must be accepted by Canonical before the first upload.
 If unavailable, choose another name and update `name` in `snap/snapcraft.yaml`,
 `Exec` in the snap desktop file and the workflow/test commands before publishing.
 The display title remains **BingWallE**.
