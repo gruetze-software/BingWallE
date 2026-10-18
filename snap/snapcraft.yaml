@@ -8,16 +8,34 @@ license: MIT
 summary: Browse and collect Bing wallpapers in HD, Full HD and UHD
 description: |
   Discover Bing's daily photographs and keep your favourites in your own collection.
-  Browse recent images from twelve regions, inspect large previews and download
-  selected wallpapers in HD, Full HD or UHD where available.
+  Browse the latest eight days of images from twelve regions, inspect large previews
+  and download selected wallpapers in HD, Full HD or UHD where available.
 
-  Choose German or English for the interface independently of the download region.
-  Image credits and useful keywords are embedded in downloaded JPEGs. Optional
-  local image recognition adds subject suggestions after a one-time model download;
-  images are not uploaded for recognition and runtime telemetry is disabled.
+  Downloaded JPEGs include descriptive metadata: title, subject/description,
+  copyright and keywords (tags), using EXIF and standard XMP. Comments contain only
+  the concise image description. Bing's publication date and source links are kept
+  in separate XMP fields. Existing photographer and camera metadata is preserved;
+  no author, rating or camera capture date is invented, and the JPEG image data is
+  not recompressed.
 
-  Includes light and dark themes, remembered window size, optional startup refresh,
-  and image context actions. BingWallE is an independent Grütze-Software project.
+  The image preview shows the description, copyright, resolution and tags.
+  Keywords derived from Bing's captions include recognised subjects, categories
+  and locations. Optional local image recognition adds further subject suggestions
+  after a one-time model download. Images are not uploaded for recognition, runtime
+  telemetry is disabled, and suggested tags may be incorrect.
+
+  Choose German or English for the interface independently of the Bing download
+  region. Includes light and dark themes, remembered window size and maximised
+  state, optional refresh on startup, existing-file detection and a context menu
+  for showing images, opening their folder, ignoring images and deleting local files.
+
+  BingWallE is developed by Grütze-Software. It is an independent project, not an
+  official Microsoft or Bing application. Image copyrights remain with the credited
+  photographers and rights holders. The application does not change the desktop
+  wallpaper automatically.
+
+  Enjoy BingWallE? Support its development with a voluntary contribution on Ko-fi:
+  https://ko-fi.com/gruetzesoftware
 website: https://github.com/gruetze-software/BingWallE
 source-code: https://github.com/gruetze-software/BingWallE
 issues: https://github.com/gruetze-software/BingWallE/issues
@@ -28,7 +46,7 @@ platforms:
 apps:
   bingwalle:
     command: bin/bingwalle-launch
-    desktop: usr/share/applications/bingwalle.desktop
+    desktop: usr/share/applications/de.gruetze_software.BingWallE.desktop
     extensions: [gnome]
     plugs: [home, network, removable-media]
     environment:
