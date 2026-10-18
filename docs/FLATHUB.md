@@ -4,6 +4,9 @@ Internal project readiness notes, checked on 18 October 2026. This document is
 AI-assisted upstream planning, not a submission message or a Flatpak manifest.
 No Flathub submission, Flatpak build or sandbox test has been performed.
 
+For the publisher's German step-by-step guide, see
+[FLATHUB-ANLEITUNG-DE.md](FLATHUB-ANLEITUNG-DE.md).
+
 ## Prepared upstream
 
 - Development version 1.3.3 targets .NET 10 LTS, including tests, recognition smoke
