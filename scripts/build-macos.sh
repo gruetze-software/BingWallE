@@ -38,7 +38,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 <key>CFBundleVersion</key><string>$VERSION</string>
 <key>CFBundleIconFile</key><string>bingwalle.icns</string>
 <key>NSHighResolutionCapable</key><true/>
-<key>LSMinimumSystemVersion</key><string>12.0</string>
+<key>LSMinimumSystemVersion</key><string>14.0</string>
 <key>NSPrincipalClass</key><string>NSApplication</string>
 <key>NSHumanReadableCopyright</key><string>© 2026 Grütze-Software</string>
 </dict></plist>

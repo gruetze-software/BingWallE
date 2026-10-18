@@ -11,7 +11,7 @@
 [Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
-BingWallE is a desktop collector for Bing wallpapers, built with C#, .NET 8 and
+BingWallE is a desktop collector for Bing wallpapers, built with C#, .NET 10 and
 Avalonia 11.3.20. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, Bing download
 region, resolution and theme. Language changes take effect immediately; your choice is saved for the next start.
 The download region is independent of the application language: choose Germany
@@ -124,6 +124,31 @@ On Linux, install the DEB on Debian/Ubuntu or extract the TAR.GZ and run
 A graphical desktop session and the native Avalonia/.NET dependencies are required.
 The DEB also installs the application icon and desktop entry.
 
+### Linux Mint installation
+
+Use the Linux x64 **DEB** package on Linux Mint. Snap is not required.
+Linux Mint 21.x (Ubuntu 22.04 base) and 22.x (Ubuntu 24.04 base) are the
+intended test targets; a successful Ubuntu build is not a completed Mint test.
+LMDE and ARM devices have not been validated.
+
+Download the DEB, open a terminal in its folder, and install the exact filename:
+
+```bash
+sudo apt install ./BingWallE-1.3.2-linux-x64.deb
+```
+
+Use the version number of your downloaded file. Start **BingWallE** from the
+application menu or run `bingwalle`. The .NET runtime is included; APT resolves
+the native dependencies declared by the package. Installing a newer DEB with
+the same command upgrades the application. GitHub downloads do not provide
+automatic APT updates or make the app searchable in Mint's Software Manager.
+
+If you already have the Snap installed, close it before testing the DEB and use
+`/usr/bin/bingwalle` to select the DEB explicitly. The two editions can use
+different settings folders; this is not an automatic settings migration.
+
+See the [Mint test guide](docs/LINUX-MINT.md) for the test steps and troubleshooting.
+
 All four targets are built and tested by GitHub Actions. The graphical application
 has not been manually tested on every target device. `SHA256SUMS.txt` in the release
 contains checksums for all packages.
@@ -167,9 +192,10 @@ an issue. A quarantine workaround does not resolve incompatible systems or damag
 
 ## Build from source
 
-The **.NET 8 SDK** is recommended. The repository's `global.json` also allows a newer
-stable SDK if no matching .NET 8 SDK is installed. The application and tests still
-target .NET 8; `dotnet run` and `dotnet test` require the .NET 8 runtime.
+The **.NET 10 SDK** is required for the current development version (1.3.3).
+The repository's `global.json` accepts stable .NET 10 SDK feature bands.
+Application, tests and recognition smoke checks target .NET 10. Existing 1.3.2
+downloads remain unchanged. New macOS builds require macOS 14 or later.
 
 Run the following commands from the repository root:
 
@@ -180,6 +206,9 @@ dotnet run --project BingWallE -c Release
 ```
 
 ## Tests
+
+Flathub preparation and the remaining publisher steps are documented in
+[docs/FLATHUB.md](docs/FLATHUB.md). No Flatpak has been submitted or published.
 
 ```sh
 dotnet test BingWallE.sln -c Release
@@ -242,11 +271,12 @@ starts the release build. The tag must match `<Version>` in the project file, an
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
 are attached. See [release notes for 1.3.2](docs/RELEASE-1.3.2.md).
 
-## Snap Store preparation
+## Snap Store
 
-Snap packaging for Ubuntu-compatible Linux desktops is being prepared. It is not
-yet published in the Snap Store. The separate **Build and test Snap** workflow
-produces an amd64 test package without needing a publisher account.
+Version 1.3.2 is available in the [Snap Store](https://snapcraft.io/bingwalle) for
+amd64 in the stable channel. The current 1.3.3 development changes have not been
+released. The separate **Build and test Snap** workflow produces test packages
+without needing a publisher account.
 See [the Snap publishing guide](docs/SNAP-PUBLISHING.md) for account registration,
 local testing, permissions and the first beta upload. Store listing copy is in
 [SNAP-STORE-LISTING.md](docs/SNAP-STORE-LISTING.md).

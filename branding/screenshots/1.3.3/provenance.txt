@@ -1,0 +1,1 @@
+BingWallE 1.3.3; Ubuntu 24.04.4 LTS; actual Avalonia UI rendered using the Linux headless platform, with cached real en-US Bing captions and previews. No OS window decorations. Not a Mint desktop capture or a Flatpak sandbox test.

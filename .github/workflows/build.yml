@@ -45,7 +45,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '10.0.x'
       - name: Validate release version
         if: startsWith(github.ref, 'refs/tags/v')
         env:
@@ -69,13 +69,13 @@ jobs:
         run: |
           dotnet build tools/RecognitionSmoke/RecognitionSmoke.csproj -c Release --warnaserror
           for attempt in 1 2 3; do
-            ORT_DISABLE_TELEMETRY=0 dotnet tools/RecognitionSmoke/bin/Release/net8.0/RecognitionSmoke.dll artifacts/shutdown-test-model
+            ORT_DISABLE_TELEMETRY=0 dotnet tools/RecognitionSmoke/bin/Release/net10.0/RecognitionSmoke.dll artifacts/shutdown-test-model
           done
       - name: Version smoke test
         shell: bash
         run: |
           version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
-          test "$(dotnet BingWallE/bin/Release/net8.0/bingwalle.dll --version)" = "BingWallE ${version%.0}"
+          test "$(dotnet BingWallE/bin/Release/net10.0/bingwalle.dll --version)" = "BingWallE ${version%.0}"
       - name: Windows package
         if: matrix.platform == 'windows'
         shell: pwsh

@@ -1,5 +1,15 @@
 [
   {
+    "key": "SupportHelp",
+    "de": "Gefällt dir BingWallE? Spendiere mir gerne einen kleinen Kaffee auf Ko-fi und unterstütze damit die Weiterentwicklung. Vielen Dank!",
+    "en": "Enjoy BingWallE? Buy me a small coffee on Ko-fi to support its development. Thank you!"
+  },
+  {
+    "key": "SupportKofi",
+    "de": "Einen Kaffee spendieren",
+    "en": "Buy me a coffee"
+  },
+  {
     "key": "Text001",
     "de": "Bildersammlung",
     "en": "Wallpaper collection"
