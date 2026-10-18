@@ -83,8 +83,12 @@ Completed locally on 18 October 2026:
   under Ubuntu 24.04.4 WSL. This is a CLI startup check, not a Flatpak GUI test.
 - AppStream validation and Linux/Snap shell syntax checks pass.
 
-macOS/Windows release packages and the updated Snap have not been rebuilt on their
-CI runners for these changes. No Flathub manifest was authored by the assistant.
+GitHub CI subsequently passed for the code and screenshots in commit `9ae38e8`:
+Windows x64, Linux x64, macOS ARM64/x64 and the Snap build/startup checks.
+See [platform build](https://github.com/gruetze-software/BingWallE/actions/runs/39147196793)
+and [Snap build](https://github.com/gruetze-software/BingWallE/actions/runs/39147196717).
+The changes are available in upstream draft [PR 1](https://github.com/gruetze-software/BingWallE/pull/1).
+No release was published and no Flathub manifest was authored by the assistant.
 
 ## Official references
 
