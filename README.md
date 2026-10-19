@@ -2,7 +2,7 @@
   <img src="branding/bingwalle.png" width="192" alt="BingWallE: folded turquoise mountains, a winding river, golden sun and collected photographs" />
 </p>
 
-# BingWallE 1.3.2
+# BingWallE 1.3.3
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
 
@@ -111,10 +111,10 @@ Download the package for your platform from the
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.3.2-win-x64.zip` |
-| Linux x64 | `BingWallE-1.3.2-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.3.2-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.3.2-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.3.3-win-x64.zip` |
+| Linux x64 | `BingWallE-1.3.3-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.3.3-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.3.3-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -134,7 +134,7 @@ LMDE and ARM devices have not been validated.
 Download the DEB, open a terminal in its folder, and install the exact filename:
 
 ```bash
-sudo apt install ./BingWallE-1.3.2-linux-x64.deb
+sudo apt install ./BingWallE-1.3.3-linux-x64.deb
 ```
 
 Use the version number of your downloaded file. Start **BingWallE** from the
@@ -192,7 +192,7 @@ an issue. A quarantine workaround does not resolve incompatible systems or damag
 
 ## Build from source
 
-The **.NET 10 SDK** is required for the current development version (1.3.3).
+The **.NET 10 SDK** is required to build BingWallE 1.3.3.
 The repository's `global.json` accepts stable .NET 10 SDK feature bands.
 Application, tests and recognition smoke checks target .NET 10. Existing 1.3.2
 downloads remain unchanged. New macOS builds require macOS 14 or later.
@@ -265,17 +265,17 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.3.2`. Pushing a tag
+Version tags use the full package version, for example `v1.3.3`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.3.2](docs/RELEASE-1.3.2.md).
+are attached. See [release notes for 1.3.3](docs/RELEASE-1.3.3.md).
 
 ## Snap Store
 
 Version 1.3.2 is available in the [Snap Store](https://snapcraft.io/bingwalle) for
-amd64 in the stable channel. The current 1.3.3 development changes have not been
-released. The separate **Build and test Snap** workflow produces test packages
+amd64 in the stable channel. GitHub releases do not automatically update the
+Snap Store channel. The separate **Build and test Snap** workflow produces test packages
 without needing a publisher account.
 See [the Snap publishing guide](docs/SNAP-PUBLISHING.md) for account registration,
 local testing, permissions and the first beta upload. Store listing copy is in

@@ -4,6 +4,12 @@ Internal project readiness notes, checked on 18 October 2026. This document is
 AI-assisted upstream planning, not a submission message or a Flatpak manifest.
 No Flathub submission, Flatpak build or sandbox test has been performed.
 
+Update, 19 October 2026: the maintainer reports successful local Flatpak tests,
+including menu integration, portal folder selection, downloads and reopening.
+Both local linter checks completed without messages. Upstream release 1.3.3 is
+tagged as `v1.3.3`; use its exact commit for final package validation. The original
+preflight record below documents the earlier preparation, not Flathub acceptance.
+
 For the publisher's German step-by-step guide, see
 [FLATHUB-ANLEITUNG-DE.md](FLATHUB-ANLEITUNG-DE.md).
 
@@ -48,8 +54,8 @@ New .NET 10 macOS packages require macOS 14 or later.
    merely to suppress failures; justify necessary access during human packaging.
 6. Check desktop ID, icon names, AppStream, screenshots, release metadata and
    current Flatpak/Flathub lint requirements in the installed package.
-7. Publish a tagged upstream release containing the prepared changes before using
-   it as the release source. Version 1.3.3 is currently unreleased.
+7. Use tagged upstream release 1.3.3 and its exact commit as the release source,
+   then rebuild and validate the package against that source.
 8. Disclose known AI-generated/assisted code, docs, artwork and packaging with
    affected parts and approximate extent. This repository has substantial AI
    assistance, including the approved app icon and banner. Human review is needed

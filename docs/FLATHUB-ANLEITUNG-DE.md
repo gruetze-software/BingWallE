@@ -180,11 +180,12 @@ Quelle: [Flathub-Paketprüfungen](https://docs.flathub.org/docs/for-app-authors/
 
 ## 9. Vor der Einreichung: veröffentlichte Quelle prüfen
 
-Die vorbereitete 1.3.3 ist noch nicht veröffentlicht. Vor einer Stable-Einreichung
-müssen die Quelländerungen geprüft und veröffentlicht sein. Prüfe insbesondere
-Release-Tag, passende Versionsangabe und AppStream-Release-Eintrag: Der aktuelle
-Eintrag ist ausdrücklich als Entwicklungsversion markiert. Release-Vorbereitung
-im eigenen BingWallE-Projekt und Flathub-Einreichung sind zwei getrennte Vorgänge.
+Für die Stable-Einreichung ist der Upstream-Release `v1.3.3` vorgesehen. Prüfe,
+dass der [GitHub-Release](https://github.com/gruetze-software/BingWallE/releases/tag/v1.3.3)
+mit fertigen Paketen veröffentlicht ist. Der zugehörige AppStream-Eintrag ist
+als stabile Version markiert. Verwende den exakten Commit dieses Tags und prüfe
+das damit erneut gebaute Flatpak. Release-Veröffentlichung im eigenen Projekt
+und Flathub-Einreichung bleiben zwei getrennte Vorgänge.
 
 Prüfe außerdem die Bildrechte und die Eignung der Screenshots. Die bereits
 vorhandenen README-Screenshots dürfen erhalten bleiben; sie sind keine Garantie,

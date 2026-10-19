@@ -1,4 +1,6 @@
-# BingWallE 1.3.3 (unreleased)
+# BingWallE 1.3.3
+
+Released on 19 October 2026.
 
 - Move the application, tests and CI to .NET 10 LTS. New macOS packages require
   macOS 14 or later; previous releases are unchanged.
@@ -11,5 +13,7 @@
 - Declare ICU and OpenSSL dependencies in future DEB packages and document Mint
   installation and manual validation.
 
-This prepares upstream metadata for a possible human-maintained Flathub package.
-It is not a Flatpak build, sandbox validation, Flathub submission or acceptance.
+This release provides the upstream source and desktop metadata for Flatpak
+packaging. Local Flatpak functionality was tested by the maintainer. A Flathub
+submission and acceptance are separate; this release does not publish to Flathub
+or change the current Snap Store release.

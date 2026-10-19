@@ -36,7 +36,7 @@
                 <TextBlock Text="{DynamicResource SupportHelp}" TextWrapping="Wrap" TextAlignment="Center"/>
                 <Button Content="{DynamicResource SupportKofi}" Tag="https://ko-fi.com/gruetzesoftware" Click="OpenLink" HorizontalAlignment="Center"/>
                 <Separator/>
-                <TextBlock Text="C# · .NET · Avalonia   |   Windows · Linux · macOS" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Text="C# · .NET 10 · Avalonia   |   Windows · Linux · macOS" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
                 <TextBlock Text="{DynamicResource Text074}"
                            TextWrapping="Wrap" TextAlignment="Center" FontSize="12" Opacity="0.7"/>
                 <TextBlock x:Name="LinkStatus" TextWrapping="Wrap" FontSize="12"/>
