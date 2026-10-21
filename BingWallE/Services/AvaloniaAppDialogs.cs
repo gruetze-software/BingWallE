@@ -40,7 +40,9 @@ public sealed class AvaloniaAppDialogs(Func<Window?> getWindow) : IAppDialogs
         if (OperatingSystem.IsWindows())
         {
             start.FileName = "explorer.exe";
-            start.ArgumentList.Add("/select,"); start.ArgumentList.Add(System.IO.Path.GetFullPath(path));
+            // Explorer also treats commas as separators; ArgumentList only quotes whitespace/quotes.
+            // Always quote the file path, including names such as "Location,_Country.jpg".
+            start.Arguments = "/select,\"" + System.IO.Path.GetFullPath(path) + "\"";
         }
         else if (OperatingSystem.IsMacOS())
         {

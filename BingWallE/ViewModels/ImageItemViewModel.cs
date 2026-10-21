@@ -17,7 +17,9 @@ public partial class ImageItemViewModel : ViewModelBase
     [ObservableProperty][NotifyPropertyChangedFor(nameof(SaveLabel))] private string? _downloadError;
     [ObservableProperty][NotifyPropertyChangedFor(nameof(ResolutionLabel))] private string _downloadResolution = "1920x1080";
     [ObservableProperty][NotifyPropertyChangedFor(nameof(ResolutionLabel))] private string? _actualDimensions;
-    public string ResolutionLabel => ActualDimensions != null ? _text.Get("Bild: {0} Pixel", ActualDimensions) : DownloadResolution switch
+    public string SourceLabel => _text.Get("Quelle: {0}", Image.Source == WallpaperSource.WindowsSpotlight ? _text.Get("Windows-Blickpunkt") : "Bing");
+    public string ResolutionLabel => ActualDimensions != null ? _text.Get("Bild: {0} Pixel", ActualDimensions)
+        : Image.Source == WallpaperSource.WindowsSpotlight ? _text.Get("Download: Originalauflösung") : DownloadResolution switch
     {
         "1366x768" => _text.Get("Download: HD · 1366 × 768"),
         "UHD" => _text.Get("Download: UHD · bildabhängige Größe"),
@@ -27,10 +29,10 @@ public partial class ImageItemViewModel : ViewModelBase
     public void SetLanguage(string language)
     {
         _text.SetLanguage(language);
-        OnPropertyChanged(nameof(ResolutionLabel)); OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel)); OnPropertyChanged(nameof(IgnoreMenuLabel));
+        OnPropertyChanged(nameof(SourceLabel)); OnPropertyChanged(nameof(ResolutionLabel)); OnPropertyChanged(nameof(DisplayDate)); OnPropertyChanged(nameof(Copyright)); OnPropertyChanged(nameof(SaveLabel)); OnPropertyChanged(nameof(IgnoreMenuLabel));
     }
     private IReadOnlyList<ImageTag> _predictions = System.Array.Empty<ImageTag>();
-    public string Description => WallpaperCredits.Split(Image.Copyright).Description is { Length: > 0 } caption ? caption : Title;
+    public string Description => !string.IsNullOrWhiteSpace(Image.Description) ? Image.Description : WallpaperCredits.Split(Image.Copyright).Description is { Length: > 0 } caption ? caption : Title;
     public string TextKeywords => string.Join(" · ", WallpaperKeywords.Build(Image, _predictions).Where(x => !x.FromModel).Select(x => x.Label));
     public string ModelKeywords => string.Join(" · ", WallpaperKeywords.Build(Image, _predictions).Where(x => x.FromModel).Select(x => x.Label));
     public bool HasTextKeywords => TextKeywords.Length > 0;
@@ -45,11 +47,11 @@ public partial class ImageItemViewModel : ViewModelBase
     public Wallpaper Image { get; }
     public string Title => Image.Title;
     public string Date => Image.Date;
-    public string DisplayDate => System.DateTime.TryParseExact(Date, "yyyyMMdd", CultureInfo.InvariantCulture,
+    public string DisplayDate => Image.Source == WallpaperSource.WindowsSpotlight ? _text.Get("Aktuelle Blickpunkt-Auswahl") : System.DateTime.TryParseExact(Date, "yyyyMMdd", CultureInfo.InvariantCulture,
         DateTimeStyles.None, out var day) ? day.ToString(_text.Language == "en" ? "d MMMM yyyy" : "d. MMMM yyyy", _text.Culture) : Date;
     public string CopyrightCredit => WallpaperCredits.Split(Image.Copyright).Copyright;
     public bool HasCopyrightCredit => !string.IsNullOrWhiteSpace(CopyrightCredit);
-    public string Copyright => string.IsNullOrWhiteSpace(Image.Copyright) ? _text.Get("Keine weiteren Bildinformationen von Bing verfügbar.") : Image.Copyright;
+    public string Copyright => string.IsNullOrWhiteSpace(Image.Copyright) ? _text.Get("Keine weiteren Bildinformationen verfügbar.") : Image.Copyright;
     public string IgnoreMenuLabel => _text.Get(IsIgnored ? "Wieder berücksichtigen" : "Ignorieren");
     public string SaveLabel => IsIgnored ? _text.Get("Ignoriert") : DownloadError != null ? _text.Get("Download fehlgeschlagen") : IsSaved ? _text.Get("Bereits gespeichert") : _text.Get("Neu in deiner Sammlung");
     public Bitmap? Preview { get; }

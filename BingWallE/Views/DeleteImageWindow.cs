@@ -4,6 +4,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using BingWallE.Localization;
 
+
 namespace BingWallE.Views;
 
 public sealed class DeleteImageWindow : Window

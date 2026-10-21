@@ -4,7 +4,7 @@
         xmlns:models="using:BingWallE.Models"
         x:Class="BingWallE.Views.SettingsWindow" x:DataType="vm:MainWindowViewModel"
         Title="{DynamicResource SettingsTitle}" Icon="/Assets/bingwalle.ico"
-        Width="540" Height="740" MinWidth="460" MinHeight="520"
+        Width="620" Height="740" MinWidth="520" MinHeight="520"
         WindowStartupLocation="CenterOwner" Background="{DynamicResource SettingsBackground}">
     <Window.Resources>
         <ResourceDictionary>
@@ -33,7 +33,7 @@
             <TextBlock Text="{DynamicResource SettingsHelp}" Classes="hint"/>
         </StackPanel>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
-            <StackPanel Spacing="18">
+            <StackPanel Spacing="18" Margin="0,0,22,4">
                 <CheckBox Content="{DynamicResource AutoRefreshOnStartup}" IsChecked="{Binding AutoRefreshOnStartup}"/>
                 <StackPanel Spacing="7">
                     <TextBlock Text="{DynamicResource AppLanguage}" FontWeight="SemiBold"/>
@@ -45,6 +45,14 @@
                         <ComboBox ItemsSource="{Binding Markets}" SelectedItem="{Binding SelectedMarket}" AutomationProperties.Name="{DynamicResource DownloadLanguage}"/>
                         <TextBlock Text="{DynamicResource DownloadLanguageHelp}" Classes="hint"/>
                         <TextBlock Text="{DynamicResource RegionRefreshHelp}" Classes="hint"/>
+                    </StackPanel>
+                </Border>
+                <Border Background="{DynamicResource SettingsCard}" CornerRadius="10" Padding="16">
+                    <StackPanel Spacing="7">
+                        <TextBlock Text="{DynamicResource ImageSources}" FontWeight="SemiBold"/>
+                        <TextBlock Text="{DynamicResource BingAlwaysEnabled}" Classes="hint"/>
+                        <CheckBox Content="{DynamicResource IncludeWindowsSpotlight}" IsChecked="{Binding IncludeWindowsSpotlight}"/>
+                        <TextBlock Text="{DynamicResource SpotlightHelp}" Classes="hint"/>
                     </StackPanel>
                 </Border>
                 <StackPanel Spacing="7">
@@ -62,7 +70,7 @@
             </StackPanel>
         </ScrollViewer>
         <Button Grid.Row="2" Content="{DynamicResource Done}" Click="CloseDialog" IsDefault="True" IsCancel="True"
-                HorizontalAlignment="Right" MinWidth="110" Padding="18,9" Margin="0,20,0,0" CornerRadius="7"
+                HorizontalAlignment="Right" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="110" Padding="18,9" Margin="0,20,0,0" CornerRadius="7"
                 Background="#216F69" Foreground="White"/>
     </Grid>
 </Window>

@@ -94,6 +94,7 @@
                                         </Button>
                                         <StackPanel Margin="13,10,13,12" Spacing="5">
                                             <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Title}"/>
+                                            <TextBlock Text="{Binding SourceLabel}" Classes="secondary" FontSize="11"/>
                                             <TextBlock Text="{Binding DisplayDate}" Classes="secondary" FontSize="12"/>
                                             <TextBlock Text="{Binding ResolutionLabel}" Classes="secondary" FontSize="11"/>
                                             <TextBlock Text="{Binding CopyrightCredit}" IsVisible="{Binding HasCopyrightCredit}" Classes="secondary" FontSize="10" TextWrapping="Wrap" ToolTip.Tip="{Binding CopyrightCredit}"/>
@@ -141,6 +142,7 @@
                     <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,14">
                         <StackPanel Spacing="4">
                             <TextBlock Text="{Binding PreviewItem.Title}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding PreviewItem.SourceLabel}" Classes="secondary" FontSize="12"/>
                             <TextBlock Text="{Binding PreviewItem.DisplayDate}" Classes="secondary"/>
                             <TextBlock Text="{Binding PreviewItem.ResolutionLabel}" Classes="secondary" FontSize="12"/>
                         </StackPanel>

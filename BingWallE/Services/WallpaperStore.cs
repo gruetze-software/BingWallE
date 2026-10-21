@@ -20,7 +20,10 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
     {
         if (string.IsNullOrWhiteSpace(folder))
             throw new IOException("Bitte einen gültigen Zielordner auswählen.");
-        return Path.Combine(folder, WallpaperVariants.FileName(image));
+        var path = Path.Combine(folder, WallpaperVariants.FileName(image));
+        if (File.Exists(path)) return path;
+        var legacyPath = Path.Combine(folder, WallpaperVariants.LegacyFileName(image));
+        return File.Exists(legacyPath) ? legacyPath : path;
     }
 
     public async Task<WallpaperDownloadResult> DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken, bool generateTags = false, Action<string>? progress = null)
@@ -32,12 +35,13 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
         try
         {
             var data = await httpClient.GetByteArrayAsync(image.Url, cancellationToken);
+            var downloadedAt = DateTimeOffset.Now;
             using var codec = SKCodec.Create(new MemoryStream(data)) ?? throw new InvalidDataException("Bing did not return a valid image.");
             IReadOnlyList<ImageTag> tags = generateTags
                 ? await (tagger ?? throw new InvalidOperationException("Image recognition is unavailable.")).RecognizeAsync(data, cancellationToken, progress)
                 : Array.Empty<ImageTag>();
             progress?.Invoke("Bildinformationen werden gespeichert …");
-            var tagged = await Task.Run(() => PhotoMetadataWriter.Write(data, image, tags), cancellationToken);
+            var tagged = await Task.Run(() => PhotoMetadataWriter.Write(data, image, tags, downloadedAt), cancellationToken);
             await File.WriteAllBytesAsync(temporaryPath, tagged, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             File.Move(temporaryPath, path, overwrite: true);

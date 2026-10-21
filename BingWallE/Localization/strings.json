@@ -321,8 +321,8 @@
   },
   {
     "key": "Text063",
-    "de": "Lade die aktuellen Bing-Bilder mit Aktualisieren. Ein Klick auf ein Motiv öffnet die große Vorschau.",
-    "en": "Use Refresh to load the latest Bing images. Click an image to open a large preview."
+    "de": "Lade Bilder aus den gewählten Quellen mit Aktualisieren. Ein Klick auf ein Motiv öffnet die große Vorschau.",
+    "en": "Use Refresh to load images from the selected sources. Click an image to open a large preview."
   },
   {
     "key": "Text064",
@@ -361,8 +361,8 @@
   },
   {
     "key": "Text071",
-    "de": "Dein Sammler für die Bilder des Tages von Bing. Mit Galerie, großer Vorschau, verschiedenen Regionen und Downloads bis UHD.",
-    "en": "Your collector for Bing's daily images. Browse a gallery with large previews, multiple regions and downloads up to UHD."
+    "de": "Dein Sammler für Bing-Tagesbilder und optional Windows-Blickpunkt. Mit Galerie, großer Vorschau, verschiedenen Bildregionen und Downloads bis UHD.",
+    "en": "Your collector for Bing daily images and optional Windows Spotlight. Browse a gallery with large previews, multiple image regions and downloads up to UHD."
   },
   {
     "key": "Text072",
@@ -376,8 +376,8 @@
   },
   {
     "key": "Text074",
-    "de": "Quellcode: MIT-Lizenz. Bilder und Bildinformationen stammen von Bing; die jeweiligen Urheber sind in der Vorschau angegeben. BingWallE ist ein unabhängiges Projekt von Grütze-Software.",
-    "en": "Source code: MIT License. Images and image information are provided by Bing; credits appear in the preview. BingWallE is an independent project by Grütze-Software."
+    "de": "Quellcode: MIT-Lizenz. Bilder und Bildinformationen stammen von Bing und optional Windows-Blickpunkt; die jeweiligen Urheber sind in der Vorschau angegeben. BingWallE ist ein unabhängiges Projekt von Grütze-Software.",
+    "en": "Source code: MIT License. Images and image information come from Bing and optionally Windows Spotlight; credits appear in the preview. BingWallE is an independent project by Grütze-Software."
   },
   {
     "key": "Text075",
@@ -471,8 +471,8 @@
   },
   {
     "key": "DownloadLanguageHelp",
-    "de": "Bestimmt die Bing-Bildauswahl, Bildtitel und Dateinamen. Deutschland liefert deutsche, USA und Großbritannien englische Inhalte.",
-    "en": "Controls the Bing image selection, titles and filenames. Germany provides German content; the USA and United Kingdom provide English content."
+    "de": "Steuert die Bildauswahl, Titel und Beschreibungen aller Bildquellen. Deutschland liefert deutsche, USA und Großbritannien englische Inhalte.",
+    "en": "Controls image selection, titles and descriptions for all image sources. Germany provides German content; the USA and United Kingdom provide English content."
   },
   {
     "key": "SettingsHelp",
@@ -496,8 +496,8 @@
   },
   {
     "key": "AutoTagsHelp",
-    "de": "Einmaliger Modell-Download: 14 MB. Erkennung in Vorschau und Download erfolgt lokal, ohne Bilder hochzuladen. KI-Vorschläge können falsch sein. Schlagwörter aus Bing-Texten sind auch ohne Modell verfügbar.",
-    "en": "One-time model download: 14 MB. Preview and download recognition runs locally without uploading images. AI suggestions may be incorrect. Bing text keywords also work without a model."
+    "de": "Einmaliger Modell-Download: 14 MB. Erkennung in Vorschau und Download erfolgt lokal, ohne Bilder hochzuladen. KI-Vorschläge können falsch sein. Schlagwörter aus Bildbeschreibungen sind auch ohne Modell verfügbar.",
+    "en": "One-time model download: 14 MB. Preview and download recognition runs locally without uploading images. AI suggestions may be incorrect. Description keywords also work without a model."
   },
   {
     "key": "ModelDownload",
@@ -536,8 +536,8 @@
   },
   {
     "key": "PreviewTextTags",
-    "de": "Schlagwörter aus der Bing-Beschreibung",
-    "en": "Keywords from the Bing description"
+    "de": "Schlagwörter aus der Bildbeschreibung",
+    "en": "Keywords from the image description"
   },
   {
     "key": "PreviewModelTags",
@@ -613,5 +613,100 @@
     "key": "DeleteCompleted",
     "de": "Lokale Datei gelöscht: {0}",
     "en": "Local file deleted: {0}"
+  },
+  {
+    "key": "ImageSources",
+    "de": "Bildquellen",
+    "en": "Image sources"
+  },
+  {
+    "key": "BingAlwaysEnabled",
+    "de": "Bing-Tagesbilder werden immer geladen.",
+    "en": "Bing daily images are always included."
+  },
+  {
+    "key": "IncludeWindowsSpotlight",
+    "de": "Windows-Blickpunkt zusätzlich laden",
+    "en": "Also load Windows Spotlight"
+  },
+  {
+    "key": "SpotlightHelp",
+    "de": "Lädt zusätzliche Bilder für die eingestellte Bildregion. Blickpunkt-Bilder werden in Originalauflösung gespeichert. Änderungen gelten nach „Aktualisieren“.",
+    "en": "Loads additional images for the selected image region. Spotlight images are saved at their original resolution. Changes apply after Refresh."
+  },
+  {
+    "key": "SpotlightName",
+    "de": "Windows-Blickpunkt",
+    "en": "Windows Spotlight"
+  },
+  {
+    "key": "SourceLabel",
+    "de": "Quelle: {0}",
+    "en": "Source: {0}"
+  },
+  {
+    "key": "OriginalResolution",
+    "de": "Download: Originalauflösung",
+    "en": "Download: original resolution"
+  },
+  {
+    "key": "SpotlightCurrent",
+    "de": "Aktuelle Blickpunkt-Auswahl",
+    "en": "Current Spotlight selection"
+  },
+  {
+    "key": "NoImageInformation",
+    "de": "Keine weiteren Bildinformationen verfügbar.",
+    "en": "No further image information available."
+  },
+  {
+    "key": "SearchSources",
+    "de": "Bilder aus den gewählten Quellen suchen …",
+    "en": "Searching the selected image sources …"
+  },
+  {
+    "key": "SourceError",
+    "de": "{0}: {1}",
+    "en": "{0}: {1}"
+  },
+  {
+    "key": "SourcePartialError",
+    "de": "Einige Bildquellen konnten nicht geladen werden. ",
+    "en": "Some image sources could not be loaded. "
+  },
+  {
+    "key": "NoSourceImages",
+    "de": "Keine Bilder für diese Region verfügbar.",
+    "en": "No images available for this region."
+  },
+  {
+    "key": "GallerySources",
+    "de": "{0} · {1} Bilder · {2}",
+    "en": "{0} · {1} images · {2}"
+  },
+  {
+    "key": "MixedSources",
+    "de": "Bing und Windows-Blickpunkt",
+    "en": "Bing and Windows Spotlight"
+  },
+  {
+    "key": "SourcesChanged",
+    "de": "Bildquellen geändert. Mit Aktualisieren neue Bilder laden.",
+    "en": "Image sources changed. Use Refresh to load new images."
+  },
+  {
+    "key": "SpotlightData",
+    "de": "Windows-Blickpunkt: Bilddaten laden …",
+    "en": "Windows Spotlight: loading image information …"
+  },
+  {
+    "key": "SpotlightPreview",
+    "de": "Windows-Blickpunkt: Vorschau laden …",
+    "en": "Windows Spotlight: loading preview …"
+  },
+  {
+    "key": "SpotlightInvalid",
+    "de": "Windows-Blickpunkt hat ungültige Bilddaten geliefert.",
+    "en": "Windows Spotlight returned invalid image information."
   }
 ]

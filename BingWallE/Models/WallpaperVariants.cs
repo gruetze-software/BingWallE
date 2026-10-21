@@ -8,7 +8,7 @@ public static class WallpaperVariants
     {
         if (resolution is not ("1920x1080" or "1366x768" or "UHD"))
             throw new ArgumentException("Unbekannte Auflösung.", nameof(resolution));
-        if (resolution == "1920x1080") return image;
+        if (image.Source == WallpaperSource.WindowsSpotlight || resolution == "1920x1080") return image;
         if (string.IsNullOrWhiteSpace(image.UrlBase))
             throw new InvalidOperationException("Bing bietet für dieses Bild keine alternative Auflösung an.");
         return image with
@@ -18,9 +18,19 @@ public static class WallpaperVariants
         };
     }
 
-    public static string FileName(Wallpaper image)
+    public static string FileName(Wallpaper image) => FileName(image, false);
+    internal static string LegacyFileName(Wallpaper image) => FileName(image, true);
+
+    private static string FileName(Wallpaper image, bool legacy)
     {
-        var name = WallpaperFileName.Create(image.Date, image.Title);
+        if (image.Source == WallpaperSource.WindowsSpotlight)
+        {
+            var identity = image.SourceId ?? new Uri(image.Url).GetLeftPart(UriPartial.Path);
+            var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(identity)))[..16];
+            return legacy ? WallpaperFileName.CreateLegacy("Spotlight_" + hash, image.Title)
+                : WallpaperFileName.CreateWithIdentity("Spotlight_" + hash, image.Title);
+        }
+        var name = legacy ? WallpaperFileName.CreateLegacy(image.Date, image.Title) : WallpaperFileName.Create(image.Date, image.Title);
         return image.Resolution == "1920x1080" ? name : name[..^4] + "_" + image.Resolution + ".jpg";
     }
 }

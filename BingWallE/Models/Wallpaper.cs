@@ -3,7 +3,13 @@ using CommunityToolkit.Mvvm.ComponentModel;
 namespace BingWallE.Models;
 
 public record Wallpaper(string Url, string Title, string Date, string? UrlBase = null,
-    string Copyright = "", string? CopyrightUrl = null, string Resolution = "1920x1080", string Market = "de-DE");
+    string Copyright = "", string? CopyrightUrl = null, string Resolution = "1920x1080", string Market = "de-DE",
+    WallpaperSource Source = WallpaperSource.Bing, string? SourceId = null, string? Description = null)
+{
+    public string SourceName => Source == WallpaperSource.WindowsSpotlight ? "Windows Spotlight" : "Bing";
+}
+
+public enum WallpaperSource { Bing, WindowsSpotlight }
 public record WallpaperPreview(Wallpaper Image, byte[] PreviewBytes);
 public sealed class SelectionOption(string value, string label) : ObservableObject
 {

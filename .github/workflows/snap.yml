@@ -57,7 +57,7 @@ jobs:
           version=$(cat artifacts/snap-payload/opt/bingwalle/VERSION)
           sudo snap install --dangerous "artifacts/bingwalle_${version}_amd64.snap"
           snap connections bingwalle
-          test "$(snap run bingwalle --version)" = "BingWallE ${version%.0}"
+          test "$(snap run bingwalle --version)" = "BingWallE ${version}"
           set +e
           timeout --signal=TERM 15s xvfb-run -a --auth-file "$HOME/.Xauthority" snap run bingwalle > artifacts/snap-startup.log 2>&1
           status=$?

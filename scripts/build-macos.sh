@@ -8,7 +8,7 @@ cd "$ROOT"
 PROJECT="$ROOT/BingWallE/BingWallE.csproj"
 VERSION="$(dotnet msbuild "$PROJECT" -nologo -getProperty:Version)"
 [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version: $VERSION" >&2; exit 1; }
-SHORT_VERSION="${VERSION%.0}"
+SHORT_VERSION="$VERSION"
 mkdir -p "$ROOT/artifacts"
 STAGE="$(mktemp -d "$ROOT/artifacts/stage-macos.XXXXXX")"
 trap 'rm -rf -- "$STAGE"' EXIT

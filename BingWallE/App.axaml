@@ -26,5 +26,6 @@
                 <ColorPaletteResources x:Key="Dark" Accent="#68CBBE"/>
             </FluentTheme.Palettes>
         </FluentTheme>
+        <StyleInclude Source="/Styles/Buttons.axaml"/>
     </Application.Styles>
 </Application>

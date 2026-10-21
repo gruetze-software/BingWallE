@@ -22,6 +22,7 @@ namespace BingWallE.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
     private readonly IBingWallpaperClient _bing;
+    private readonly IBingWallpaperClient? _spotlight;
     private readonly IWallpaperStore _images;
     private readonly ISettingsStore _settings;
     private readonly IAppDialogs _dialogs;
@@ -35,7 +36,10 @@ public partial class MainWindowViewModel : ViewModelBase
     private bool _localActionRunning;
     public SavedWindowState WindowSettings { get; private set; }
     [ObservableProperty] private bool _autoRefreshOnStartup;
-    private static string IgnoreKey(ImageItemViewModel item) => item.Image.Market + "|" + (item.Image.UrlBase ?? item.Date + "|" + item.Title);
+    [ObservableProperty] private bool _includeWindowsSpotlight;
+    private static string IgnoreKey(ImageItemViewModel item) => item.Image.Source == WallpaperSource.WindowsSpotlight
+        ? "WindowsSpotlight|" + item.Image.Market + "|" + (item.Image.SourceId ?? item.Image.Url)
+        : item.Image.Market + "|" + (item.Image.UrlBase ?? item.Date + "|" + item.Title);
 
     public async Task InitializeAsync()
     {
@@ -101,13 +105,14 @@ public partial class MainWindowViewModel : ViewModelBase
     public string SelectionSummary => T("{0} von {1} Bildern ausgewählt", SelectedCount, Wallpapers.Count);
     public string DownloadLabel => SelectedCount == 1 ? T("1 Bild herunterladen") : T("{0} Bilder herunterladen", SelectedCount);
 
-    public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs, IImageTagger? tagger = null)
+    public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs, IImageTagger? tagger = null, IBingWallpaperClient? spotlight = null)
     {
-        _bing = bing; _images = images; _settings = settings; _dialogs = dialogs; _tagger = tagger;
+        _bing = bing; _spotlight = spotlight; _images = images; _settings = settings; _dialogs = dialogs; _tagger = tagger;
         var saved = settings.Load();
         _ignoredImages = new(saved.IgnoredImages ?? Array.Empty<string>(), StringComparer.Ordinal);
         WindowSettings = saved.Window ?? new();
         _autoRefreshOnStartup = saved.AutoRefreshOnStartup;
+        _includeWindowsSpotlight = saved.IncludeWindowsSpotlight;
         Text.SetLanguage(saved.Language);
         _selectedLanguage = Languages.First(x => x.Value == Text.Language);
         TranslateOptions();
@@ -124,7 +129,7 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (var old in _observed.Where(x => !Wallpapers.Contains(x)).ToArray())
             { old.PropertyChanged -= ItemChanged; _observed.Remove(old); }
             foreach (var item in Wallpapers.Where(x => !_observed.Contains(x)))
-            { item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item)); if (item.IsIgnored) item.IsSelected = false; item.SetLanguage(Text.Language); item.DownloadResolution = SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
+            { item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item)); if (item.IsIgnored) item.IsSelected = false; item.SetLanguage(Text.Language); item.DownloadResolution = item.Image.Source == WallpaperSource.WindowsSpotlight ? "Original" : SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
             NotifySelection();
             OnPropertyChanged(nameof(IsEmpty));
         };
@@ -184,24 +189,45 @@ public partial class MainWindowViewModel : ViewModelBase
         if (IsRunning) { Trace.WriteLine("User requested cancellation."); _cts?.Cancel(); return; }
         ClosePreview();
         _retryOperation = "scan";
-        using var cancellation = BeginOperation(T("Bilder auf Bing suchen …"), true);
+        using var cancellation = BeginOperation(T("Bilder aus den gewählten Quellen suchen …"), true);
         try
         {
             ClearGallery();
             var market = SelectedMarket;
-            await foreach (var preview in _bing.ScanAsync(market.Value, cancellation.Token, message => StatusMessage = Text.Progress(message)))
+            var failures = new List<string>();
+            var includeSpotlight = IncludeWindowsSpotlight;
+            async Task LoadSource(IBingWallpaperClient source, string name)
             {
-                cancellation.Token.ThrowIfCancellationRequested();
-                using var stream = new MemoryStream(preview.PreviewBytes);
-                var item = new ImageItemViewModel(preview.Image, new Bitmap(stream));
-                item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item));
-                RefreshSaved(item);
-                Wallpapers.Add(item);
-                ProgressValue = Wallpapers.Count / 8d * 100;
+                try
+                {
+                    await foreach (var preview in source.ScanAsync(market.Value, cancellation.Token, message => StatusMessage = Text.Progress(message)))
+                    {
+                        cancellation.Token.ThrowIfCancellationRequested();
+                        using var stream = new MemoryStream(preview.PreviewBytes);
+                        var item = new ImageItemViewModel(preview.Image, preview.Image.Source == WallpaperSource.WindowsSpotlight
+                            ? Bitmap.DecodeToWidth(stream, 640) : new Bitmap(stream));
+                        RefreshSaved(item);
+                        Wallpapers.Add(item);
+                    }
+                }
+                catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { throw; }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"{name} scan failed: {ex}");
+                    failures.Add(T("{0}: {1}", name, ErrorMessage(ex)));
+                }
             }
+            await LoadSource(_bing, "Bing");
+            if (includeSpotlight && _spotlight != null) await LoadSource(_spotlight, T("Windows-Blickpunkt"));
             cancellation.Token.ThrowIfCancellationRequested();
-            GallerySubtitle = T("{0} · {1} Bilder · aktuelle Bing-Auswahl", market.Label, Wallpapers.Count);
-            StatusMessage = IsEmpty ? T("Bing hat für diese Region keine Bilder geliefert.") : T("Suche abgeschlossen. Bilder zum Download auswählen.");
+            UpdateGallerySubtitle();
+            if (failures.Count > 0)
+            {
+                StatusMessage = Text.Join(T("Einige Bildquellen konnten nicht geladen werden. "), string.Join(" ", failures));
+                HasError = true; StatusColor = Brushes.IndianRed; ProgressValue = 100;
+                return;
+            }
+            StatusMessage = IsEmpty ? T("Keine Bilder für diese Region verfügbar.") : T("Suche abgeschlossen. Bilder zum Download auswählen.");
             ProgressValue = 100; _retryOperation = null;
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
@@ -266,8 +292,9 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void RefreshSaved(ImageItemViewModel item)
     {
-        if (item.DownloadResolution != SelectedResolution.Value) item.ActualDimensions = null;
-        item.DownloadResolution = SelectedResolution.Value;
+        var resolution = item.Image.Source == WallpaperSource.WindowsSpotlight ? "Original" : SelectedResolution.Value;
+        if (item.DownloadResolution != resolution) item.ActualDimensions = null;
+        item.DownloadResolution = resolution;
         // Unavailable alternative resolutions remain selectable, so download can explain the limitation.
         try { item.IsSaved = _images.Exists(TargetFolder ?? "", WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value)); }
         catch (InvalidOperationException) { item.IsSaved = false; }
@@ -401,6 +428,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 Language = SelectedLanguage.Value,
                 AutoTags = AutoTags,
                 AutoRefreshOnStartup = AutoRefreshOnStartup,
+                IncludeWindowsSpotlight = IncludeWindowsSpotlight,
                 IgnoredImages = _ignoredImages.ToArray(),
                 Window = WindowSettings
             });
@@ -428,6 +456,21 @@ public partial class MainWindowViewModel : ViewModelBase
         StatusMessage = T("Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.");
     }
     partial void OnSelectedThemeChanged(SelectionOption value) { _dialogs.ApplyTheme(value.Value); SavePreferences(); }
+    private string GallerySources()
+    {
+        var spotlight = Wallpapers.Any(x => x.Image.Source == WallpaperSource.WindowsSpotlight);
+        var bing = Wallpapers.Any(x => x.Image.Source == WallpaperSource.Bing);
+        return spotlight ? (bing ? T("Bing und Windows-Blickpunkt") : T("Windows-Blickpunkt")) : "Bing";
+    }
+    private void UpdateGallerySubtitle() => GallerySubtitle = T("{0} · {1} Bilder · {2}", SelectedMarket.Label,
+        Wallpapers.Count, GallerySources());
+    partial void OnIncludeWindowsSpotlightChanged(bool value)
+    {
+        ClosePreview(); ClearGallery();
+        GallerySubtitle = T("{0} · bereit zum Entdecken", SelectedMarket.Label);
+        StatusMessage = T("Bildquellen geändert. Mit Aktualisieren neue Bilder laden.");
+        HasError = false; _retryOperation = null; SavePreferences();
+    }
     partial void OnAutoRefreshOnStartupChanged(bool value) => SavePreferences();
     partial void OnAutoTagsChanged(bool value)
     {
@@ -449,7 +492,7 @@ public partial class MainWindowViewModel : ViewModelBase
         StatusMessage = Text.Translate(StatusMessage); ButtonText = Text.Translate(ButtonText);
         PreviewStatus = Text.Translate(PreviewStatus);
         GallerySubtitle = Wallpapers.Count > 0
-            ? T("{0} · {1} Bilder · aktuelle Bing-Auswahl", SelectedMarket.Label, Wallpapers.Count)
+            ? T("{0} · {1} Bilder · {2}", SelectedMarket.Label, Wallpapers.Count, GallerySources())
             : T("{0} · bereit zum Entdecken", SelectedMarket.Label);
         foreach (var item in Wallpapers) { item.SetLanguage(Text.Language); item.DownloadError = item.DownloadError == null ? null : Text.Translate(item.DownloadError); }
         NotifySelection(); SavePreferences();

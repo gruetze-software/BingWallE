@@ -75,7 +75,7 @@ jobs:
         shell: bash
         run: |
           version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
-          test "$(dotnet BingWallE/bin/Release/net10.0/bingwalle.dll --version)" = "BingWallE ${version%.0}"
+          test "$(dotnet BingWallE/bin/Release/net10.0/bingwalle.dll --version)" = "BingWallE ${version}"
       - name: Windows package
         if: matrix.platform == 'windows'
         shell: pwsh

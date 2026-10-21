@@ -11,12 +11,16 @@ description: |
   Browse the latest eight days of images from twelve regions, inspect large previews
   and download selected wallpapers in HD, Full HD or UHD where available.
 
+  Optionally add Windows Spotlight images in Settings. They appear alongside Bing
+  in the gallery, follow the selected image language/region and retain their original
+  resolution. Spotlight is disabled by default and its selection may change on refresh.
+
   Downloaded JPEGs include descriptive metadata: title, subject/description,
-  copyright and keywords (tags), using EXIF and standard XMP. Comments contain only
-  the concise image description. Bing's publication date and source links are kept
-  in separate XMP fields. Existing photographer and camera metadata is preserved;
-  no author, rating or camera capture date is invented, and the JPEG image data is
-  not recompressed.
+  copyright, image source and keywords (tags), using EXIF and standard XMP. Comments
+  include the description and source. Publication dates and source links are kept
+  separately in XMP. Missing creation or capture dates use the download time with
+  the fallback origin recorded. Existing dates, photographer and camera metadata
+  are preserved, and JPEG image data is not recompressed.
 
   The image preview shows the description, copyright, resolution and tags.
   Keywords derived from Bing's captions include recognised subjects, categories
@@ -24,7 +28,7 @@ description: |
   after a one-time model download. Images are not uploaded for recognition, runtime
   telemetry is disabled, and suggested tags may be incorrect.
 
-  Choose German or English for the interface independently of the Bing download
+  Choose German or English for the interface independently of the image download
   region. Includes light and dark themes, remembered window size and maximised
   state, optional refresh on startup, existing-file detection and a context menu
   for showing images, opening their folder, ignoring images and deleting local files.

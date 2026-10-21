@@ -53,7 +53,7 @@ public static class WallpaperKeywords
                 }
         }
         var caption = WallpaperCredits.Split(image.Copyright).Description;
-        Classify(string.IsNullOrWhiteSpace(caption) ? image.Title : caption, false);
+        Classify(!string.IsNullOrWhiteSpace(image.Description) ? image.Description : string.IsNullOrWhiteSpace(caption) ? image.Title : caption, false);
         // Bing captions conventionally list locations after the subject, separated by commas.
         foreach (var location in caption.Split(',').Skip(1).Select(x => x.Trim()))
             if (location.Length is > 1 and <= 60 && location.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length <= 6)
@@ -67,5 +67,5 @@ public static class WallpaperKeywords
     }
 
     public static IEnumerable<string> Stored(Wallpaper image, IReadOnlyList<ImageTag> predictions) =>
-        Build(image, predictions).Select(x => x.Label).Concat(new[] { "Bing", "Wallpaper" }).Distinct(StringComparer.OrdinalIgnoreCase);
+        Build(image, predictions).Select(x => x.Label).Concat(new[] { image.SourceName, "Wallpaper" }).Distinct(StringComparer.OrdinalIgnoreCase);
 }

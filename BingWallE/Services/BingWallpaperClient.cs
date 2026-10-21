@@ -47,6 +47,7 @@ public sealed class BingWallpaperClient(HttpClient httpClient) : IBingWallpaperC
 
     public System.Threading.Tasks.Task<byte[]> LoadPreviewAsync(Wallpaper image, CancellationToken ct)
     {
+        if (image.Source == WallpaperSource.WindowsSpotlight) return httpClient.GetByteArrayAsync(image.Url, ct);
         var separator = image.Url.Contains('?') ? '&' : '?';
         return httpClient.GetByteArrayAsync(image.Url + separator + "w=1280&h=720", ct);
     }

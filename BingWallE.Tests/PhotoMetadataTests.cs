@@ -24,7 +24,7 @@ public class PhotoMetadataTests
     }
 
     [Fact]
-    public void WritesUnicodeMetadataWithoutRecompressingOrInventingCameraData()
+    public void WritesUnicodeMetadataWithoutRecompressingAndPreservesCameraFields()
     {
         var original = ImageFile.FromBuffer(TestImages.Jpeg);
         original.Properties.Set(ExifTag.Artist, "Original photographer");
@@ -36,13 +36,13 @@ public class PhotoMetadataTests
         Assert.Equal(Photo.Title, result.Properties.Get(ExifTag.ImageDescription).Value);
         Assert.Equal("© Jörg Müller", result.Properties.Get(ExifTag.Copyright).Value);
         Assert.Equal("Küste", result.Properties.Get(ExifTag.WindowsSubject).Value);
-        Assert.Equal("Küste", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
+        Assert.Equal("Küste\nSource: Bing", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
         Assert.Contains("PublicationDate", Encoding.UTF8.GetString(after));
         Assert.Contains(Photo.Url, Encoding.UTF8.GetString(after));
         Assert.DoesNotContain("AI suggestions", result.Properties.Get(ExifTag.WindowsComment).Value.ToString());
         Assert.Contains("Küste", result.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
         Assert.Equal("Original photographer", result.Properties.Get(ExifTag.Artist).Value);
-        Assert.DoesNotContain(result.Properties, x => x.Tag == ExifTag.DateTimeOriginal);
+        Assert.IsType<DateTime>(result.Properties.Get(ExifTag.DateTimeOriginal).Value);
         Assert.Contains("Küste &amp; Vögel", Encoding.UTF8.GetString(after));
         Assert.Contains("http://purl.org/dc/elements/1.1/", Encoding.UTF8.GetString(after));
         Assert.Equal(ScanData(before), ScanData(after));
@@ -79,6 +79,58 @@ public class PhotoMetadataTests
         Assert.Contains("1920 × 1080", item.ResolutionLabel);
         item.DownloadResolution = "UHD"; Assert.Contains("UHD", item.ResolutionLabel);
         item.ActualDimensions = "3840 × 2160"; Assert.Contains("3840 × 2160", item.ResolutionLabel);
+    }
+
+    [Fact]
+    public void MissingCreationAndOriginalDatesUseTheDownloadTimeAndAreIdentifiedAsFallbacks()
+    {
+        var timestamp = new DateTimeOffset(2026, 10, 21, 14, 35, 12, TimeSpan.FromHours(2));
+        var bytes = PhotoMetadataWriter.Write(TestImages.Jpeg, Photo, Array.Empty<ImageTag>(), timestamp);
+        var result = ImageFile.FromBuffer(bytes);
+        Assert.Equal(timestamp.DateTime, result.Properties.Get(ExifTag.DateTimeDigitized).Value);
+        Assert.Equal(timestamp.DateTime, result.Properties.Get(ExifTag.DateTimeOriginal).Value);
+        var text = Encoding.UTF8.GetString(bytes);
+        Assert.Contains(timestamp.ToString("O"), text);
+        Assert.Contains("CreationDateSource", text); Assert.Contains("OriginalDateSource", text);
+        Assert.Contains(">Download<", text);
+        Assert.Equal(ScanData(TestImages.Jpeg), ScanData(bytes));
+    }
+
+    [Fact]
+    public void ExistingPhotoDatesAreNeverReplacedByTheDownloadTime()
+    {
+        var file = ImageFile.FromBuffer(TestImages.Jpeg);
+        var created = new DateTime(2012, 3, 4, 5, 6, 7);
+        var original = new DateTime(2011, 2, 3, 4, 5, 6);
+        file.Properties.Set(ExifTag.DateTimeDigitized, created);
+        file.Properties.Set(ExifTag.DateTimeOriginal, original);
+        using var input = new MemoryStream(); file.Save(input);
+        var bytes = PhotoMetadataWriter.Write(input.ToArray(), Photo, Array.Empty<ImageTag>(), DateTimeOffset.Now);
+        var result = ImageFile.FromBuffer(bytes);
+        Assert.Equal(created, result.Properties.Get(ExifTag.DateTimeDigitized).Value);
+        Assert.Equal(original, result.Properties.Get(ExifTag.DateTimeOriginal).Value);
+        Assert.Contains(created.ToString("yyyy-MM-ddTHH:mm:ss"), Encoding.UTF8.GetString(bytes));
+    }
+
+    [Fact]
+    public void RewritingMetadataPreservesCreationDateAndItsFallbackOrigin()
+    {
+        var firstTime = new DateTimeOffset(2026, 10, 21, 14, 35, 12, TimeSpan.FromHours(2));
+        var first = PhotoMetadataWriter.Write(TestImages.Jpeg, Photo, Array.Empty<ImageTag>(), firstTime);
+        var secondTime = firstTime.AddDays(1);
+        var second = PhotoMetadataWriter.Write(first, Photo, Array.Empty<ImageTag>(), secondTime);
+        var result = ImageFile.FromBuffer(second);
+        Assert.Equal(firstTime.DateTime, result.Properties.Get(ExifTag.DateTimeDigitized).Value);
+        Assert.Equal(firstTime.DateTime, result.Properties.Get(ExifTag.DateTimeOriginal).Value);
+        var text = Encoding.UTF8.GetString(second);
+        var start = text.IndexOf("<x:xmpmeta", StringComparison.Ordinal);
+        var end = text.IndexOf("</x:xmpmeta>", start, StringComparison.Ordinal) + "</x:xmpmeta>".Length;
+        var xmp = System.Xml.Linq.XDocument.Parse(text[start..end]);
+        System.Xml.Linq.XNamespace standard = "http://ns.adobe.com/xap/1.0/";
+        System.Xml.Linq.XNamespace bw = "https://github.com/gruetze-software/BingWallE/metadata/1.0/";
+        Assert.Equal(firstTime.ToString("O"), Assert.Single(xmp.Descendants(standard + "CreateDate")).Value);
+        Assert.Equal(secondTime.ToString("O"), Assert.Single(xmp.Descendants(bw + "DownloadDate")).Value);
+        Assert.Equal("Download", Assert.Single(xmp.Descendants(bw + "CreationDateSource")).Value);
     }
 
     [ModelFact]

@@ -1,8 +1,9 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:BingWallE.Controls"
         x:Class="BingWallE.Views.AboutWindow"
         Icon="/Assets/bingwalle.ico" Title="{DynamicResource Text049}"
-        Background="{DynamicResource AboutBackground}" Width="520" Height="660" CanResize="False" WindowStartupLocation="CenterOwner">
+        Background="{DynamicResource AboutBackground}" Width="600" Height="660" CanResize="False" WindowStartupLocation="CenterOwner">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -12,8 +13,8 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid RowDefinitions="*,Auto" Margin="28">
-        <ScrollViewer>
-            <StackPanel Spacing="12">
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="12" Margin="22,0,22,4">
                 <Image Source="/Assets/bingwalle-logo.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="96" Height="96" HorizontalAlignment="Center"/>
                 <TextBlock x:Name="ProductName" FontSize="28" FontWeight="SemiBold" HorizontalAlignment="Center"/>
                 <TextBlock Text="{DynamicResource Text047}" FontSize="15" HorizontalAlignment="Center"/>
@@ -34,7 +35,7 @@
                 </StackPanel>
                 <Separator/>
                 <TextBlock Text="{DynamicResource SupportHelp}" TextWrapping="Wrap" TextAlignment="Center"/>
-                <Button Content="{DynamicResource SupportKofi}" Tag="https://ko-fi.com/gruetzesoftware" Click="OpenLink" HorizontalAlignment="Center"/>
+                <Button Classes="coffee" Content="{DynamicResource SupportKofi}" Tag="https://ko-fi.com/gruetzesoftware" Click="OpenLink" HorizontalAlignment="Center" ui:ButtonIcons.Icon="{x:Static ui:ButtonIcons.Coffee}"/>
                 <Separator/>
                 <TextBlock Text="C# · .NET 10 · Avalonia   |   Windows · Linux · macOS" FontSize="12" TextAlignment="Center" TextWrapping="Wrap"/>
                 <TextBlock Text="{DynamicResource Text074}"
@@ -42,6 +43,6 @@
                 <TextBlock x:Name="LinkStatus" TextWrapping="Wrap" FontSize="12"/>
             </StackPanel>
         </ScrollViewer>
-        <Button Grid.Row="1" Content="{DynamicResource Text068}" IsDefault="True" IsCancel="True" HorizontalAlignment="Center" MinWidth="120" Margin="0,16,0,0" Click="CloseDialog"/>
+        <Button Grid.Row="1" Content="{DynamicResource Text068}" IsDefault="True" IsCancel="True" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" MinWidth="120" Margin="0,16,0,0" Click="CloseDialog"/>
     </Grid>
 </Window>

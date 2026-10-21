@@ -4,22 +4,29 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>
   <name>BingWallE</name>
-  <summary>Browse and collect Bing wallpapers</summary>
-  <summary xml:lang="de">Bing-Wallpaper entdecken und sammeln</summary>
+  <summary>Collect Bing and optional Windows Spotlight wallpapers</summary>
+  <summary xml:lang="de">Bing- und optionale Windows-Blickpunkt-Bilder sammeln</summary>
   <developer id="de.gruetze_software"><name>Grütze-Software</name></developer>
   <description>
     <p>Collect recent Bing wallpapers from twelve regions with large previews,
     image credits and downloads in HD, Full HD or UHD.</p>
+    <p>Optionally add Windows Spotlight images to the same gallery. The selected image
+    region controls both sources. Spotlight images retain their supplied original resolution.</p>
     <p>Choose a destination, skip existing images and manage downloads with
     progress, cancellation and retry. Includes light and dark themes.</p>
     <p>Downloaded JPEGs retain image credits and include title, description,
-    copyright and keywords. Inspect resolution and tags in the preview. Optional
+    copyright, source and keywords. Missing image dates use the download time,
+    with the fallback recorded in XMP; existing dates are retained. Inspect resolution and tags in the preview. Optional
     local image recognition adds subject suggestions without uploading images.</p>
     <p>Choose German or English independently of the download region. Remember
     window size, refresh on startup and manage local downloads from a context menu.</p>
     <p xml:lang="de">Sammle aktuelle Bing-Wallpaper aus zwölf Regionen mit großer Vorschau,
     Bildnachweisen und Downloads in HD, Full HD oder UHD.</p>
-    <p xml:lang="de">JPEG-Dateien enthalten Titel, Beschreibung, Copyright und Schlagwörter.
+    <p xml:lang="de">Ergänze optional Windows-Blickpunkt-Bilder in derselben Galerie. Die eingestellte
+    Bildregion gilt für beide Quellen. Blickpunkt-Bilder behalten ihre gelieferte Originalauflösung.</p>
+    <p xml:lang="de">JPEG-Dateien enthalten Titel, Beschreibung, Copyright, Quelle und Schlagwörter.
+    Fehlende Bilddatumswerte erhalten den Downloadzeitpunkt mit Herkunftshinweis in XMP;
+    vorhandene Datumswerte bleiben erhalten.
     Die Vorschau zeigt Auflösung und Tags. Eine optionale lokale Bilderkennung
     ergänzt Motivvorschläge, ohne Bilder hochzuladen.</p>
     <p xml:lang="de">Wähle Deutsch oder Englisch unabhängig von der Downloadregion. Mit hellem
@@ -46,5 +53,5 @@
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
-  <releases><release version="1.3.3" type="stable" date="2026-10-19" /><release version="1.3.2" date="2026-10-18" /><release version="1.3.1" date="2026-10-15" /><release version="1.3.0" date="2026-10-15" /><release version="1.2.2" date="2026-10-15" /><release version="1.2.1" date="2026-10-11" /><release version="1.2.0" date="2026-10-10" /><release version="1.1.1" date="2026-10-10" /><release version="1.1.0" date="2026-10-10" /><release version="1.0.0" date="2026-10-10" /></releases>
+  <releases><release version="1.4.0" type="stable" date="2026-10-21"><description><p>Add optional regional Windows Spotlight images, source metadata, clean filenames and improved dialogs.</p></description></release><release version="1.3.3" type="stable" date="2026-10-19" /><release version="1.3.2" date="2026-10-18" /><release version="1.3.1" date="2026-10-15" /><release version="1.3.0" date="2026-10-15" /><release version="1.2.2" date="2026-10-15" /><release version="1.2.1" date="2026-10-11" /><release version="1.2.0" date="2026-10-10" /><release version="1.1.1" date="2026-10-10" /><release version="1.1.0" date="2026-10-10" /><release version="1.0.0" date="2026-10-10" /></releases>
 </component>
