@@ -28,8 +28,8 @@ oder neuer benoetigt. Prozessor und macOS-Version stehen unter
 Fuer den ersten Test das TAR.GZ in einen eigenen neuen Ordner entpacken. Damit
 musst du keine vorhandene Snap- oder DEB-Installation ersetzen. Die entpackte
 Anwendung verwendet normalerweise dieselben Einstellungen wie die regulaere
-Archiv-/DEB-Version. Fuer ein getrenntes Testprofil kannst du in diesem Terminal
-vor dem Start setzen:
+Archiv-/DEB-Version. Oeffne ein Terminal im entpackten Ordner mit der Datei
+`bingwalle`. Fuer ein getrenntes Testprofil kannst du dort vor dem Start setzen:
 
 ```bash
 export XDG_CONFIG_HOME="$PWD/test-profile/config"
@@ -37,7 +37,7 @@ export XDG_DATA_HOME="$PWD/test-profile/data"
 mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
 ```
 
-Oeffne ein Terminal im entpackten Ordner mit der Datei `bingwalle` und starte:
+Starte anschliessend im selben Terminal:
 
 ```bash
 chmod +x bingwalle
