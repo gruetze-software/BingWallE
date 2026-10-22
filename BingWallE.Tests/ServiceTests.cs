@@ -23,7 +23,7 @@ public class ServiceTests
         }));
         var progress = new List<string>();
         var images = new List<WallpaperPreview>();
-        await foreach (var image in new BingWallpaperClient(client).ScanAsync("de-DE", default, progress.Add)) images.Add(image);
+        await foreach (var image in new BingWallpaperClient(client).ScanAsync("de-DE", TestContext.Current.CancellationToken, progress.Add)) images.Add(image);
         Assert.Equal(16, progress.Count);
         Assert.Contains("Tag 1 von 8", progress[0]);
         Assert.Contains("Bilddaten", progress[0]);
@@ -47,7 +47,7 @@ public class ServiceTests
             Assert.Contains("mkt=en-US", request.RequestUri!.Query);
             return Task.FromResult(Json("""{"images":[]}"""));
         }));
-        await foreach (var _ in new BingWallpaperClient(client).ScanAsync("", default)) Assert.Fail("Expected no images");
+        await foreach (var _ in new BingWallpaperClient(client).ScanAsync("", TestContext.Current.CancellationToken)) Assert.Fail("Expected no images");
         Assert.Equal(1, count);
     }
 
@@ -57,7 +57,7 @@ public class ServiceTests
         using var client = new HttpClient(new Handler((_, _) => Task.FromResult(Json("""{"images":[{"title":"Missing URL"}]}"""))));
         await Assert.ThrowsAsync<InvalidDataException>(async () =>
         {
-            await foreach (var _ in new BingWallpaperClient(client).ScanAsync("de-DE", default)) { }
+            await foreach (var _ in new BingWallpaperClient(client).ScanAsync("de-DE", TestContext.Current.CancellationToken)) { }
         });
     }
 

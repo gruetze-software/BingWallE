@@ -36,7 +36,7 @@ if (args.Length != 3 || !OperatingSystem.IsLinux())
 var output = Path.GetFullPath(args[2]);
 Directory.CreateDirectory(output);
 var wallpapers = JsonSerializer.Deserialize<Wallpaper[]>(File.ReadAllText(Path.Combine(cache, "images.json")))!;
-AppBuilder.Configure<BingWallE.App>().UseSkia().WithInterFont()
+AppBuilder.Configure<BingWallE.App>().UseSkia().UseHarfBuzz().WithInterFont()
     .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = false }).SetupWithoutStarting();
 using var http = new HttpClient();
 var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http), new ScreenshotSettings(), new NoDialogs());
@@ -55,7 +55,7 @@ void Capture(Window window, string name, ThemeVariant theme)
     Dispatcher.UIThread.RunJobs();
     AvaloniaHeadlessPlatform.ForceRenderTimerTick(3);
     using var frame = window.CaptureRenderedFrame() ?? throw new InvalidOperationException("No rendered frame.");
-    frame.Save(Path.Combine(output, name + ".png"));
+    frame.Save(Path.Combine(output, name + ".png"), PngBitmapEncoderOptions.Default);
 }
 Capture(gallery, "gallery-light", ThemeVariant.Light);
 Capture(gallery, "gallery-dark", ThemeVariant.Dark);

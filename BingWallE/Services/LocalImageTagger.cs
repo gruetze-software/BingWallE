@@ -104,7 +104,7 @@ public sealed class LocalImageTagger(string modelDirectory) : IImageTagger, IDis
         using var bitmap = SKBitmap.Decode(data) ?? throw new InvalidDataException("Invalid image.");
         // Resize the shorter side to 256, then take a centered 224-pixel crop as documented by the model.
         var scale = 256f / Math.Min(bitmap.Width, bitmap.Height);
-        using var resized = bitmap.Resize(new SKImageInfo((int)(bitmap.Width * scale), (int)(bitmap.Height * scale)), SKFilterQuality.High)
+        using var resized = bitmap.Resize(new SKImageInfo((int)(bitmap.Width * scale), (int)(bitmap.Height * scale)), new SKSamplingOptions(SKCubicResampler.Mitchell))
             ?? throw new InvalidDataException("Cannot resize image.");
         var left = (resized.Width - 224) / 2; var top = (resized.Height - 224) / 2;
         var tensor = new DenseTensor<float>(new[] { 1, 3, 224, 224 });

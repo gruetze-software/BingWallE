@@ -39,11 +39,11 @@ public class RegressionTests
         }));
         var vm = CreateVm(client, scope.Path);
         var scan = vm.StartStopCommand.ExecuteAsync(null);
-        await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await entered.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         Check(vm.StartStopCommand.CanExecute(null), "Stop disabled");
         Check(!vm.DownloadSelectedCommand.CanExecute(null) && !vm.SelectFolderCommand.CanExecute(null), "Conflicting commands enabled");
         await vm.StartStopCommand.ExecuteAsync(null);
-        await scan.WaitAsync(TimeSpan.FromSeconds(5));
+        await scan.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         Check(!vm.IsRunning && vm.StatusMessage.Contains("abgebrochen"), "Scan not canceled");
         Check(vm.DownloadSelectedCommand.CanExecute(null) && vm.SelectFolderCommand.CanExecute(null), "Commands not restored");
     }
@@ -61,12 +61,12 @@ public class RegressionTests
         }));
         var vm = MakeVm(client, scope.Path);
         var path = System.IO.Path.Combine(scope.Path, WallpaperFileName.Create("20261009", "Test: image?"));
-        await File.WriteAllTextAsync(path, "original");
+        await File.WriteAllTextAsync(path, "original", TestContext.Current.CancellationToken);
         var download = vm.DownloadSelectedCommand.ExecuteAsync(null);
-        await entered.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await entered.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         await vm.StartStopCommand.ExecuteAsync(null);
-        await download.WaitAsync(TimeSpan.FromSeconds(5));
-        Check(await File.ReadAllTextAsync(path) == "original", "Existing image modified");
+        await download.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
+        Check(await File.ReadAllTextAsync(path, TestContext.Current.CancellationToken) == "original", "Existing image modified");
         Check(vm.Wallpapers[0].IsSelected && !vm.IsRunning, "Selection/state lost");
         Check(vm.StatusMessage.Contains("abgebrochen"), "Missing cancellation status");
         Check(!Directory.GetFiles(scope.Path, "*.tmp").Any(), "Temporary file left behind");

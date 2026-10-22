@@ -7,6 +7,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../BingWallE/BingWallE.csproj" />
-    <PackageReference Include="Avalonia.Headless" Version="11.3.20" />
+    <PackageReference Include="Avalonia.Headless" Version="12.1.4" />
   </ItemGroup>
 </Project>

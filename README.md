@@ -6,6 +6,10 @@
 
 Collect Bing daily images and optional Windows Spotlight selections in one gallery.
 Version 1.4.1 introduces a new app icon drawn by the maintainer in Paint.NET.
+
+**Development branch:** the Avalonia 12 / native Wayland migration is not part of
+the published 1.4.1 release. See [Wayland testing](docs/WAYLAND.md).
+
 See [what is new in 1.4.1](docs/RELEASE-1.4.1.md).
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
@@ -16,7 +20,7 @@ See [what is new in 1.4.1](docs/RELEASE-1.4.1.md).
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
 BingWallE is a desktop collector for Bing and Windows Spotlight wallpapers, built with C#, .NET 10 and
-Avalonia 11.3.20. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, image download
+Avalonia 12.1.4 in this development branch. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, image download
 region, Bing resolution, optional Windows Spotlight images and theme. Language changes take effect immediately; your choice is saved for the next start.
 The download region is independent of the application language: choose Germany
 for German image titles and descriptions, or the USA / United Kingdom for English content.
@@ -320,8 +324,8 @@ The default download destination is `BingImages` inside the Pictures folder.
 
 The upstream [Flatpak build and install entry point](docs/FLATPAK-BUILD.md) keeps
 the framework-dependent Linux build and desktop-file installation in the source
-repository. It does not submit or publish a Flatpak. Current X11/XWayland behavior
-and the native Wayland migration requirements are documented in [Wayland readiness](docs/WAYLAND.md).
+repository. It does not submit or publish a Flatpak. Native Wayland selection, X11 fallback and the remaining manual desktop tests
+are documented in [Wayland testing](docs/WAYLAND.md).
 
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the full three-part version, for example

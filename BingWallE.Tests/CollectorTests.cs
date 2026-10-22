@@ -120,10 +120,10 @@ public class CollectorTests
         var bing = new WaitingPreviewClient();
         var vm = new MainWindowViewModel(bing, new WallpaperStore(client), new TestSettings(), new TestDialogs());
         var pending = vm.OpenPreviewCommand.ExecuteAsync(new ImageItemViewModel(Image));
-        await bing.Started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await bing.Started.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         Assert.True(vm.IsPreviewOpen); Assert.True(vm.IsPreviewLoading);
         vm.ClosePreviewCommand.Execute(null);
-        await pending.WaitAsync(TimeSpan.FromSeconds(5));
+        await pending.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
         Assert.False(vm.IsPreviewOpen); Assert.False(vm.IsPreviewLoading); Assert.False(vm.PreviewFailed);
     }
 

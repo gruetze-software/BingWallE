@@ -38,7 +38,7 @@ Section: graphics
 Priority: optional
 Architecture: $DEB_ARCH
 Maintainer: Christoph Schaefer <schaefer.christoph@posteo.de>
-Depends: libc6, libgcc-s1, libstdc++6, zlib1g, libfontconfig1, libice6, libsm6, libx11-6, libicu74 | libicu70 | libicu72 | libicu76, libssl3t64 | libssl3
+Depends: libwayland-client0, libwayland-cursor0, libwayland-egl1, libxkbcommon0, libegl1, libgles2, libc6, libgcc-s1, libstdc++6, zlib1g, libfontconfig1, libice6, libsm6, libx11-6, libicu74 | libicu70 | libicu72 | libicu76, libssl3t64 | libssl3
 Homepage: https://github.com/gruetze-software/BingWallE
 Description: Bing wallpaper collector
  Browse and collect recent Bing wallpapers with previews and downloads up to UHD.

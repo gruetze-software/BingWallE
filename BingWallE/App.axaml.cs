@@ -4,8 +4,6 @@ using Avalonia.Input;
 using System;
 using System.ComponentModel;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using System.Net.Http;
 using BingWallE.Services;
@@ -26,9 +24,6 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Avoid duplicate validations from both Avalonia and the CommunityToolkit.
-            // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
-            DisableAvaloniaDataAnnotationValidation();
             System.Diagnostics.Trace.AutoFlush = true;
             var httpClient = new HttpClient(new HttpTraceHandler(new HttpClientHandler()))
             {
@@ -91,16 +86,4 @@ public partial class App : Application
         if (CanUseMenu && MenuWindow?.DataContext is MainWindowViewModel vm) vm.StartStopCommand.Execute(null);
     }
 
-    private void DisableAvaloniaDataAnnotationValidation()
-    {
-        // Get an array of plugins to remove
-        var dataValidationPluginsToRemove =
-            BindingPlugins.DataValidators.OfType<DataAnnotationsValidationPlugin>().ToArray();
-
-        // remove each entry found
-        foreach (var plugin in dataValidationPluginsToRemove)
-        {
-            BindingPlugins.DataValidators.Remove(plugin);
-        }
-    }
 }

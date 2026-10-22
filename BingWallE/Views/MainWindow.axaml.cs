@@ -22,6 +22,7 @@ public partial class MainWindow : Window
         };
         Opened += async (_, _) =>
         {
+            BingWallE.Services.DesktopPlatform.Report(this);
             if (DataContext is MainWindowViewModel vm)
             {
                 if (!_placementApplied) RestorePlacement(vm);

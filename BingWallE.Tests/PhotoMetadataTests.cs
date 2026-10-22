@@ -66,7 +66,7 @@ public class PhotoMetadataTests
         File.WriteAllText(destination, "original");
         using var http = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(TestImages.Jpeg) })));
         var store = new WallpaperStore(http, new FailingTagger());
-        await Assert.ThrowsAsync<InvalidOperationException>(() => store.DownloadAsync(scope.Path, Photo, default, true));
+        await Assert.ThrowsAsync<InvalidOperationException>(() => store.DownloadAsync(scope.Path, Photo, TestContext.Current.CancellationToken, true));
         Assert.Equal("original", File.ReadAllText(destination)); Assert.Single(Directory.GetFiles(scope.Path));
     }
 
@@ -142,7 +142,7 @@ public class PhotoMetadataTests
         var result = await tagger.RecognizeAsync(TestImages.Jpeg, cancellation.Token);
         Assert.All(result, x => Assert.InRange(x.Score, .5f, 1f));
         // Reuse must work with the cached model, without downloading again.
-        var second = await tagger.RecognizeAsync(TestImages.Jpeg, default);
+        var second = await tagger.RecognizeAsync(TestImages.Jpeg, TestContext.Current.CancellationToken);
         Assert.Equal(result, second);
     }
 
@@ -165,7 +165,8 @@ public class PhotoMetadataTests
 
 public sealed class ModelFactAttribute : FactAttribute
 {
-    public ModelFactAttribute()
+    public ModelFactAttribute([System.Runtime.CompilerServices.CallerFilePath] string? sourceFilePath = null,
+        [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0) : base(sourceFilePath, sourceLineNumber)
     {
         if (Environment.GetEnvironmentVariable("BINGWALLE_TEST_MODEL") != "1")
             Skip = "Set BINGWALLE_TEST_MODEL=1 to download and test the real local model.";

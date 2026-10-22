@@ -55,7 +55,7 @@ public class ButtonLayoutTests
             var refresh = window.GetVisualDescendants().OfType<Button>().Single(b => ReferenceEquals(b.Command, vm.StartStopCommand));
             Assert.Null(ButtonIcons.GetIcon(refresh));
             var pending = vm.StartStopCommand.ExecuteAsync(null);
-            await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            await started.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
             Dispatcher.UIThread.RunJobs();
             Assert.Null(ButtonIcons.GetIcon(refresh));
             Assert.Equal(vm.Text.Get("Abbrechen"), refresh.Content);

@@ -41,13 +41,13 @@ public class WallpaperFileNameTests
         var cleanName = WallpaperVariants.FileName(photo);
         var prefix = cleanName[..("Spotlight_".Length + 16)];
         var legacyPath = Path.Combine(scope.Path, prefix + "_Hanakāpī'ai_Beach,_Hawaii.jpg");
-        await File.WriteAllTextAsync(legacyPath, "old image");
+        await File.WriteAllTextAsync(legacyPath, "old image", TestContext.Current.CancellationToken);
         using var http = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
             { Content = new ByteArrayContent(TestImages.Jpeg) })));
         var store = new WallpaperStore(http);
         Assert.True(store.Exists(scope.Path, photo)); Assert.Equal(legacyPath, store.GetPath(scope.Path, photo));
         store.Delete(scope.Path, photo); Assert.False(File.Exists(legacyPath));
-        await store.DownloadAsync(scope.Path, photo, default);
+        await store.DownloadAsync(scope.Path, photo, TestContext.Current.CancellationToken);
         Assert.Equal(Path.Combine(scope.Path, cleanName), store.GetPath(scope.Path, photo));
         Assert.True(store.Exists(scope.Path, photo)); Assert.Single(Directory.GetFiles(scope.Path));
     }

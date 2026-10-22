@@ -38,7 +38,7 @@ public class SpotlightTests
                 : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(TestImages.Jpeg) });
         }));
         var result = new List<WallpaperPreview>();
-        await foreach (var image in new SpotlightWallpaperClient(client).ScanAsync(market, default)) result.Add(image);
+        await foreach (var image in new SpotlightWallpaperClient(client).ScanAsync(market, TestContext.Current.CancellationToken)) result.Add(image);
         var photo = Assert.Single(result).Image;
         Assert.Contains("locale=" + market, requests[0].Query);
         Assert.Contains("country=" + country, requests[0].Query);
@@ -112,7 +112,7 @@ public class SpotlightTests
         {
             var image = WallpaperVariants.ForResolution(Photo, resolution);
             Assert.Equal(Photo, image);
-            await store.DownloadAsync(scope.Path, image, default);
+            await store.DownloadAsync(scope.Path, image, TestContext.Current.CancellationToken);
         }
         Assert.Single(Directory.GetFiles(scope.Path));
         var file = ImageFile.FromFile(store.GetPath(scope.Path, Photo));
@@ -120,7 +120,7 @@ public class SpotlightTests
         Assert.Contains("Windows Spotlight", file.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
         Assert.DoesNotContain("Bing;", file.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
         Assert.Equal("© Photographer", file.Properties.Get(ExifTag.Copyright).Value);
-        var bytes = await File.ReadAllBytesAsync(store.GetPath(scope.Path, Photo));
+        var bytes = await File.ReadAllBytesAsync(store.GetPath(scope.Path, Photo), TestContext.Current.CancellationToken);
         var text = Encoding.UTF8.GetString(bytes);
         var start = text.IndexOf("<x:xmpmeta", StringComparison.Ordinal);
         var end = text.IndexOf("</x:xmpmeta>", start, StringComparison.Ordinal) + "</x:xmpmeta>".Length;
@@ -138,7 +138,7 @@ public class SpotlightTests
     {
         using var invalid = new HttpClient(new Handler((_, _) => Task.FromResult(Json("{}"))));
         await Assert.ThrowsAsync<InvalidDataException>(async () =>
-        { await foreach (var _ in new SpotlightWallpaperClient(invalid).ScanAsync("de-DE", default)) { } });
+        { await foreach (var _ in new SpotlightWallpaperClient(invalid).ScanAsync("de-DE", TestContext.Current.CancellationToken)) { } });
         using var cancellation = new CancellationTokenSource(); cancellation.Cancel();
         await Assert.ThrowsAnyAsync<OperationCanceledException>(async () =>
         { await foreach (var _ in new SpotlightWallpaperClient(invalid).ScanAsync("de-DE", cancellation.Token)) { } });

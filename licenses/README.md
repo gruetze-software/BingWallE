@@ -6,4 +6,7 @@
   The model is downloaded on demand; labels are bundled. Model weights are unmodified.
   SHA-256: c1c513582d56afceff8516c73804e484c81c6a830712ab6d682253f4a3cd042f.
 
-The app also uses Avalonia, SkiaSharp and CommunityToolkit.Mvvm under their respective licenses.
+The app also uses Avalonia 12.1.4 (including the Wayland backend), SkiaSharp 3.119.4
+and CommunityToolkit.Mvvm under their respective licenses.
+
+- NWayland 0.11.0: https://github.com/AvaloniaUI/NWayland - MIT, see NWayland.txt.
