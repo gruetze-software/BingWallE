@@ -50,6 +50,8 @@ public class HttpTraceTests
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => request.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken));
         Assert.Contains(messages, message => message.Contains("HEADERS 200"));
         Assert.Contains("CANCELED", messages[^1]);
+        Assert.DoesNotContain("Exception", messages[^1]);
+        Assert.DoesNotContain("\n", messages[^1]);
         Assert.DoesNotContain(messages, message => message.Contains("COMPLETE"));
     }
 

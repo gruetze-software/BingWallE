@@ -34,10 +34,12 @@ public sealed class HttpTraceHandler : DelegatingHandler
             Log($"COMPLETE status={(int)response.StatusCode}, bytes={bytes.Length}, {timer.ElapsedMilliseconds} ms");
             return response;
         }
-        catch (OperationCanceledException ex)
+        catch (OperationCanceledException)
         {
             response?.Dispose();
-            Log($"CANCELED (user cancellation or request timeout) after {timer.ElapsedMilliseconds} ms: {ex}");
+            // Cancellation is expected when a preview closes or a request times out.
+            // Keep real failures verbose, but avoid a misleading exception dump here.
+            Log($"CANCELED (request cancellation or timeout), {timer.ElapsedMilliseconds} ms");
             throw;
         }
         catch (Exception ex)
