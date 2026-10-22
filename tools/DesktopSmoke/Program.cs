@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -9,6 +10,8 @@ using BingWallE.Views;
 
 if (args.Length != 1 || args[0] is not ("Wayland" or "X11"))
     throw new ArgumentException("Usage: DesktopSmoke Wayland|X11");
+Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
+Trace.AutoFlush = true;
 SmokeApplication.ExpectedBackend = args[0];
 return DesktopPlatform.Configure(AppBuilder.Configure<SmokeApplication>())
     .WithInterFont().LogToTrace().StartWithClassicDesktopLifetime([]);

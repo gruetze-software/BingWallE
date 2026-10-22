@@ -32,7 +32,7 @@ run_check() {
   if ! timeout 30s "$@" >"$LOGS/$name.log" 2>&1; then cat "$LOGS/$name.log"; return 1; fi
   grep -F 'SMOKE PASS:' "$LOGS/$name.log"
 }
-run_check wayland-auto env -u DISPLAY BINGWALLE_LINUX_BACKEND=auto WAYLAND_DISPLAY=bingwalle-test dotnet "$SMOKE" Wayland
 run_check wayland-forced env -u DISPLAY BINGWALLE_LINUX_BACKEND=wayland WAYLAND_DISPLAY=bingwalle-test dotnet "$SMOKE" Wayland
+run_check wayland-auto env -u DISPLAY BINGWALLE_LINUX_BACKEND=auto WAYLAND_DISPLAY=bingwalle-test dotnet "$SMOKE" Wayland
 run_check x11-forced xvfb-run -a env BINGWALLE_LINUX_BACKEND=x11 WAYLAND_DISPLAY=bingwalle-test dotnet "$SMOKE" X11
 run_check x11-fallback xvfb-run -a env BINGWALLE_LINUX_BACKEND=auto WAYLAND_DISPLAY=bingwalle-missing dotnet "$SMOKE" X11
