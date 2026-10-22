@@ -318,6 +318,11 @@ The default download destination is `BingImages` inside the Pictures folder.
 
 ## Build release packages
 
+The upstream [Flatpak build and install entry point](docs/FLATPAK-BUILD.md) keeps
+the framework-dependent Linux build and desktop-file installation in the source
+repository. It does not submit or publish a Flatpak. Current X11/XWayland behavior
+and the native Wayland migration requirements are documented in [Wayland readiness](docs/WAYLAND.md).
+
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the full three-part version, for example
 **1.4.1**. Every package includes the .NET runtime.

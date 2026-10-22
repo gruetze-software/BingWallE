@@ -83,6 +83,22 @@ jobs:
       - name: Linux package
         if: matrix.platform == 'linux'
         run: bash scripts/build-linux.sh '${{ matrix.arch }}'
+      - name: Framework-dependent Linux install check
+        if: matrix.platform == 'linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/empty-nuget-feed"
+          prefix="$RUNNER_TEMP/bingwalle-flatpak-stage"
+          # The preceding publish populated the cache. Restore with no remote feed.
+          bash scripts/install-flatpak.sh --prefix "$prefix" --nuget-source "$RUNNER_TEMP/empty-nuget-feed"
+          version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
+          test "$("$prefix/bin/bingwalle" --version)" = "BingWallE $version"
+          app_id=de.gruetze_software.BingWallE
+          for file in "share/applications/$app_id.desktop" "share/icons/hicolor/256x256/apps/$app_id.png" "share/metainfo/$app_id.metainfo.xml" "share/licenses/$app_id/LICENSE"; do
+            test -s "$prefix/$file"
+          done
+          diff -r licenses "$prefix/share/licenses/$app_id/third-party"
       - name: macOS package
         if: matrix.platform == 'macos'
         run: bash scripts/build-macos.sh '${{ matrix.arch }}'
