@@ -1,4 +1,4 @@
-"""Regenerate platform icons from the approved PNG master. Requires Pillow."""
+"""Convert the maintainer's hand-drawn PNG master to platform icons. Requires Pillow."""
 from pathlib import Path
 import sys
 

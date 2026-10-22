@@ -8,7 +8,7 @@ public static class AppInfo
         get
         {
             var version = typeof(AppInfo).Assembly.GetName().Version;
-            return version?.ToString(3) ?? "1.4.0";
+            return version?.ToString(3) ?? "1.4.1";
         }
     }
     public static string DisplayName => $"{Name} {Version}";
