@@ -36,7 +36,7 @@ environment variable.
 
 ## Automated checks
 
-The Linux CI job runs the real main window, Settings and About under a disposable
+A separate Ubuntu 24.04 CI job runs the real main window, Settings and About under a disposable
 headless Weston compositor with software EGL rendering and an Xvfb X server. The
 shared application backend configuration is used; the test tool replaces settings
 storage and disallows HTTP requests, protecting personal data and avoiding downloads.
@@ -51,6 +51,11 @@ bash scripts/test-linux-backends.sh
 The script needs .NET 10, Weston, Xvfb, GNU timeout and the Mesa/Wayland native
 libraries. This is a window-creation and shutdown smoke test, not full interactive
 acceptance testing and not a Flatpak sandbox test.
+
+Avalonia requires `xdg_wm_base` version 3 or newer. Older compositors such as
+the local WSLg instance cannot initialize this backend and must use the X11
+fallback. Native desktop tests therefore use a modern Weston, while the existing
+Linux package build remains on Ubuntu 22.04.
 
 ## Still required before release
 

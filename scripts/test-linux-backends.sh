@@ -22,7 +22,7 @@ SMOKE="$ROOT/tools/DesktopSmoke/bin/Release/net10.0/DesktopSmoke.dll"
 weston --backend=headless-backend.so --use-gl --width=1280 --height=960   --socket=bingwalle-test --idle-time=0 --no-config >"$LOGS/weston.log" 2>&1 &
 WESTON_PID=$!
 for attempt in {1..100}; do
-  if [[ -S "$XDG_RUNTIME_DIR/bingwalle-test" ]]; then break; fi
+  if [[ -S "$XDG_RUNTIME_DIR/bingwalle-test" ]] && WAYLAND_DISPLAY=bingwalle-test timeout 1s weston-info >"$LOGS/wayland-globals.log" 2>&1; then break; fi
   if ! kill -0 "$WESTON_PID" 2>/dev/null; then cat "$LOGS/weston.log"; exit 1; fi
   sleep 0.1
 done

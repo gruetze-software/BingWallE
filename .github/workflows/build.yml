@@ -99,18 +99,6 @@ jobs:
             test -s "$prefix/$file"
           done
           diff -r licenses "$prefix/share/licenses/$app_id/third-party"
-      - name: Linux native Wayland and X11 startup
-        if: matrix.platform == 'linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y weston xvfb libegl1 libgles2 libgl1-mesa-dri libwayland-egl1 libxkbcommon0
-          bash scripts/test-linux-backends.sh
-      - name: Upload Linux display logs
-        if: always() && matrix.platform == 'linux'
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-        with:
-          name: linux-display-logs
-          path: artifacts/linux-backends/*.log
       - name: macOS package
         if: matrix.platform == 'macos'
         run: bash scripts/build-macos.sh '${{ matrix.arch }}'
@@ -131,10 +119,34 @@ jobs:
             artifacts/BingWallE-*.dmg
           if-no-files-found: error
 
+  linux-desktop:
+    name: Native Wayland and X11
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Install desktop test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y weston xvfb libegl1 libgles2 libgl1-mesa-dri libwayland-egl1 libxkbcommon0
+      - name: Test native Wayland, X11 and automatic fallback
+        run: bash scripts/test-linux-backends.sh
+      - name: Upload Linux display logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: linux-display-logs
+          path: artifacts/linux-backends/*.log
+
   release:
     name: Publish GitHub release
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
+    needs: [build, linux-desktop]
     runs-on: ubuntu-latest
     permissions:
       contents: write
