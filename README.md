@@ -142,6 +142,11 @@ On Linux, install the DEB on Debian/Ubuntu or extract the TAR.GZ and run
 A graphical desktop session and the native Avalonia/.NET dependencies are required.
 The DEB also installs the application icon and desktop entry.
 
+<a href="https://snapcraft.io/bingwalle">
+  <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg"
+       alt="Get it from the Snap Store" width="200">
+</a>
+
 ### Linux Mint installation
 
 Use the Linux x64 **DEB** package on Linux Mint. Snap is not required.
