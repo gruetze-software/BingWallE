@@ -124,7 +124,8 @@ Third-party license notices are included in `licenses/` in the repository and pa
 ## Downloads and first start
 
 Download the package for your platform from the
-[latest release](https://github.com/gruetze-software/BingWallE/releases/latest).
+[latest GitHub release](https://github.com/gruetze-software/BingWallE/releases/latest),
+or use the Snap Store as described under [Linux installation](#linux-installation).
 **The .NET runtime is included; no separate runtime or SDK installation is required.**
 
 | Platform | Package |
@@ -137,44 +138,91 @@ Download the package for your platform from the
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
 
-On Linux, install the DEB on Debian/Ubuntu or extract the TAR.GZ and run
-`./bingwalle`. If needed, mark the extracted executable with `chmod +x bingwalle`.
-A graphical desktop session and the native Avalonia/.NET dependencies are required.
-The DEB also installs the application icon and desktop entry.
+All four release targets are built and tested by GitHub Actions. The graphical
+application has not been manually tested on every target device.
+`SHA256SUMS.txt` in the release contains checksums for all GitHub packages.
+
+### Linux installation
+
+Choose the installation method that fits your distribution. Published Linux
+packages target **x86_64 / amd64** and require a graphical desktop session.
+
+| Installation method | Where to use it | Updates |
+| --- | --- | --- |
+| [Snap Store](#snap-ubuntu-and-other-distributions-with-snap-support) | Ubuntu and other distributions with snapd enabled, including Fedora, Arch Linux and openSUSE | Managed by Snap |
+| [DEB package](#deb-debian-ubuntu-and-linux-mint) | Debian, Ubuntu and Ubuntu-based Linux Mint | Install a newer DEB manually |
+| [TAR.GZ archive](#targz-other-linux-distributions) | Other compatible Linux distributions, with native dependencies installed | Extract a newer archive manually |
+
+#### Snap: Ubuntu and other distributions with Snap support
 
 <a href="https://snapcraft.io/bingwalle">
   <img src="https://snapcraft.io/static/images/badges/en/snap-store-black.svg"
        alt="Get it from the Snap Store" width="200">
 </a>
 
-### Linux Mint installation
+On Ubuntu or another distribution with snapd enabled, install BingWallE from the
+[Snap Store](https://snapcraft.io/bingwalle), or run:
 
-Use the Linux x64 **DEB** package on Linux Mint. Snap is not required.
-Linux Mint 21.x (Ubuntu 22.04 base) and 22.x (Ubuntu 24.04 base) are the
-intended test targets; a successful Ubuntu build is not a completed Mint test.
-LMDE and ARM devices have not been validated.
+```bash
+sudo snap install bingwalle
+snap run bingwalle
+```
 
-Download the DEB, open a terminal in its folder, and install the exact filename:
+For Fedora, Arch Linux, openSUSE and other distributions, first follow the
+[official snapd setup instructions for your distribution](https://snapcraft.io/docs/tutorials/install-the-daemon/).
+Then use the same installation command above. These are installation options,
+not a claim that BingWallE has been manually tested on every distribution.
+
+Snap manages application updates. To check for an update manually, close BingWallE
+and run `sudo snap refresh bingwalle`. The stable Store channel may contain a
+different version from the latest GitHub release; inspect it with `snap info bingwalle`.
+You do not need Snapcraft, the packaging tool, to install or run the application.
+
+#### DEB: Debian, Ubuntu and Linux Mint
+
+Download the Linux x64 **DEB** from the
+[latest GitHub release](https://github.com/gruetze-software/BingWallE/releases/latest).
+Open a terminal in its download folder and install the exact filename:
 
 ```bash
 sudo apt install ./BingWallE-1.4.1-linux-x64.deb
 ```
 
-Use the version number of your downloaded file. Start **BingWallE** from the
-application menu or run `bingwalle`. The .NET runtime is included; APT resolves
-the native dependencies declared by the package. Installing a newer DEB with
-the same command upgrades the application. GitHub downloads do not provide
-automatic APT updates or make the app searchable in Mint's Software Manager.
+Start **BingWallE** from the application menu or run `bingwalle`. The package
+installs the application icon and desktop entry. The .NET runtime is included;
+APT resolves the native dependencies declared by the package. Installing a newer
+DEB with the same command upgrades the application. GitHub downloads do not set
+up an APT repository or automatic application updates.
 
-If you already have the Snap installed, close it before testing the DEB and use
+**Linux Mint:** the DEB is the direct installation option and does not require
+Snap. Mint disables Snap installation by default; enabling it is optional and is
+covered in [Canonical's Mint instructions](https://snapcraft.io/docs/tutorials/install-the-daemon/linux-mint/).
+Linux Mint 21.x and 22.x are the intended DEB test targets; LMDE and ARM devices
+have not been validated. See the [Mint test guide](docs/LINUX-MINT.md) for test
+steps and troubleshooting. Flathub publication is still pending; BingWallE is
+not yet available there for installation through Mint's Software Manager.
+
+If you also have the Snap installed, close it before testing the DEB and use
 `/usr/bin/bingwalle` to select the DEB explicitly. The two editions can use
 different settings folders; this is not an automatic settings migration.
 
-See the [Mint test guide](docs/LINUX-MINT.md) for the test steps and troubleshooting.
+#### TAR.GZ: other Linux distributions
 
-All four targets are built and tested by GitHub Actions. The graphical application
-has not been manually tested on every target device. `SHA256SUMS.txt` in the release
-contains checksums for all packages.
+If you prefer not to use Snap or a DEB package, download
+`BingWallE-1.4.1-linux-x64.tar.gz` from the GitHub release and extract it into a
+folder. Open a terminal in that folder and run:
+
+```bash
+chmod +x bingwalle
+./bingwalle
+```
+
+The archive includes the .NET runtime, but your distribution must provide its
+native system libraries and the Avalonia desktop dependencies. Unlike the DEB,
+the archive does not automatically install dependencies, a menu entry or an icon.
+There is no RPM or Arch package supplied by this project; use Snap where supported
+or validate the archive on your system. To upgrade, close the app and extract the
+new release into a separate folder.
 
 ### macOS installation and troubleshooting
 
@@ -299,11 +347,11 @@ starts the release build. The tag must match `<Version>` in the project file, an
 only after all four build variants succeed. All packages and `SHA256SUMS.txt`
 are attached. See [release notes for 1.4.1](docs/RELEASE-1.4.1.md).
 
-## Snap Store
+## Snap packaging and publishing
 
-BingWallE is available in the [Snap Store](https://snapcraft.io/bingwalle) for
-amd64. The Store channel can contain a different version from the GitHub release. GitHub releases do not automatically update the
-Snap Store channel. The separate **Build and test Snap** workflow produces test packages
+For installation and updates, see [Snap installation](#snap-ubuntu-and-other-distributions-with-snap-support).
+GitHub releases do not automatically update the Snap Store channel.
+The separate **Build and test Snap** workflow produces test packages
 without needing a publisher account.
 See [the Snap publishing guide](docs/SNAP-PUBLISHING.md) for account registration,
 local testing, permissions and the first beta upload. Store listing copy is in
