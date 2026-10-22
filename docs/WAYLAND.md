@@ -18,6 +18,9 @@ Branch: `codex/avalonia12-wayland`. This migration is not released or merged int
   required by SkiaSharp 3, and the screenshot PNG encoder API.
 - Declare the native Wayland/EGL dependencies in the DEB package.
 
+For interactive testing with prebuilt packages, see the
+[Linux and macOS test guide (German)](TEST-AVALONIA12-DE.md).
+
 ## Testing the backend
 
 On Linux, the default is `auto`: try Wayland and fall back to X11 if initialization
