@@ -1,7 +1,8 @@
-# Avalonia 12 / native Wayland development branch
+# Avalonia 12 / native Wayland
 
-Branch: `codex/avalonia12-wayland`. This migration is not released or merged into
-`main`. Published BingWallE 1.4.1 still uses Avalonia 11.3.20 / X11.
+BingWallE 1.5.0 on `main` uses .NET 10 and Avalonia 12.1.4, including native
+Wayland with X11 fallback. The migration was developed in `codex/avalonia12-wayland`.
+Merging the source does not publish a GitHub release or update Store packages.
 
 ## Implemented
 
@@ -60,12 +61,14 @@ the local WSLg instance cannot initialize this backend and must use the X11
 fallback. Native desktop tests therefore use a modern Weston, while the existing
 Linux package build remains on Ubuntu 22.04.
 
-## Still required before release
+## Interactive validation
 
-- Test a real GNOME and KDE Wayland session: input, context menus, scaling,
+- The maintainer's Ubuntu VM log confirms native Wayland initialization; Mint
+  confirms X11. See [the Linux test review](LINUX-TEST-2026-10-23.md).
+  Complete interactive GNOME/KDE Wayland checks: input, context menus, scaling,
   window state, icons and dialog ownership/focus. Wayland compositors control
   window placement, so absolute centering cannot be assumed.
-- Build a real Flatpak from this branch and test portal folder selection, retained
+- Build a real Flatpak from the current upstream source and test portal folder selection, retained
   folder access after restart, downloads, browser links and file-manager opening.
 - Test the existing Windows and macOS UI manually and repeat X11 VM checks.
 - Native Wayland still has upstream feature limitations; keep X11 fallback and

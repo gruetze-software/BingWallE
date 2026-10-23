@@ -13,7 +13,14 @@ preflight record below documents the earlier preparation, not Flathub acceptance
 For the publisher's German step-by-step guide, see
 [FLATHUB-ANLEITUNG-DE.md](FLATHUB-ANLEITUNG-DE.md).
 
-## Prepared upstream
+## Current upstream source
+
+As of 23 October 2026, `main` targets version 1.5.0 with .NET 10 and Avalonia
+12.1.4, native Wayland with X11 fallback, and the maintainer's hand-drawn icon.
+See [Wayland details](WAYLAND.md) and [1.5.0 notes](RELEASE-1.5.0.md).
+This source update does not publish or update a Flathub package.
+
+## Historical preparation record (18–19 October 2026)
 
 - Development version 1.3.3 targets .NET 10 LTS, including tests, recognition smoke
   checks and both GitHub workflows. Existing published packages are unchanged.

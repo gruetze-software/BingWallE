@@ -1,14 +1,16 @@
 # Testpakete fuer Linux und macOS
 
-Testbranch: `codex/avalonia12-wayland`. Diese Pakete sind unveroeffentlichte
-Teststaende mit Avalonia 12 und enthalten auch die korrigierte Bildvorschau.
-In der Anwendung und den Paketnamen steht weiterhin 1.4.1. Deshalb ausschliesslich
-die Artefakte des aktuellen Branch-Builds verwenden, nicht den stabilen Release.
+Aktueller Quellstand: `main`, Version 1.5.0 mit .NET 10 und Avalonia 12.1.4.
+Die Wayland-Umstellung und die korrigierte Bildvorschau sind uebernommen.
+Fuer weitere Tests die Artefakte des aktuellen main-Builds verwenden.
+Aeltere Pakete des Testbranches `codex/avalonia12-wayland` tragen noch 1.4.1;
+sie sind nicht identisch mit dem regulaeren 1.4.1-Release. Ein Merge allein
+veroeffentlicht keine neuen Release- oder Store-Pakete.
 Es wird keine Entwicklungsumgebung und kein separates .NET benoetigt.
 
 ## 1. Die richtigen Pakete herunterladen
 
-Oeffne den bereitgestellten GitHub-Actions-Lauf fuer diesen Branch. Melde dich
+Oeffne den bereitgestellten GitHub-Actions-Lauf fuer `main`. Melde dich
 bei GitHub an und scrolle auf der Zusammenfassung zu **Artifacts**.
 
 | System | Artefakt | Inhalt zum Testen |

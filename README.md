@@ -2,15 +2,17 @@
   <img src="branding/bingwalle.png" width="192" alt="BingWallE: hand-drawn turquoise mountains, a winding river and a yellow sun on a dark blue rounded square" />
 </p>
 
-# BingWallE 1.4.1
+# BingWallE 1.5.0
 
 Collect Bing daily images and optional Windows Spotlight selections in one gallery.
-Version 1.4.1 introduces a new app icon drawn by the maintainer in Paint.NET.
+Version 1.5.0 adds native Wayland with X11 fallback and improves the image preview.
+The app icon is drawn by the maintainer in Paint.NET.
 
-**Development branch:** the Avalonia 12 / native Wayland migration is not part of
-the published 1.4.1 release. See [Wayland testing](docs/WAYLAND.md).
+**Source version: 1.5.0.** Merging into `main` does not publish a release.
+Until its version tag is published, the latest release and Store packages can be older.
+See [Wayland testing](docs/WAYLAND.md).
 
-See [what is new in 1.4.1](docs/RELEASE-1.4.1.md).
+See [what is new in 1.5.0](docs/RELEASE-1.5.0.md).
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
 
@@ -20,7 +22,7 @@ See [what is new in 1.4.1](docs/RELEASE-1.4.1.md).
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
 BingWallE is a desktop collector for Bing and Windows Spotlight wallpapers, built with C#, .NET 10 and
-Avalonia 12.1.4 in this development branch. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, image download
+Avalonia 12.1.4. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, image download
 region, Bing resolution, optional Windows Spotlight images and theme. Language changes take effect immediately; your choice is saved for the next start.
 The download region is independent of the application language: choose Germany
 for German image titles and descriptions, or the USA / United Kingdom for English content.
@@ -30,7 +32,10 @@ Use Refresh after changing the region.
 ## Features
 
 - A responsive gallery with large image cards, source labels and readable dates.
+- Native Wayland on compatible Linux sessions, with automatic X11 fallback.
 - Click an image to open a large preview with its description and copyright.
+  A narrower preview preserves the image aspect ratio, reserves space for the scrollbar
+  and keeps the save status visible. Saved images hide the download checkbox.
   Close the preview using the close button or Escape.
 - Select all images, none, or only new ones; saved images are marked.
 - Choose from twelve image regions, including Germany, the USA, Japan and France.
@@ -134,10 +139,10 @@ or use the Snap Store as described under [Linux installation](#linux-installatio
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.4.1-win-x64.zip` |
-| Linux x64 | `BingWallE-1.4.1-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.4.1-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.4.1-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.5.0-win-x64.zip` |
+| Linux x64 | `BingWallE-1.5.0-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.5.0-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.5.0-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -189,7 +194,7 @@ Download the Linux x64 **DEB** from the
 Open a terminal in its download folder and install the exact filename:
 
 ```bash
-sudo apt install ./BingWallE-1.4.1-linux-x64.deb
+sudo apt install ./BingWallE-1.5.0-linux-x64.deb
 ```
 
 Start **BingWallE** from the application menu or run `bingwalle`. The package
@@ -213,7 +218,7 @@ different settings folders; this is not an automatic settings migration.
 #### TAR.GZ: other Linux distributions
 
 If you prefer not to use Snap or a DEB package, download
-`BingWallE-1.4.1-linux-x64.tar.gz` from the GitHub release and extract it into a
+`BingWallE-1.5.0-linux-x64.tar.gz` from the GitHub release and extract it into a
 folder. Open a terminal in that folder and run:
 
 ```bash
@@ -267,7 +272,7 @@ an issue. A quarantine workaround does not resolve incompatible systems or damag
 
 ## Build from source
 
-The **.NET 10 SDK** is required to build BingWallE 1.4.1.
+The **.NET 10 SDK** is required to build BingWallE 1.5.0.
 The repository's `global.json` accepts stable .NET 10 SDK feature bands.
 Application, tests and recognition smoke checks target .NET 10. macOS builds
 require macOS 14 or later.
@@ -329,7 +334,7 @@ are documented in [Wayland testing](docs/WAYLAND.md).
 
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the full three-part version, for example
-**1.4.1**. Every package includes the .NET runtime.
+**1.5.0**. Every package includes the .NET runtime.
 
 | Platform | Command on that platform | Output |
 | --- | --- | --- |
@@ -350,11 +355,11 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.4.1`. Pushing a tag
+Version tags use the full package version, for example `v1.5.0`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
-only after all four build variants succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.4.1](docs/RELEASE-1.4.1.md).
+only after all four build variants and the native Wayland/X11 checks succeed. All packages and `SHA256SUMS.txt`
+are attached. See [release notes for 1.5.0](docs/RELEASE-1.5.0.md).
 
 ## Snap packaging and publishing
 
@@ -374,7 +379,7 @@ in **Show output from**.
 Traces include timestamps, an identifier per HTTP request, the URL, HTTP status,
 duration and byte count. `START` without `HEADERS` means no response headers have
 arrived yet. `HEADERS` without `COMPLETE` means the response body is still being
-transferred. Errors include stack traces. Image contents and HTTP headers are not logged.
+transferred. Errors include stack traces; expected cancellations use a concise message. Image contents and HTTP headers are not logged.
 
 Each HTTP request has a 30-second timeout. The interface distinguishes user cancellation
 from a timeout. During a scan, the status line shows the current day and operation

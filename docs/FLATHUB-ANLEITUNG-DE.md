@@ -16,7 +16,7 @@ enthält weder ein Manifest noch Texte zum Einfügen in einen Flathub-Pull-Reque
 | Vorbereitete Änderungen | https://github.com/gruetze-software/BingWallE/pull/1 |
 | Kennung der Linux-Anwendung | `de.gruetze_software.BingWallE` |
 | Deine Domain | `gruetze-software.de` |
-| Technische Basis | .NET 10 und Avalonia |
+| Technische Basis | .NET 10 und Avalonia 12.1.4 (Quellstand 1.5.0) |
 | Programmdatei | `bingwalle` |
 | Metadaten | `branding/de.gruetze_software.BingWallE.metainfo.xml` |
 | Linux-Menüeintrag | `branding/de.gruetze_software.BingWallE.desktop` |
