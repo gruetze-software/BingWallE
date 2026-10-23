@@ -62,6 +62,8 @@ public static class JpegXmpMetadata
             if (!hasCreationDate)
             { description.Elements(xmp + "CreateDate").Remove(); description.Attribute(xmp + "CreateDate")?.Remove(); }
         }
+        // These Dublin Core fields require language alternatives. Some file managers display
+        // the language qualifier, but removing it would break the XMP field types.
         XElement Alt(XName name, string value) => new(name,
             new XElement(rdf + "Alt", new XElement(rdf + "li", new XAttribute(XNamespace.Xml + "lang", "x-default"), value)));
         root.Add(new XElement(rdf + "Description", new XAttribute(rdf + "about", ""),

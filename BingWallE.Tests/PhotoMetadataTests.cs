@@ -49,6 +49,35 @@ public class PhotoMetadataTests
     }
 
     [Fact]
+    public void XmpLanguageQualifiersAreAttributesAndNeverPartOfDisplayText()
+    {
+        var photo = Photo with { Description = "Über der Küste & dem Fluss" };
+        var bytes = PhotoMetadataWriter.Write(TestImages.Jpeg, photo, Array.Empty<ImageTag>());
+        var text = Encoding.UTF8.GetString(bytes);
+        var start = text.IndexOf("<x:xmpmeta", StringComparison.Ordinal);
+        var end = text.IndexOf("</x:xmpmeta>", start, StringComparison.Ordinal) + "</x:xmpmeta>".Length;
+        var packet = System.Xml.Linq.XDocument.Parse(text[start..end]);
+        System.Xml.Linq.XNamespace dc = "http://purl.org/dc/elements/1.1/";
+        System.Xml.Linq.XNamespace rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+        var expected = new[]
+        {
+            ("title", photo.Title),
+            ("description", photo.Description + "\nSource: Bing"),
+            ("rights", WallpaperCredits.Split(photo.Copyright).Copyright)
+        };
+        foreach (var (name, value) in expected)
+        {
+            var field = Assert.Single(packet.Descendants(dc + name));
+            var alternative = Assert.Single(field.Elements(rdf + "Alt"));
+            var item = Assert.Single(alternative.Elements(rdf + "li"));
+            Assert.Equal("x-default", item.Attribute(System.Xml.Linq.XNamespace.Xml + "lang")?.Value);
+            Assert.Equal(value, item.Value);
+            Assert.DoesNotContain("lang=", item.Value);
+        }
+        Assert.Equal(ScanData(TestImages.Jpeg), ScanData(bytes));
+    }
+
+    [Fact]
     public void UpdatingMetadataKeepsOneXmpPacketAndOriginalPixels()
     {
         var first = PhotoMetadataWriter.Write(TestImages.Jpeg, Photo, Array.Empty<ImageTag>());
