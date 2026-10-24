@@ -1,0 +1,80 @@
+<Window xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="using:BingWallE.ViewModels"
+    x:Class="BingWallE.Views.PreviewWindow" x:DataType="vm:MainWindowViewModel"
+    Icon="/Assets/bingwalle.ico" Title="{Binding PreviewItem.Title}"
+    Width="980" Height="850" MinWidth="480" MinHeight="420" CanResize="True"
+    WindowStartupLocation="CenterOwner" Background="{DynamicResource GalleryBackground}">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="GalleryBackground" Color="#F4F6F7"/>
+                    <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
+                    <SolidColorBrush x:Key="SubtleBackground" Color="#EAF0F0"/>
+                    <SolidColorBrush x:Key="SecondaryText" Color="#53646A"/>
+                    <SolidColorBrush x:Key="CardStroke" Color="#DDE4E6"/>
+                    <SolidColorBrush x:Key="AccentBrush" Color="#216F69"/>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="GalleryBackground" Color="#151C21"/>
+                    <SolidColorBrush x:Key="CardBackground" Color="#202A30"/>
+                    <SolidColorBrush x:Key="SubtleBackground" Color="#29373D"/>
+                    <SolidColorBrush x:Key="SecondaryText" Color="#B1C1C6"/>
+                    <SolidColorBrush x:Key="CardStroke" Color="#37454C"/>
+                    <SolidColorBrush x:Key="AccentBrush" Color="#68CBBE"/>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.Styles>
+        <Style Selector="Button"><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="14,9"/></Style>
+        <Style Selector="TextBlock.secondary"><Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/></Style>
+    </Window.Styles>
+    <Border x:Name="PreviewCard" Background="{DynamicResource CardBackground}" CornerRadius="12" Padding="20" Margin="16">
+        <Grid RowDefinitions="Auto,*,Auto">
+            <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,14">
+                <StackPanel Spacing="4">
+                    <TextBlock Text="{Binding PreviewItem.Title}" FontSize="21" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding PreviewItem.SourceLabel}" Classes="secondary" FontSize="12"/>
+                    <TextBlock Text="{Binding PreviewItem.DisplayDate}" Classes="secondary"/>
+                    <TextBlock Text="{Binding PreviewItem.ResolutionLabel}" Classes="secondary" FontSize="12"/>
+                </StackPanel>
+                <Button Grid.Column="1" Content="{DynamicResource Text068}" Command="{Binding ClosePreviewCommand}" VerticalAlignment="Top" Margin="12,0,0,0"/>
+            </Grid>
+            <Grid Grid.Row="1" RowDefinitions="2*,*" RowSpacing="14">
+                <Border Background="{DynamicResource SubtleBackground}" CornerRadius="8" ClipToBounds="True">
+                    <Grid x:Name="PreviewImageFrame">
+                        <Image Source="{Binding PreviewItem.Preview}" Stretch="Uniform"/>
+                        <Image x:Name="PreviewImage" Source="{Binding LargePreview}" Stretch="Uniform"/>
+                    </Grid>
+                </Border>
+                <ScrollViewer x:Name="PreviewScroll" Grid.Row="1" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="PreviewContent" Spacing="14" Margin="0,0,22,0">
+                        <StackPanel Spacing="7">
+                            <TextBlock x:Name="PreviewDescription" Text="{Binding PreviewItem.Description}" TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding PreviewItem.CopyrightCredit}" IsVisible="{Binding PreviewItem.HasCopyrightCredit}" TextWrapping="Wrap" Classes="secondary" FontSize="12"/>
+                            <TextBlock Text="{DynamicResource PreviewTextTags}" FontWeight="SemiBold" FontSize="12"/>
+                            <TextBlock Text="{Binding PreviewItem.TextKeywords}" IsVisible="{Binding PreviewItem.HasTextKeywords}" TextWrapping="Wrap"/>
+                            <TextBlock Text="{DynamicResource PreviewNoTextTags}" IsVisible="{Binding !PreviewItem.HasTextKeywords}" Classes="secondary" FontSize="12"/>
+                            <StackPanel IsVisible="{Binding PreviewItem.HasModelKeywords}" Spacing="4">
+                                <TextBlock Text="{DynamicResource PreviewModelTags}" FontWeight="SemiBold" FontSize="12"/>
+                                <TextBlock Text="{Binding PreviewItem.ModelKeywords}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <TextBlock Text="{DynamicResource PreviewTagsHelp}" TextWrapping="Wrap" Classes="secondary" FontSize="11"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+            <StackPanel Grid.Row="2" Spacing="8" Margin="0,14,0,0">
+                <ProgressBar IsVisible="{Binding IsPreviewLoading}" IsIndeterminate="True" Height="4"/>
+                <TextBlock Text="{Binding PreviewStatus}" TextWrapping="Wrap" FontSize="12" Classes="secondary"/>
+                <TextBlock x:Name="PreviewSaveStatus" Text="{Binding PreviewItem.SaveLabel}" ToolTip.Tip="{Binding PreviewItem.DownloadError}" TextWrapping="Wrap" FontWeight="SemiBold"/>
+                <Grid ColumnDefinitions="*,Auto">
+                    <CheckBox x:Name="PreviewDownloadSelection" Content="{DynamicResource Text069}" IsVisible="{Binding !PreviewItem.IsSaved}" IsChecked="{Binding PreviewItem.IsSelected}" IsEnabled="{Binding !PreviewItem.IsIgnored}"/>
+                    <Button Grid.Column="1" Content="{DynamicResource Text070}" IsVisible="{Binding PreviewFailed}" Command="{Binding RetryPreviewCommand}"/>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

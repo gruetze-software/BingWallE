@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using System.Linq;
-using Avalonia.Input;
+using System.ComponentModel;
+using Avalonia.Threading;
 using Avalonia.Interactivity;
 using BingWallE.ViewModels;
 
@@ -12,13 +13,21 @@ public partial class MainWindow : Window
     private bool _maximized;
     private bool _restoring;
     private bool _placementApplied;
+    private PreviewWindow? _previewWindow;
+    private MainWindowViewModel? _previewViewModel;
 
     public MainWindow()
     {
         InitializeComponent();
         DataContextChanged += (_, _) =>
         {
+            if (_previewViewModel != null) _previewViewModel.PropertyChanged -= PreviewChanged;
+            _previewWindow?.Close();
+            _previewWindow = null;
+            _previewViewModel = DataContext as MainWindowViewModel;
+            if (_previewViewModel != null) _previewViewModel.PropertyChanged += PreviewChanged;
             if (!IsVisible && DataContext is MainWindowViewModel vm) RestorePlacement(vm);
+            SyncPreviewWindow();
         };
         Opened += async (_, _) =>
         {
@@ -27,12 +36,13 @@ public partial class MainWindow : Window
             {
                 if (!_placementApplied) RestorePlacement(vm);
                 await vm.InitializeAsync();
+                SyncPreviewWindow();
             }
         };
         PropertyChanged += (_, e) =>
         {
             if (_restoring || !IsVisible) return;
-            if (e.Property == WindowStateProperty && WindowState != WindowState.Minimized)
+            if (e.Property == WindowStateProperty && WindowState is not (WindowState.Minimized or WindowState.FullScreen))
                 _maximized = WindowState == WindowState.Maximized;
             if (e.Property == ClientSizeProperty && WindowState == WindowState.Normal && ClientSize.Width > 0 && ClientSize.Height > 0)
                 _normalSize = new(ClientSize.Width, ClientSize.Height);
@@ -41,12 +51,46 @@ public partial class MainWindow : Window
         {
             if (DataContext is MainWindowViewModel vm) vm.SaveWindowState(_normalSize with { IsMaximized = _maximized });
         };
-        KeyDown += (_, e) =>
+        WindowFullscreenShortcuts.Attach(this, () =>
         {
-            if (e.Key == Key.Escape && DataContext is MainWindowViewModel vm && vm.IsPreviewOpen)
-            { vm.ClosePreviewCommand.Execute(null); e.Handled = true; }
+            if (DataContext is not MainWindowViewModel { IsPreviewOpen: true } vm) return false;
+            vm.ClosePreviewCommand.Execute(null);
+            return true;
+        });
+        Closed += (_, _) =>
+        {
+            if (_previewViewModel != null) _previewViewModel.PropertyChanged -= PreviewChanged;
+            _previewWindow?.Close();
+            (DataContext as MainWindowViewModel)?.Shutdown();
         };
-        Closed += (_, _) => (DataContext as MainWindowViewModel)?.Shutdown();
+    }
+
+    private void PreviewChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(MainWindowViewModel.PreviewItem))
+            Dispatcher.UIThread.Post(SyncPreviewWindow);
+    }
+
+    private void SyncPreviewWindow()
+    {
+        if (!IsVisible) return;
+        if (DataContext is MainWindowViewModel { IsPreviewOpen: true } vm)
+        {
+            if (_previewWindow != null) return;
+            var preview = new PreviewWindow { DataContext = vm };
+            _previewWindow = preview;
+            preview.Closed += (_, _) =>
+            {
+                if (ReferenceEquals(_previewWindow, preview)) _previewWindow = null;
+            };
+            preview.Show(this);
+        }
+        else
+        {
+            var preview = _previewWindow;
+            _previewWindow = null;
+            preview?.Close();
+        }
     }
 
     private void RestorePlacement(MainWindowViewModel vm)

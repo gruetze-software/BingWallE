@@ -29,11 +29,11 @@ public class PreviewLayoutTests
         using var bitmap = new Bitmap(stream);
         var image = new Wallpaper("https://example.test/image.jpg", "Stokksnes Beach, Iceland", "",
             Source: WallpaperSource.WindowsSpotlight, Description: string.Concat(Enumerable.Repeat(
-                "A long image description with information about the mountains, beach and surrounding landscape. ", 15)));
+                "A long image description with information about the mountains, beach and surrounding landscape. ", 50)));
         var item = new ImageItemViewModel(image, bitmap) { IsSelected = true };
         item.SetLanguage(language);
         vm.PreviewItem = item;
-        var window = new MainWindow { DataContext = vm, Width = width, Height = height };
+        var window = new PreviewWindow { DataContext = vm, Width = width, Height = height };
         window.Show();
         try
         {
@@ -43,7 +43,8 @@ public class PreviewLayoutTests
             var description = window.FindControl<TextBlock>("PreviewDescription")!;
             var status = window.FindControl<TextBlock>("PreviewSaveStatus")!;
             var selection = window.FindControl<CheckBox>("PreviewDownloadSelection")!;
-            Assert.InRange(card.Bounds.Width, 1, 860);
+            Assert.True(window.CanResize);
+            Assert.InRange(card.Bounds.Width, 1, window.ClientSize.Width);
             Assert.True(scroll.Extent.Height > scroll.Viewport.Height);
             var descriptionRight = description.TranslatePoint(new Point(description.Bounds.Width, 0), scroll)!.Value.X;
             Assert.True(descriptionRight <= scroll.Bounds.Width - 16, "Text overlaps the scrollbar area.");
@@ -68,6 +69,41 @@ public class PreviewLayoutTests
             Capture(window, $"preview-{width}-{language}");
         }
         finally { window.Close(); Application.Current!.RequestedThemeVariant = previousTheme; }
+    }
+
+    [AvaloniaFact]
+    public void ResizingPreviewEnlargesImageAndKeepsItsAspectRatio()
+    {
+        using var http = new HttpClient(new Handler((_, _) => throw new Exception("Unexpected HTTP")));
+        var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http), new TestSettings(), new TestDialogs());
+        using var stream = new MemoryStream(TestImages.Jpeg);
+        using var bitmap = new Bitmap(stream);
+        vm.PreviewItem = new ImageItemViewModel(new Wallpaper("https://example.test/image.jpg", "Resize", ""), bitmap);
+        vm.LargePreview = bitmap;
+        var window = new PreviewWindow { DataContext = vm, Width = 640, Height = 480 };
+        window.Show();
+        try
+        {
+            Dispatcher.UIThread.RunJobs();
+            var frame = window.FindControl<Grid>("PreviewImageFrame")!;
+            var image = window.FindControl<Image>("PreviewImage")!;
+            var before = frame.Bounds.Size;
+            window.Width = 1100;
+            window.Height = 900;
+            Dispatcher.UIThread.RunJobs();
+            Assert.True(frame.Bounds.Width > before.Width);
+            Assert.True(frame.Bounds.Height > before.Height);
+            Assert.Equal(Avalonia.Media.Stretch.Uniform, image.Stretch);
+            Assert.Same(bitmap, image.Source);
+            Assert.True(image.Bounds.Width > 0 && image.Bounds.Height > 0);
+            Capture(window, "preview-resized");
+            // The image remains fixed while the independent metadata area scrolls.
+            var imageTop = frame.TranslatePoint(default, window);
+            window.FindControl<ScrollViewer>("PreviewScroll")!.Offset = new Vector(0, 1000);
+            Dispatcher.UIThread.RunJobs();
+            Assert.Equal(imageTop, frame.TranslatePoint(default, window));
+        }
+        finally { vm.LargePreview = null; window.Close(); }
     }
 
     private static void Capture(Window window, string name)

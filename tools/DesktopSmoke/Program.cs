@@ -41,10 +41,15 @@ public class SmokeApplication : BingWallE.App
             settings.Show(window);
             var about = new AboutWindow(vm.Text);
             about.Show(window);
+            vm.PreviewItem = new ImageItemViewModel(new Wallpaper("https://example.test/unused.jpg", "Native preview", ""));
             DispatcherTimer.RunOnce(() =>
             {
+                var preview = window.OwnedWindows.OfType<PreviewWindow>().Single();
+                if (!preview.IsVisible || !preview.CanResize || DesktopPlatform.Describe(preview) != backend)
+                    throw new InvalidOperationException("Resizable preview did not open on the expected backend.");
+                preview.Close();
                 settings.Close(); about.Close();
-                Console.WriteLine($"SMOKE PASS: {backend}; main window, Settings and About opened.");
+                Console.WriteLine($"SMOKE PASS: {backend}; main window, Settings, About and resizable preview opened.");
                 desktop.Shutdown();
             }, TimeSpan.FromSeconds(1));
         }, TimeSpan.FromSeconds(1));
