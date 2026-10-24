@@ -8,9 +8,8 @@ Collect Bing daily images and optional Windows Spotlight selections in one galle
 Version 1.5.0 adds native Wayland with X11 fallback and improves the image preview.
 The app icon is drawn by the maintainer in Paint.NET.
 
-**Source version: 1.5.0.** Merging into `main` does not publish a release.
-Until its version tag is published, the latest release and Store packages can be older.
-See [Wayland testing](docs/WAYLAND.md).
+See [Wayland testing](docs/WAYLAND.md). Snap Store and Flathub packages are
+published separately and may contain an older version than the GitHub release.
 
 See [what is new in 1.5.0](docs/RELEASE-1.5.0.md).
 

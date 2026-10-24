@@ -1,7 +1,8 @@
 # BingWallE 1.5.0
 
-Minor version prepared on 23 October 2026. This source update does not itself
-publish release packages or update the Snap Store or Flathub.
+Released on 24 October 2026.
+
+GitHub releases do not automatically update the Snap Store or Flathub.
 
 - Upgrade the application, UI tests and screenshot tool to Avalonia 12.1.4.
   The application continues to use .NET 10; the minimum macOS version remains 14.
