@@ -15,9 +15,11 @@ public sealed class UiText
     private static readonly Dictionary<string, Entry> German = Entries.ToDictionary(x => x.De);
     private readonly Dictionary<string, (string Template, object[] Arguments)> _messages = new();
     private readonly Dictionary<string, string[]> _composites = new();
-    public string Language { get; private set; } = "de";
+    // UI language is independent of formatting culture and the wallpaper market.
+    public static string SystemLanguage => CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "de" ? "de" : "en";
+    public string Language { get; private set; } = SystemLanguage;
     public CultureInfo Culture => CultureInfo.GetCultureInfo(Language == "en" ? "en-GB" : "de-DE");
-    public void SetLanguage(string? language) => Language = language == "en" ? "en" : "de";
+    public void SetLanguage(string? language) => Language = language is "de" or "en" ? language : SystemLanguage;
     public string Get(string text, params object[] arguments)
     {
         var template = German.TryGetValue(text, out var entry) && Language == "en" ? entry.En : text;

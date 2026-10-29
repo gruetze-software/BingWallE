@@ -141,7 +141,7 @@ public class RegressionTests
 
     static MainWindowViewModel CreateVm(HttpClient client, string path)
     {
-        var settings = new TestSettings { Value = new AppSettings { WallpaperPath = path } };
+        var settings = new TestSettings { Value = new AppSettings { Language = "de", WallpaperPath = path } };
         return new MainWindowViewModel(new BingWallpaperClient(client), new WallpaperStore(client), settings, new TestDialogs());
     }
     static MainWindowViewModel MakeVm(HttpClient client, string path)
@@ -168,7 +168,7 @@ sealed class TestScope : IDisposable
 
 sealed class TestSettings : ISettingsStore
 {
-    public AppSettings Value { get; set; } = new();
+    public AppSettings Value { get; set; } = new() { Language = "de" };
     public AppSettings Load() => Value;
     public void Save(AppSettings settings) => Value = settings;
 }

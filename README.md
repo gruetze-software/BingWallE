@@ -22,7 +22,8 @@ See [what is new in 1.5.0](docs/RELEASE-1.5.0.md).
 
 BingWallE is a desktop collector for Bing and Windows Spotlight wallpapers, built with C#, .NET 10 and
 Avalonia 12.1.4. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, image download
-region, Bing resolution, optional Windows Spotlight images and theme. Language changes take effect immediately; your choice is saved for the next start.
+region, Bing resolution, optional Windows Spotlight images and theme. On first start, the interface follows the system UI language (German, or English
+as the fallback). Language changes take effect immediately; your choice is saved for the next start.
 The download region is independent of the application language: choose Germany
 for German image titles and descriptions, or the USA / United Kingdom for English content.
 This region also controls the optional Spotlight source.

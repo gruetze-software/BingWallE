@@ -3,6 +3,10 @@
 These changes are not part of the published 1.5.0 packages. No new version tag
 or Store upload has been created.
 
+- On first start, use the system UI language automatically: German for German
+  locales and English otherwise. Existing supported language preferences remain
+  unchanged; older settings without a language use the same system default.
+  The download region remains independent of the interface language.
 - F11 toggles fullscreen in the main window and the image preview. Exiting restores
   the previous normal or maximized state, including when fullscreen was entered
   with the native titlebar button. Closing the main window while fullscreen retains
