@@ -82,8 +82,10 @@ public class SpotlightTests
         Assert.Single(reopened.Wallpapers); Assert.Equal(1, spotlightRequests);
     }
 
-    [AvaloniaFact]
-    public async Task SpotlightFailureKeepsBingImagesAndOffersRetry()
+    [AvaloniaTheory]
+    [InlineData("de")]
+    [InlineData("en")]
+    public async Task SpotlightFailureKeepsBingImagesAndOffersRetry(string language)
     {
         using var scope = new TestScope();
         using var http = new HttpClient(new Handler((request, _) => Task.FromResult(
@@ -92,10 +94,10 @@ public class SpotlightTests
                 ? """{"images":[{"url":"/bing.jpg","title":"Bing image","enddate":"20261021"}]}""" : """{"images":[]}""")
             : new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(TestImages.Jpeg) })));
         var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http),
-            new TestSettings { Value = new() { WallpaperPath = scope.Path, IncludeWindowsSpotlight = true } }, new TestDialogs(), spotlight: new SpotlightWallpaperClient(http));
+            new TestSettings { Value = new() { Language = language, WallpaperPath = scope.Path, IncludeWindowsSpotlight = true } }, new TestDialogs(), spotlight: new SpotlightWallpaperClient(http));
         await vm.StartStopCommand.ExecuteAsync(null);
         Assert.Single(vm.Wallpapers); Assert.True(vm.HasError); Assert.True(vm.CanRetry); Assert.False(vm.IsRunning);
-        Assert.Contains("Windows-Blickpunkt", vm.StatusMessage);
+        Assert.Contains(language == "de" ? "Windows-Blickpunkt" : "Windows Spotlight", vm.StatusMessage);
     }
 
     [Fact]

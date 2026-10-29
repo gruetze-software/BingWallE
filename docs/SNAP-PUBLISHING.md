@@ -29,7 +29,7 @@ It checks application tests, installation with strict confinement, version outpu
 and GUI startup under a virtual X display. It is not a substitute for interactive
 file-picker and graphical-desktop testing.
 
-To build yourself on Linux with .NET SDK 8, Snapcraft and its default isolated
+To build yourself on Linux with .NET SDK 10, Snapcraft and its default isolated
 build provider installed:
 
 ```sh
@@ -44,7 +44,7 @@ disposable Ubuntu 24.04 CI machine. Do not use that mode on your everyday system
 Install a downloaded test build on a desktop test system:
 
 ```sh
-sudo snap install --dangerous ./bingwalle_1.3.2_amd64.snap
+sudo snap install --dangerous ./bingwalle_1.5.1_amd64.snap
 snap connections bingwalle
 bingwalle
 ```
@@ -96,7 +96,7 @@ On a trusted Linux workstation with Snapcraft installed:
 
 ```sh
 snapcraft login
-snapcraft upload --release=beta ./bingwalle_1.3.2_amd64.snap
+snapcraft upload --release=beta ./bingwalle_1.5.1_amd64.snap
 ```
 
 Complete authentication yourself. Wait for the Store's review result. Test the

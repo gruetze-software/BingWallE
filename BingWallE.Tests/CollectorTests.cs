@@ -105,9 +105,9 @@ public class CollectorTests
         using var client = new HttpClient(new Handler((_, _) => throw new Exception("Unexpected HTTP")));
         var vm = Create(client, scope.Path);
         var item = new ImageItemViewModel(Image);
+        vm.Wallpapers.Add(item); // Gallery items inherit the explicitly selected app language.
         Assert.Equal("9. Oktober 2026", item.DisplayDate);
         Assert.Contains("Fotograf", item.Copyright);
-        vm.Wallpapers.Add(item);
         vm.SelectedMarket = vm.Markets.Single(x => x.Value == "en-US");
         Assert.True(vm.IsEmpty); Assert.Contains("USA", vm.GallerySubtitle);
     }
