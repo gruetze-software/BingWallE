@@ -25,6 +25,8 @@ Existing supported language choices remain unchanged, including German saved by
 an earlier version. Change that choice once in Settings if desired. The image
 region remains independent of the interface language.
 
-The application continues to use .NET 10 and Avalonia 12.1.4. The minimum macOS
+The application continues to use .NET 10 and Avalonia 12.1.4. Linux supports native
+Wayland with automatic X11 fallback, introduced in version 1.5.0. Flatpak packages
+also need the corresponding sandbox permissions to use Wayland. The minimum macOS
 version remains 14. Packages are available for Windows x64, Linux x64 and macOS
 ARM64/x64. GitHub releases do not automatically update the Snap Store or Flathub.
