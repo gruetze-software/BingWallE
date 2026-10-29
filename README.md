@@ -9,9 +9,6 @@ Version 1.5.1 fixes the first-start language and adds a resizable preview window
 with fullscreen keyboard shortcuts. Native Wayland with X11 fallback remains supported.
 The app icon is drawn by the maintainer in Paint.NET.
 
-See [Wayland testing](docs/WAYLAND.md). Snap Store and Flathub packages are
-published separately and may contain an older version than the GitHub release.
-
 See [what is new in 1.5.1](docs/RELEASE-1.5.1.md).
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
