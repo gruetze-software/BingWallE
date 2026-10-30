@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="branding/snap-store/banner.png" width="192" alt="BingWallE Banner" />
+  <img src="branding/snap-store/banner.png" width="724" alt="BingWallE Banner" />
 </p>
 
 # BingWallE 1.6.0
