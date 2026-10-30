@@ -11,9 +11,9 @@ The app icon is drawn by the maintainer in Paint.NET.
 
 See [what is new in 1.6.0](docs/RELEASE-1.6.0.md).
 
-<img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
+<img src="branding/screenshots/1.6.0/gallery-light.png" width="724" alt="BingWallE MainForm Light" />
 
-<img width="1304" height="1760" alt="grafik" src="https://github.com/user-attachments/assets/b1f7b0dc-14e7-48b3-851e-2dfcf2530e0f" />
+<img src="branding/screenshots/1.6.0/keywords-dark.png" width="724" alt="BingWallE Preview Dark" />
 
 [Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
