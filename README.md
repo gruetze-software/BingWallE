@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="branding/bingwalle.png" width="192" alt="BingWallE: hand-drawn turquoise mountains, a winding river and a yellow sun on a dark blue rounded square" />
+  <img src="branding/snap-store/banner.png" width="192" alt="BingWallE Banner" />
 </p>
 
 # BingWallE 1.6.0
