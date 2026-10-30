@@ -16,6 +16,7 @@ See [what is new in 1.6.0](docs/RELEASE-1.6.0.md).
 <img src="branding/screenshots/1.6.0/keywords-dark.png" width="724" alt="BingWallE Preview Dark" />
 
 [Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
+[Flathub](https://flathub.org/apps/de.gruetze_software.BingWallE) ·
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
 
 BingWallE is a desktop collector for Bing and Windows Spotlight wallpapers, built with C#, .NET 10 and
@@ -169,7 +170,7 @@ Third-party license notices are included in `licenses/` in the repository and pa
 
 Download the package for your platform from the
 [latest GitHub release](https://github.com/gruetze-software/BingWallE/releases/latest),
-or use the Snap Store as described under [Linux installation](#linux-installation).
+or install from Flathub or the Snap Store as described under [Linux installation](#linux-installation).
 **The .NET runtime is included; no separate runtime or SDK installation is required.**
 
 | Platform | Package |
@@ -193,9 +194,36 @@ packages target **x86_64 / amd64** and require a graphical desktop session.
 
 | Installation method | Where to use it | Updates |
 | --- | --- | --- |
+| [Flatpak / Flathub](#flatpak-linux-mint-and-other-distributions) | Linux Mint and other distributions with Flatpak support | Managed by Flatpak |
 | [Snap Store](#snap-ubuntu-and-other-distributions-with-snap-support) | Ubuntu and other distributions with snapd enabled, including Fedora, Arch Linux and openSUSE | Managed by Snap |
 | [DEB package](#deb-debian-ubuntu-and-linux-mint) | Debian, Ubuntu and Ubuntu-based Linux Mint | Install a newer DEB manually |
 | [TAR.GZ archive](#targz-other-linux-distributions) | Other compatible Linux distributions, with native dependencies installed | Extract a newer archive manually |
+
+#### Flatpak: Linux Mint and other distributions
+
+<a href="https://flathub.org/apps/de.gruetze_software.BingWallE">
+  <img src="https://flathub.org/api/badge?locale=en"
+       alt="Get it on Flathub" width="200">
+</a>
+
+Install BingWallE from [Flathub](https://flathub.org/apps/de.gruetze_software.BingWallE)
+using your software manager, or run:
+
+```bash
+flatpak install flathub de.gruetze_software.BingWallE
+flatpak run de.gruetze_software.BingWallE
+```
+
+If Flatpak or the Flathub remote is not configured, follow the
+[Flathub setup instructions](https://flathub.org/setup) for your distribution.
+To check for an application update manually, run:
+
+```bash
+flatpak update de.gruetze_software.BingWallE
+```
+
+Flathub packages are published separately from GitHub releases and may offer a
+different version. Check the current version on the linked Flathub page.
 
 #### Snap: Ubuntu and other distributions with Snap support
 
@@ -238,13 +266,13 @@ APT resolves the native dependencies declared by the package. Installing a newer
 DEB with the same command upgrades the application. GitHub downloads do not set
 up an APT repository or automatic application updates.
 
-**Linux Mint:** the DEB is the direct installation option and does not require
-Snap. Mint disables Snap installation by default; enabling it is optional and is
+**Linux Mint:** use the Flatpak option above or install the DEB directly. Neither
+option requires Snap. Mint disables Snap installation by default; enabling it is optional and is
 covered in [Canonical's Mint instructions](https://snapcraft.io/docs/tutorials/install-the-daemon/linux-mint/).
 Linux Mint 21.x and 22.x are the intended DEB test targets; LMDE and ARM devices
 have not been validated. See the [Mint test guide](docs/LINUX-MINT.md) for test
-steps and troubleshooting. Flathub publication is still pending; BingWallE is
-not yet available there for installation through Mint's Software Manager.
+steps and troubleshooting. The Flathub edition can also be installed through
+Mint's Software Manager.
 
 If you also have the Snap installed, close it before testing the DEB and use
 `/usr/bin/bingwalle` to select the DEB explicitly. The two editions can use
@@ -322,9 +350,9 @@ dotnet run --project BingWallE -c Release
 
 ## Tests
 
-Flathub preparation and the remaining publisher steps are documented in
-[docs/FLATHUB.md](docs/FLATHUB.md). Flathub review and publication are separate
-from this GitHub release; follow the current manual submission requirements.
+The upstream Flatpak build and install entry point is documented in
+[docs/FLATPAK-BUILD.md](docs/FLATPAK-BUILD.md). Flathub packaging and update PRs
+are maintained separately in the [Flathub application repository](https://github.com/flathub/de.gruetze_software.BingWallE).
 
 ```sh
 dotnet test BingWallE.sln -c Release
