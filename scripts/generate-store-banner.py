@@ -1,4 +1,4 @@
-"""Compose the upstream store banner from the hand-drawn icon and plain text.
+"""Compose a plain-layout alternative from the hand-drawn icon and plain text.
 
 Requires Pillow. This does not upload or alter a store listing.
 """
@@ -27,6 +27,7 @@ draw = ImageDraw.Draw(banner)
 draw.text((620, 145), 'BingWallE', font=font(112, bold=True), fill='white')
 draw.text((625, 300), 'Discover. Choose. Keep.', font=font(46), fill='#8DE3DE')
 draw.text((625, 410), 'Grütze-Software', font=font(30), fill='white')
-target = root / 'branding/snap-store/banner.png'
+target = root / 'artifacts/snap-store/banner-simple.png'
+target.parent.mkdir(parents=True, exist_ok=True)
 banner.save(target, optimize=True)
 print(f'Wrote {target.relative_to(root)} (1800 x 600)')

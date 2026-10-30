@@ -1,13 +1,19 @@
 # Snap Store banner
 
-`banner.png` is a 1800 x 600 opaque PNG (3:1). It replaces the former AI-generated
-banner with a simple layout using the maintainer's hand-drawn BingWallE icon,
-the title, tagline and publisher name. No AI-generated illustration is included.
+`banner.png` is a 2172 × 724 opaque RGB PNG (3:1), intended for the Snap Store
+Listing banner field. It restores the earlier illustrated mountain, sunset and
+river backdrop, with the maintainer's hand-painted app logo as the central
+reference, the title and English tagline on the left, and the publisher motif.
 
-Rebuild with `python scripts/generate-store-banner.py` (requires Pillow).
-The layout script and this documentation are AI-assisted; the icon artwork is
-the maintainer's Paint.NET drawing. This is upstream promotional material, not
-a Flathub submission asset or manifest.
+This banner was edited using the built-in image-generation tool. The background
+is AI-generated; the app-icon reference is the maintainer's Paint.NET artwork.
+See `banner-prompt.txt` for the exact prompt and reference sources. The application
+icon files remain unchanged. This is Snap promotional material, not a Flathub
+screenshot or application icon.
 
-Upload this file manually to the Snap Store Listing banner field when ready.
-Changing it in Git does not update the live listing.
+The legacy `scripts/generate-store-banner.py` generates a separate plain-layout
+alternative in `artifacts/snap-store/banner-simple.png`; it does not reproduce or
+overwrite this illustrated banner.
+
+Upload `banner.png` manually to the Snap Store Listing banner field when ready.
+Changing the file in Git does not update the live store listing.

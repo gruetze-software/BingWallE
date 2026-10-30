@@ -44,12 +44,22 @@
     <screenshot type="default">
       <caption>Browse recent Bing images with photographer credits</caption>
       <caption xml:lang="de">Aktuelle Bing-Bilder mit Fotografen-Nachweisen entdecken</caption>
-      <image type="source" width="1280" height="900">https://raw.githubusercontent.com/gruetze-software/BingWallE/cfc72571d7225e2b6626e6e70e283802fd9ec8de/branding/screenshots/1.3.3/gallery-light.png</image>
+      <image type="source" width="1280" height="960">https://raw.githubusercontent.com/gruetze-software/BingWallE/9e455f961a29b2cbc61bf35c0949d9dc49aca157/branding/screenshots/1.6.0/gallery-light.png</image>
     </screenshot>
     <screenshot>
-      <caption>Collect wallpapers in the dark theme</caption>
-      <caption xml:lang="de">Wallpaper im dunklen Design sammeln</caption>
-      <image type="source" width="1280" height="900">https://raw.githubusercontent.com/gruetze-software/BingWallE/cfc72571d7225e2b6626e6e70e283802fd9ec8de/branding/screenshots/1.3.3/gallery-dark.png</image>
+      <caption>Discover wallpapers in the dark theme</caption>
+      <caption xml:lang="de">Wallpaper im dunklen Design entdecken</caption>
+      <image type="source" width="1280" height="960">https://raw.githubusercontent.com/gruetze-software/BingWallE/9e455f961a29b2cbc61bf35c0949d9dc49aca157/branding/screenshots/1.6.0/gallery-dark.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Browse downloaded images offline in My collection</caption>
+      <caption xml:lang="de">Heruntergeladene Bilder offline in Meine Sammlung ansehen</caption>
+      <image type="source" width="1280" height="960">https://raw.githubusercontent.com/gruetze-software/BingWallE/9e455f961a29b2cbc61bf35c0949d9dc49aca157/branding/screenshots/1.6.0/collection-light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Edit keywords, remove suggestions and add your own</caption>
+      <caption xml:lang="de">Keywords bearbeiten, Vorschläge entfernen und eigene Begriffe hinzufügen</caption>
+      <image type="source" width="1280" height="1280">https://raw.githubusercontent.com/gruetze-software/BingWallE/9e455f961a29b2cbc61bf35c0949d9dc49aca157/branding/screenshots/1.6.0/keywords-dark.png</image>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
