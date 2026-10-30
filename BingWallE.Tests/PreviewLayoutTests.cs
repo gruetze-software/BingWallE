@@ -24,7 +24,7 @@ public class PreviewLayoutTests
         Application.Current.RequestedThemeVariant = language == "en" ? ThemeVariant.Dark : ThemeVariant.Light;
         using var http = new HttpClient(new Handler((_, _) => throw new Exception("Unexpected HTTP")));
         var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http),
-            new TestSettings { Value = new() { Language = language } }, new TestDialogs());
+            new TestSettings { Value = new() { Language = language, PreviewWindow = new(width, height) } }, new TestDialogs());
         using var stream = new MemoryStream(TestImages.Jpeg);
         using var bitmap = new Bitmap(stream);
         var image = new Wallpaper("https://example.test/image.jpg", "Stokksnes Beach, Iceland", "",
@@ -75,7 +75,7 @@ public class PreviewLayoutTests
     public void ResizingPreviewEnlargesImageAndKeepsItsAspectRatio()
     {
         using var http = new HttpClient(new Handler((_, _) => throw new Exception("Unexpected HTTP")));
-        var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http), new TestSettings(), new TestDialogs());
+        var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http), new TestSettings { Value = new() { PreviewWindow = new(640, 480) } }, new TestDialogs());
         using var stream = new MemoryStream(TestImages.Jpeg);
         using var bitmap = new Bitmap(stream);
         vm.PreviewItem = new ImageItemViewModel(new Wallpaper("https://example.test/image.jpg", "Resize", ""), bitmap);

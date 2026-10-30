@@ -9,16 +9,15 @@ namespace BingWallE.Views;
 
 public partial class MainWindow : Window
 {
-    private BingWallE.Models.SavedWindowState _normalSize = new();
-    private bool _maximized;
-    private bool _restoring;
-    private bool _placementApplied;
     private PreviewWindow? _previewWindow;
     private MainWindowViewModel? _previewViewModel;
 
     public MainWindow()
     {
         InitializeComponent();
+        _ = new WindowPlacement(this, new(),
+            () => (DataContext as MainWindowViewModel)?.WindowSettings ?? new(),
+            state => (DataContext as MainWindowViewModel)?.SaveWindowState(state));
         DataContextChanged += (_, _) =>
         {
             if (_previewViewModel != null) _previewViewModel.PropertyChanged -= PreviewChanged;
@@ -26,7 +25,6 @@ public partial class MainWindow : Window
             _previewWindow = null;
             _previewViewModel = DataContext as MainWindowViewModel;
             if (_previewViewModel != null) _previewViewModel.PropertyChanged += PreviewChanged;
-            if (!IsVisible && DataContext is MainWindowViewModel vm) RestorePlacement(vm);
             SyncPreviewWindow();
         };
         Opened += async (_, _) =>
@@ -34,22 +32,9 @@ public partial class MainWindow : Window
             BingWallE.Services.DesktopPlatform.Report(this);
             if (DataContext is MainWindowViewModel vm)
             {
-                if (!_placementApplied) RestorePlacement(vm);
                 await vm.InitializeAsync();
                 SyncPreviewWindow();
             }
-        };
-        PropertyChanged += (_, e) =>
-        {
-            if (_restoring || !IsVisible) return;
-            if (e.Property == WindowStateProperty && WindowState is not (WindowState.Minimized or WindowState.FullScreen))
-                _maximized = WindowState == WindowState.Maximized;
-            if (e.Property == ClientSizeProperty && WindowState == WindowState.Normal && ClientSize.Width > 0 && ClientSize.Height > 0)
-                _normalSize = new(ClientSize.Width, ClientSize.Height);
-        };
-        Closing += (_, _) =>
-        {
-            if (DataContext is MainWindowViewModel vm) vm.SaveWindowState(_normalSize with { IsMaximized = _maximized });
         };
         WindowFullscreenShortcuts.Attach(this, () =>
         {
@@ -91,16 +76,6 @@ public partial class MainWindow : Window
             _previewWindow = null;
             preview?.Close();
         }
-    }
-
-    private void RestorePlacement(MainWindowViewModel vm)
-    {
-        _restoring = true;
-        _normalSize = WindowScreenFit.Apply(this, vm.WindowSettings);
-        _maximized = vm.WindowSettings.IsMaximized;
-        WindowState = _maximized ? WindowState.Maximized : WindowState.Normal;
-        _placementApplied = true;
-        _restoring = false;
     }
 
     private async void OpenSettings(object? sender, RoutedEventArgs e) => await ShowSettingsAsync();

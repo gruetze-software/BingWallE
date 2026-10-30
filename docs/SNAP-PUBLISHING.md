@@ -44,7 +44,7 @@ disposable Ubuntu 24.04 CI machine. Do not use that mode on your everyday system
 Install a downloaded test build on a desktop test system:
 
 ```sh
-sudo snap install --dangerous ./bingwalle_1.5.1_amd64.snap
+sudo snap install --dangerous ./bingwalle_1.6.0_amd64.snap
 snap connections bingwalle
 bingwalle
 ```
@@ -96,7 +96,7 @@ On a trusted Linux workstation with Snapcraft installed:
 
 ```sh
 snapcraft login
-snapcraft upload --release=beta ./bingwalle_1.5.1_amd64.snap
+snapcraft upload --release=beta ./bingwalle_1.6.0_amd64.snap
 ```
 
 Complete authentication yourself. Wait for the Store's review result. Test the

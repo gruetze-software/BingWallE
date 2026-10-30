@@ -1,4 +1,4 @@
-# Changes collected after 1.5.1
+# Changes collected after 1.6.0
 
-No changes collected yet. See [1.5.1 release notes](RELEASE-1.5.1.md) for the
-first-start language fix, resizable image preview and fullscreen shortcuts.
+No changes collected yet. See [1.6.0 release notes](RELEASE-1.6.0.md) for the
+latest release.

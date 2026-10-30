@@ -35,9 +35,10 @@ public partial class MainWindowViewModel : ViewModelBase
     private bool _startupInitialized;
     private bool _localActionRunning;
     public SavedWindowState WindowSettings { get; private set; }
+    public SavedWindowState PreviewWindowSettings { get; private set; }
     [ObservableProperty] private bool _autoRefreshOnStartup;
     [ObservableProperty] private bool _includeWindowsSpotlight;
-    private static string IgnoreKey(ImageItemViewModel item) => item.Image.Source == WallpaperSource.WindowsSpotlight
+    private static string IgnoreKey(ImageItemViewModel item) => item.LocalPath != null ? "Local|" + item.LocalPath : item.Image.Source == WallpaperSource.WindowsSpotlight
         ? "WindowsSpotlight|" + item.Image.Market + "|" + (item.Image.SourceId ?? item.Image.Url)
         : item.Image.Market + "|" + (item.Image.UrlBase ?? item.Date + "|" + item.Title);
 
@@ -48,6 +49,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (AutoRefreshOnStartup && IsIdle) await StartStop();
     }
     public void SaveWindowState(SavedWindowState state) { WindowSettings = state; SavePreferences(); }
+    public void SavePreviewWindowState(SavedWindowState state) { PreviewWindowSettings = state; SavePreferences(); }
 
 
     public UiText Text { get; } = new();
@@ -89,6 +91,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(SelectNoneCommand))]
     [NotifyCanExecuteChangedFor(nameof(SelectNewCommand))]
     [NotifyCanExecuteChangedFor(nameof(RetryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowDiscoverCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ShowCollectionCommand))]
     private bool _isRunning;
 
     [ObservableProperty][NotifyPropertyChangedFor(nameof(IsPreviewOpen))] private ImageItemViewModel? _previewItem;
@@ -98,7 +102,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [ObservableProperty] private bool _previewFailed;
     public bool IsPreviewOpen => PreviewItem != null;
     public bool IsIdle => !IsRunning;
-    public bool CanRetry => HasError && IsIdle && _retryOperation is "scan" or "download";
+    public bool CanRetry => HasError && IsIdle && _retryOperation is "scan" or "download" or "collection";
     public bool HasSelection => SelectedCount > 0;
     public bool IsEmpty => Wallpapers.Count == 0;
     public int SelectedCount => Wallpapers.Count(x => x.IsSelected && !x.IsIgnored);
@@ -111,6 +115,7 @@ public partial class MainWindowViewModel : ViewModelBase
         var saved = settings.Load();
         _ignoredImages = new(saved.IgnoredImages ?? Array.Empty<string>(), StringComparer.Ordinal);
         WindowSettings = saved.Window ?? new();
+        PreviewWindowSettings = saved.PreviewWindow ?? new(980, 850);
         _autoRefreshOnStartup = saved.AutoRefreshOnStartup;
         _includeWindowsSpotlight = saved.IncludeWindowsSpotlight;
         Text.SetLanguage(saved.Language);
@@ -129,7 +134,7 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (var old in _observed.Where(x => !Wallpapers.Contains(x)).ToArray())
             { old.PropertyChanged -= ItemChanged; _observed.Remove(old); }
             foreach (var item in Wallpapers.Where(x => !_observed.Contains(x)))
-            { item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item)); if (item.IsIgnored) item.IsSelected = false; item.SetLanguage(Text.Language); item.DownloadResolution = item.Image.Source == WallpaperSource.WindowsSpotlight ? "Original" : SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
+            { item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item)); if (item.IsIgnored) item.IsSelected = false; item.SetLanguage(Text.Language); item.DownloadResolution = item.IsLocalImage || item.Image.Source == WallpaperSource.WindowsSpotlight ? "Original" : SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
             NotifySelection();
             OnPropertyChanged(nameof(IsEmpty));
         };
@@ -187,6 +192,7 @@ public partial class MainWindowViewModel : ViewModelBase
     private async Task StartStop()
     {
         if (IsRunning) { Trace.WriteLine("User requested cancellation."); _cts?.Cancel(); return; }
+        if (IsCollectionView) { await ReloadCollection(); return; }
         ClosePreview();
         _retryOperation = "scan";
         using var cancellation = BeginOperation(T("Bilder aus den gewählten Quellen suchen …"), true);
@@ -239,7 +245,7 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanStartOperation))]
     private async Task DownloadSelected()
     {
-        if (IsRunning) return;
+        if (IsRunning || IsCollectionView) return;
         var selected = Wallpapers.Where(w => w.IsSelected && !w.IsIgnored).ToList();
         if (selected.Count == 0) { StatusMessage = T("Bitte zuerst Bilder auswählen."); return; }
         var folder = TargetFolder ?? "";
@@ -257,9 +263,10 @@ public partial class MainWindowViewModel : ViewModelBase
                 try
                 {
                     var result = await _images.DownloadAsync(folder, WallpaperVariants.ForResolution(item.Image, resolution), cancellation.Token,
-                        AutoTags, message => StatusMessage = Text.Translate(message));
+                        AutoTags, message => StatusMessage = Text.Translate(message), item.HasKeywordChanges || item.KeywordsLoaded ? item.ExportKeywords() : null);
                     item.ActualDimensions = $"{result.Width} × {result.Height}";
-                    if (AutoTags) item.ApplyPredictions(result.Tags);
+                    if (result.Keywords != null) item.LoadKeywords(result.Keywords, force: true);
+                    else if (AutoTags && !item.HasKeywordChanges) item.ApplyPredictions(result.Tags);
                 }
                 catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { throw; }
                 catch (Exception ex) { item.DownloadError = ErrorMessage(ex); throw; }
@@ -268,10 +275,11 @@ public partial class MainWindowViewModel : ViewModelBase
             }
             StatusMessage = T("Download abgeschlossen: {0} Bilder gespeichert.", completed);
             _retryOperation = null;
+            InvalidateCollection();
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
-        { StatusMessage = T("Download abgebrochen: {0} von {1} Bildern gespeichert.", completed, selected.Count); }
-        catch (Exception ex) { ReportError(ex); StatusMessage = Text.Join(StatusMessage, T(" ({0} von {1} Bildern gespeichert.)", completed, selected.Count)); }
+        { InvalidateCollection(); StatusMessage = T("Download abgebrochen: {0} von {1} Bildern gespeichert.", completed, selected.Count); }
+        catch (Exception ex) { InvalidateCollection(); ReportError(ex); StatusMessage = Text.Join(StatusMessage, T(" ({0} von {1} Bildern gespeichert.)", completed, selected.Count)); }
         finally { EndOperation(); }
     }
 
@@ -281,6 +289,7 @@ public partial class MainWindowViewModel : ViewModelBase
         if (IsRunning) return;
         if (_retryOperation == "download") await DownloadSelected();
         else if (_retryOperation == "scan") await StartStop();
+        else if (_retryOperation == "collection") await ReloadCollection();
         else HasError = false;
     }
     [RelayCommand(CanExecute = nameof(CanStartOperation))]
@@ -292,6 +301,11 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void RefreshSaved(ImageItemViewModel item)
     {
+        if (item.LocalPath is { } path)
+        {
+            item.IsSaved = File.Exists(path); item.IsSelected = false; item.DownloadError = null;
+            return;
+        }
         var resolution = item.Image.Source == WallpaperSource.WindowsSpotlight ? "Original" : SelectedResolution.Value;
         if (item.DownloadResolution != resolution) item.ActualDimensions = null;
         item.DownloadResolution = resolution;
@@ -315,8 +329,8 @@ public partial class MainWindowViewModel : ViewModelBase
         if (item == null || !IsIdle || _localActionRunning) return;
         try
         {
-            var image = WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value);
-            await _dialogs.ShowFileAsync(_images.GetPath(TargetFolder ?? "", image));
+            var path = item.LocalPath ?? _images.GetPath(TargetFolder ?? "", WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value));
+            await _dialogs.ShowFileAsync(path);
         }
         catch (Exception ex) { _retryOperation = null; ReportError(ex); }
     }
@@ -329,12 +343,23 @@ public partial class MainWindowViewModel : ViewModelBase
         try
         {
             var folder = TargetFolder ?? "";
-            var image = WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value);
-            if (!_images.Exists(folder, image)) { RefreshSaved(item); return; }
-            if (!await _dialogs.ConfirmDeleteAsync(_images.GetPath(folder, image))) return;
+            var image = item.IsLocalImage ? item.Image : WallpaperVariants.ForResolution(item.Image, SelectedResolution.Value);
+            var path = item.LocalPath ?? _images.GetPath(folder, image);
+            if (item.IsLocalImage ? !File.Exists(path) : !_images.Exists(folder, image)) { RefreshSaved(item); return; }
+            if (!await _dialogs.ConfirmDeleteAsync(path)) return;
             if (!IsIdle) return;
-            _images.Delete(folder, image);
-            item.ActualDimensions = null; RefreshSaved(item);
+            if (item.IsLocalImage)
+            {
+                File.Delete(path);
+                Wallpapers.Remove(item); _collectionCache.Remove(item); item.Preview?.Dispose();
+                GallerySubtitle = CollectionSubtitle();
+            }
+            else
+            {
+                _images.Delete(folder, image);
+                item.ActualDimensions = null; RefreshSaved(item);
+                InvalidateCollection();
+            }
             StatusMessage = T("Lokale Datei gelöscht: {0}", item.Title);
         }
         catch (Exception ex) { _retryOperation = null; ReportError(ex); }
@@ -345,6 +370,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         foreach (var item in Wallpapers) item.Preview?.Dispose();
         Wallpapers.Clear();
+        (IsCollectionView ? _collectionCache : _discoverCache).Clear();
     }
 
     [RelayCommand(CanExecute = nameof(CanStartOperation))]
@@ -377,7 +403,19 @@ public partial class MainWindowViewModel : ViewModelBase
         _previewCts = cancellation; IsPreviewLoading = true;
         try
         {
-            var bytes = await _bing.LoadPreviewAsync(item.Image, cancellation.Token);
+            var path = SavedPath(item);
+            var bytes = path != null && (item.IsLocalImage || File.Exists(path))
+                ? await File.ReadAllBytesAsync(path, cancellation.Token)
+                : await _bing.LoadPreviewAsync(item.Image, cancellation.Token);
+            if (path != null && File.Exists(path))
+            {
+                item.LoadKeywords(await Task.Run(() => KeywordMetadata.Read(bytes), cancellation.Token));
+                cancellation.Token.ThrowIfCancellationRequested();
+                _previewFilePath = path;
+            }
+            cancellation.Token.ThrowIfCancellationRequested();
+            _previewBytes = bytes; _previewIsJpeg = KeywordMetadata.IsJpeg(bytes);
+            NotifyKeywordActions();
             cancellation.Token.ThrowIfCancellationRequested();
             using var stream = new MemoryStream(bytes);
             LargePreview = new Bitmap(stream); PreviewStatus = "";
@@ -407,12 +445,16 @@ public partial class MainWindowViewModel : ViewModelBase
     private void ClosePreview()
     {
         _previewCts?.Cancel(); _previewCts = null;
+        _keywordCts?.Cancel(); _keywordCts = null; IsKeywordOperationRunning = false;
+        _previewBytes = null; _previewFilePath = null; _previewIsJpeg = false;
         var bitmap = LargePreview; LargePreview = null; bitmap?.Dispose();
         PreviewItem = null; IsPreviewLoading = false; PreviewFailed = false;
     }
     public void Shutdown()
     {
-        _cts?.Cancel(); ClosePreview(); ClearGallery();
+        _cts?.Cancel(); ClosePreview();
+        foreach (var item in AllGalleryItems()) item.Preview?.Dispose();
+        Wallpapers.Clear(); _discoverCache.Clear(); _collectionCache.Clear();
     }
 
     private void SavePreferences()
@@ -430,6 +472,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 AutoRefreshOnStartup = AutoRefreshOnStartup,
                 IncludeWindowsSpotlight = IncludeWindowsSpotlight,
                 IgnoredImages = _ignoredImages.ToArray(),
+                PreviewWindow = PreviewWindowSettings,
                 Window = WindowSettings
             });
         }
@@ -439,19 +482,22 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         if (string.IsNullOrWhiteSpace(value)) return;
         SavePreferences();
-        try { foreach (var item in Wallpapers) RefreshSaved(item); }
+        InvalidateCollection();
+        try { foreach (var item in _discoverCache.Concat(IsDiscoverView ? Wallpapers : Enumerable.Empty<ImageItemViewModel>()).Distinct()) RefreshSaved(item); }
         catch (Exception ex) { ReportError(ex); }
     }
     partial void OnSelectedMarketChanged(SelectionOption value)
     {
-        ClosePreview(); ClearGallery();
+        ClosePreview();
+        if (IsCollectionView) { foreach (var item in _discoverCache) item.Preview?.Dispose(); _discoverCache.Clear(); _discoverState = null; SavePreferences(); return; }
+        ClearGallery();
         GallerySubtitle = T("{0} · bereit zum Entdecken", value.Label);
         StatusMessage = T("Region geändert. Mit Aktualisieren neue Bilder laden.");
         HasError = false; _retryOperation = null; SavePreferences();
     }
     partial void OnSelectedResolutionChanged(SelectionOption value)
     {
-        foreach (var item in Wallpapers) RefreshSaved(item);
+        foreach (var item in AllGalleryItems()) RefreshSaved(item);
         HasError = false; _retryOperation = null; SavePreferences();
         StatusMessage = T("Auflösung geändert. Vorhandene Dateien wurden erneut geprüft.");
     }
@@ -466,7 +512,9 @@ public partial class MainWindowViewModel : ViewModelBase
         Wallpapers.Count, GallerySources());
     partial void OnIncludeWindowsSpotlightChanged(bool value)
     {
-        ClosePreview(); ClearGallery();
+        ClosePreview();
+        if (IsCollectionView) { foreach (var item in _discoverCache) item.Preview?.Dispose(); _discoverCache.Clear(); _discoverState = null; SavePreferences(); return; }
+        ClearGallery();
         GallerySubtitle = T("{0} · bereit zum Entdecken", SelectedMarket.Label);
         StatusMessage = T("Bildquellen geändert. Mit Aktualisieren neue Bilder laden.");
         HasError = false; _retryOperation = null; SavePreferences();
@@ -475,7 +523,7 @@ public partial class MainWindowViewModel : ViewModelBase
     partial void OnAutoTagsChanged(bool value)
     {
         if (!value)
-            foreach (var item in Wallpapers) item.ApplyPredictions(Array.Empty<ImageTag>(), false);
+            foreach (var item in AllGalleryItems().Where(x => !x.KeywordsLoaded)) item.ApplyPredictions(Array.Empty<ImageTag>(), false);
         SavePreferences();
     }
 
@@ -491,10 +539,12 @@ public partial class MainWindowViewModel : ViewModelBase
         OnPropertyChanged(nameof(AppTitle));
         StatusMessage = Text.Translate(StatusMessage); ButtonText = Text.Translate(ButtonText);
         PreviewStatus = Text.Translate(PreviewStatus);
-        GallerySubtitle = Wallpapers.Count > 0
+        KeywordStatus = Text.Translate(KeywordStatus); NotifyKeywordActions();
+        OnPropertyChanged(nameof(EmptyHeading)); OnPropertyChanged(nameof(EmptyHelp));
+        GallerySubtitle = IsCollectionView ? CollectionSubtitle() : Wallpapers.Count > 0
             ? T("{0} · {1} Bilder · {2}", SelectedMarket.Label, Wallpapers.Count, GallerySources())
             : T("{0} · bereit zum Entdecken", SelectedMarket.Label);
-        foreach (var item in Wallpapers) { item.SetLanguage(Text.Language); item.DownloadError = item.DownloadError == null ? null : Text.Translate(item.DownloadError); }
+        foreach (var item in AllGalleryItems()) { item.SetLanguage(Text.Language); item.DownloadError = item.DownloadError == null ? null : Text.Translate(item.DownloadError); }
         NotifySelection(); SavePreferences();
     }
 

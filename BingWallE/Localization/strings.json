@@ -708,5 +708,150 @@
     "key": "SpotlightInvalid",
     "de": "Windows-Blickpunkt hat ungültige Bilddaten geliefert.",
     "en": "Windows Spotlight returned invalid image information."
+  },
+  {
+    "key": "DiscoverView",
+    "de": "Entdecken",
+    "en": "Discover"
+  },
+  {
+    "key": "CollectionView",
+    "de": "Meine Sammlung",
+    "en": "My collection"
+  },
+  {
+    "key": "CollectionEmpty",
+    "de": "Deine Sammlung ist noch leer.",
+    "en": "Your collection is still empty."
+  },
+  {
+    "key": "CollectionEmptyHelp",
+    "de": "Hier erscheinen die Bilder im eingestellten Ordner. Wechsle zu Entdecken, um neue Bilder zu sammeln.",
+    "en": "Images from the selected folder appear here. Switch to Discover to collect new images."
+  },
+  {
+    "key": "CollectionLoading",
+    "de": "Lokale Sammlung wird geladen …",
+    "en": "Loading local collection …"
+  },
+  {
+    "key": "CollectionCount",
+    "de": "Meine Sammlung · {0} Bilder",
+    "en": "My collection · {0} images"
+  },
+  {
+    "key": "CollectionSkipped",
+    "de": "Sammlung geladen. {0} Dateien konnten nicht gelesen werden.",
+    "en": "Collection loaded. {0} files could not be read."
+  },
+  {
+    "key": "CollectionLoaded",
+    "de": "Sammlung geladen. Bilder werden aus deinem lokalen Ordner angezeigt.",
+    "en": "Collection loaded. Images are shown from your local folder."
+  },
+  {
+    "key": "CollectionCanceled",
+    "de": "Laden abgebrochen. Bereits geladene Bilder bleiben verfügbar.",
+    "en": "Loading canceled. Images already loaded remain available."
+  },
+  {
+    "key": "LocalFileSource",
+    "de": "Lokale Datei",
+    "en": "Local file"
+  },
+  {
+    "key": "CollectionSingle",
+    "de": "Meine Sammlung · 1 Bild",
+    "en": "My collection · 1 image"
+  },
+  {
+    "key": "KeywordHeading",
+    "de": "Keywords",
+    "en": "Keywords"
+  },
+  {
+    "key": "KeywordRemove",
+    "de": "Keyword entfernen",
+    "en": "Remove keyword"
+  },
+  {
+    "key": "KeywordEmpty",
+    "de": "Noch keine Keywords vorhanden.",
+    "en": "No keywords yet."
+  },
+  {
+    "key": "KeywordPlaceholder",
+    "de": "Keyword hinzufügen …",
+    "en": "Add a keyword …"
+  },
+  {
+    "key": "KeywordAdd",
+    "de": "Hinzufügen",
+    "en": "Add"
+  },
+  {
+    "key": "KeywordRecognize",
+    "de": "Keywords erneut erkennen",
+    "en": "Recognize keywords again"
+  },
+  {
+    "key": "KeywordSave",
+    "de": "Keywords speichern",
+    "en": "Save keywords"
+  },
+  {
+    "key": "KeywordDownloadHint",
+    "de": "Keyword-Änderungen werden beim Download gespeichert.",
+    "en": "Keyword changes will be saved when the image is downloaded."
+  },
+  {
+    "key": "KeywordJpegOnly",
+    "de": "Keywords können derzeit nur in JPEG-Dateien gespeichert werden.",
+    "en": "Keywords can currently only be saved in JPEG files."
+  },
+  {
+    "key": "KeywordSaveHint",
+    "de": "Änderungen werden erst mit Keywords speichern in die Datei übernommen.",
+    "en": "Changes are written to the file only when you choose Save keywords."
+  },
+  {
+    "key": "KeywordAdded",
+    "de": "Keyword hinzugefügt. Noch nicht gespeichert.",
+    "en": "Keyword added. Not saved yet."
+  },
+  {
+    "key": "KeywordInvalid",
+    "de": "Bitte einen neuen Begriff mit höchstens 100 Zeichen ohne Semikolon eingeben.",
+    "en": "Enter a new keyword of up to 100 characters, without a semicolon."
+  },
+  {
+    "key": "KeywordRemoved",
+    "de": "Keyword entfernt. Noch nicht gespeichert.",
+    "en": "Keyword removed. Not saved yet."
+  },
+  {
+    "key": "KeywordRecognized",
+    "de": "Vorschläge aktualisiert. Bitte prüfen und speichern.",
+    "en": "Suggestions updated. Please review and save."
+  },
+  {
+    "key": "KeywordSaving",
+    "de": "Keywords werden gespeichert …",
+    "en": "Saving keywords …"
+  },
+  {
+    "key": "KeywordSaved",
+    "de": "Keywords gespeichert.",
+    "en": "Keywords saved."
+  },
+  {
+    "key": "KeywordTooMany",
+    "de": "Zu viele Keywords für die Bildmetadaten.",
+    "en": "Too many keywords for the image metadata."
+  },
+  {
+    "key": "KeywordFileChanged",
+    "de": "Die Datei wurde inzwischen geändert. Bitte erneut öffnen.",
+    "en": "The file has changed. Please reopen it."
   }
 ]

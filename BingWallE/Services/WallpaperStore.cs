@@ -26,11 +26,16 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
         return File.Exists(legacyPath) ? legacyPath : path;
     }
 
-    public async Task<WallpaperDownloadResult> DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken, bool generateTags = false, Action<string>? progress = null)
+    public async Task<WallpaperDownloadResult> DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken, bool generateTags = false, Action<string>? progress = null, KeywordMetadataState? keywords = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var path = GetPath(folder, image);
         Directory.CreateDirectory(folder);
+        if (keywords == null && File.Exists(path))
+        {
+            var existing = KeywordMetadata.Read(await File.ReadAllBytesAsync(path, cancellationToken));
+            if (existing.UserKeywords.Length > 0 || existing.ExcludedKeywords.Length > 0) keywords = existing;
+        }
         var temporaryPath = Path.Combine(folder, $".bingwalle-{Guid.NewGuid():N}.tmp");
         try
         {
@@ -41,11 +46,12 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
                 ? await (tagger ?? throw new InvalidOperationException("Image recognition is unavailable.")).RecognizeAsync(data, cancellationToken, progress)
                 : Array.Empty<ImageTag>();
             progress?.Invoke("Bildinformationen werden gespeichert …");
-            var tagged = await Task.Run(() => PhotoMetadataWriter.Write(data, image, tags, downloadedAt), cancellationToken);
+            var tagged = await Task.Run(() => PhotoMetadataWriter.Write(data, image, tags, downloadedAt, keywords), cancellationToken);
+            var savedKeywords = KeywordMetadata.Read(tagged);
             await File.WriteAllBytesAsync(temporaryPath, tagged, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
             File.Move(temporaryPath, path, overwrite: true);
-            return new WallpaperDownloadResult(codec.Info.Width, codec.Info.Height, tags);
+            return new WallpaperDownloadResult(codec.Info.Width, codec.Info.Height, tags, savedKeywords);
         }
         finally
         {

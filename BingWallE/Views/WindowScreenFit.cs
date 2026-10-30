@@ -10,7 +10,13 @@ public static class WindowScreenFit
     public static SavedWindowState Apply(Window window, SavedWindowState saved)
     {
         var screen = window.Screens.ScreenFromWindow(window) ?? window.Screens.Primary;
-        if (screen == null) return saved;
+        if (screen == null)
+        {
+            var valid = WindowSizing.Fit(saved, double.MaxValue, double.MaxValue);
+            window.Width = valid.Width;
+            window.Height = valid.Height;
+            return valid;
+        }
         var area = screen.WorkingArea;
         var scale = screen.Scaling;
         var frameWidth = Math.Max(0, (window.FrameSize?.Width ?? window.ClientSize.Width) - window.ClientSize.Width);

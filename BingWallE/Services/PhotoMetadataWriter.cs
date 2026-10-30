@@ -11,7 +11,7 @@ namespace BingWallE.Services;
 
 public static class PhotoMetadataWriter
 {
-    public static byte[] Write(byte[] jpeg, Wallpaper image, IReadOnlyList<ImageTag> tags, DateTimeOffset? downloadedAt = null)
+    public static byte[] Write(byte[] jpeg, Wallpaper image, IReadOnlyList<ImageTag> tags, DateTimeOffset? downloadedAt = null, KeywordMetadataState? keywords = null)
     {
         var file = ImageFile.FromBuffer(jpeg);
         if (file.Format != ImageFileFormat.JPEG) throw new InvalidDataException("Bing did not return a JPEG image.");
@@ -35,8 +35,9 @@ public static class PhotoMetadataWriter
         if (originalAt == null) file.Properties.Set(ExifTag.DateTimeOriginal, timestamp.DateTime);
         using var output = new MemoryStream();
         file.Save(output);
-        return JpegXmpMetadata.Write(output.ToArray(), image, comments, tags, timestamp,
+        var result = JpegXmpMetadata.Write(output.ToArray(), image, comments, tags, timestamp,
             createdAt, createdAt == null, originalAt == null);
+        return keywords == null ? result : KeywordMetadata.Update(result, keywords);
     }
     private static DateTime? ReadDate(ImageFile file, ExifTag tag) =>
         file.Properties.Get(tag)?.Value is DateTime date && date > DateTime.MinValue ? date : null;
@@ -57,4 +58,4 @@ public static class PhotoMetadataWriter
 }
 
 public record ImageTag(string Label, float Score);
-public record WallpaperDownloadResult(int Width, int Height, IReadOnlyList<ImageTag> Tags);
+public record WallpaperDownloadResult(int Width, int Height, IReadOnlyList<ImageTag> Tags, KeywordMetadataState? Keywords = null);

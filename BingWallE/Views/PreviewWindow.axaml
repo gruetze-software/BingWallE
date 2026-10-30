@@ -13,6 +13,7 @@
                     <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
                     <SolidColorBrush x:Key="SubtleBackground" Color="#EAF0F0"/>
                     <SolidColorBrush x:Key="SecondaryText" Color="#53646A"/>
+                    <SolidColorBrush x:Key="IgnoredText" Color="#946317"/>
                     <SolidColorBrush x:Key="CardStroke" Color="#DDE4E6"/>
                     <SolidColorBrush x:Key="AccentBrush" Color="#216F69"/>
                 </ResourceDictionary>
@@ -21,6 +22,7 @@
                     <SolidColorBrush x:Key="CardBackground" Color="#202A30"/>
                     <SolidColorBrush x:Key="SubtleBackground" Color="#29373D"/>
                     <SolidColorBrush x:Key="SecondaryText" Color="#B1C1C6"/>
+                    <SolidColorBrush x:Key="IgnoredText" Color="#D8B477"/>
                     <SolidColorBrush x:Key="CardStroke" Color="#37454C"/>
                     <SolidColorBrush x:Key="AccentBrush" Color="#68CBBE"/>
                 </ResourceDictionary>
@@ -30,6 +32,7 @@
     <Window.Styles>
         <Style Selector="Button"><Setter Property="CornerRadius" Value="7"/><Setter Property="Padding" Value="14,9"/></Style>
         <Style Selector="TextBlock.secondary"><Setter Property="Foreground" Value="{DynamicResource SecondaryText}"/></Style>
+        <Style Selector="TextBlock.ignored"><Setter Property="Foreground" Value="{DynamicResource IgnoredText}"/></Style>
     </Window.Styles>
     <Border x:Name="PreviewCard" Background="{DynamicResource CardBackground}" CornerRadius="12" Padding="20" Margin="16">
         <Grid RowDefinitions="Auto,*,Auto">
@@ -54,14 +57,48 @@
                         <StackPanel Spacing="7">
                             <TextBlock x:Name="PreviewDescription" Text="{Binding PreviewItem.Description}" TextWrapping="Wrap"/>
                             <TextBlock Text="{Binding PreviewItem.CopyrightCredit}" IsVisible="{Binding PreviewItem.HasCopyrightCredit}" TextWrapping="Wrap" Classes="secondary" FontSize="12"/>
-                            <TextBlock Text="{DynamicResource PreviewTextTags}" FontWeight="SemiBold" FontSize="12"/>
-                            <TextBlock Text="{Binding PreviewItem.TextKeywords}" IsVisible="{Binding PreviewItem.HasTextKeywords}" TextWrapping="Wrap"/>
-                            <TextBlock Text="{DynamicResource PreviewNoTextTags}" IsVisible="{Binding !PreviewItem.HasTextKeywords}" Classes="secondary" FontSize="12"/>
+                            <TextBlock Text="{DynamicResource KeywordHeading}" FontWeight="SemiBold" FontSize="12"/>
+                            <ItemsControl x:Name="KeywordChipList" ItemsSource="{Binding PreviewItem.KeywordChips}" IsEnabled="{Binding CanEditKeywords}">
+                                <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:KeywordChip">
+                                            <Border Background="{DynamicResource SubtleBackground}" CornerRadius="9" Padding="9,5,4,5" Margin="0,0,7,7" VerticalAlignment="Top">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBlock Text="{Binding Label}" FontSize="12" MaxWidth="250" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                    <Button Grid.Column="1" Content="×" Click="RemoveKeyword" Padding="0" MinWidth="24" MinHeight="24" FontSize="15" Margin="5,-2,0,-2" VerticalAlignment="Top" ToolTip.Tip="{DynamicResource KeywordRemove}" AutomationProperties.Name="{DynamicResource KeywordRemove}"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="{DynamicResource KeywordEmpty}" IsVisible="{Binding !PreviewItem.HasTextKeywords}" Classes="secondary" FontSize="12"/>
                             <StackPanel IsVisible="{Binding PreviewItem.HasModelKeywords}" Spacing="4">
                                 <TextBlock Text="{DynamicResource PreviewModelTags}" FontWeight="SemiBold" FontSize="12"/>
-                                <TextBlock Text="{Binding PreviewItem.ModelKeywords}" TextWrapping="Wrap"/>
+                                <ItemsControl x:Name="SuggestedKeywordChipList" ItemsSource="{Binding PreviewItem.SuggestedKeywordChips}" IsEnabled="{Binding CanEditKeywords}">
+                                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:KeywordChip">
+                                            <Border Background="{DynamicResource SubtleBackground}" CornerRadius="9" Padding="9,5,4,5" Margin="0,0,7,7" VerticalAlignment="Top">
+                                                <Grid ColumnDefinitions="*,Auto">
+                                                    <TextBlock Text="{Binding Label}" FontSize="12" MaxWidth="250" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                    <Button Grid.Column="1" Content="×" Click="RemoveKeyword" Padding="0" MinWidth="24" MinHeight="24" FontSize="15" Margin="5,-2,0,-2" VerticalAlignment="Top" ToolTip.Tip="{DynamicResource KeywordRemove}" AutomationProperties.Name="{DynamicResource KeywordRemove}"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
-                            <TextBlock Text="{DynamicResource PreviewTagsHelp}" TextWrapping="Wrap" Classes="secondary" FontSize="11"/>
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" IsEnabled="{Binding CanEditKeywords}">
+                                <TextBox x:Name="KeywordEntry" Text="{Binding KeywordInput}" PlaceholderText="{DynamicResource KeywordPlaceholder}" MaxLength="100" KeyDown="KeywordEntryKeyDown" AutomationProperties.Name="{DynamicResource KeywordPlaceholder}"/>
+                                <Button Grid.Column="1" Content="{DynamicResource KeywordAdd}" Command="{Binding AddPreviewKeywordCommand}"/>
+                            </Grid>
+                            <WrapPanel>
+                                <Button Content="{DynamicResource KeywordRecognize}" Command="{Binding RecognizePreviewKeywordsCommand}" Margin="0,0,8,7"/>
+                                <Button Content="{DynamicResource KeywordSave}" Command="{Binding SavePreviewKeywordsCommand}" Margin="0,0,0,7"/>
+                            </WrapPanel>
+                            <TextBlock Text="{Binding KeywordSaveHint}" TextWrapping="Wrap" Classes="secondary" FontSize="11"/>
+                            <TextBlock Text="{Binding KeywordStatus}" TextWrapping="Wrap" FontSize="12"/>
+
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -69,7 +106,7 @@
             <StackPanel Grid.Row="2" Spacing="8" Margin="0,14,0,0">
                 <ProgressBar IsVisible="{Binding IsPreviewLoading}" IsIndeterminate="True" Height="4"/>
                 <TextBlock Text="{Binding PreviewStatus}" TextWrapping="Wrap" FontSize="12" Classes="secondary"/>
-                <TextBlock x:Name="PreviewSaveStatus" Text="{Binding PreviewItem.SaveLabel}" ToolTip.Tip="{Binding PreviewItem.DownloadError}" TextWrapping="Wrap" FontWeight="SemiBold"/>
+                <TextBlock x:Name="PreviewSaveStatus" Classes.ignored="{Binding PreviewItem.IsIgnored}" Text="{Binding PreviewItem.SaveLabel}" ToolTip.Tip="{Binding PreviewItem.DownloadError}" TextWrapping="Wrap" FontWeight="SemiBold"/>
                 <Grid ColumnDefinitions="*,Auto">
                     <CheckBox x:Name="PreviewDownloadSelection" Content="{DynamicResource Text069}" IsVisible="{Binding !PreviewItem.IsSaved}" IsChecked="{Binding PreviewItem.IsSelected}" IsEnabled="{Binding !PreviewItem.IsIgnored}"/>
                     <Button Grid.Column="1" Content="{DynamicResource Text070}" IsVisible="{Binding PreviewFailed}" Command="{Binding RetryPreviewCommand}"/>

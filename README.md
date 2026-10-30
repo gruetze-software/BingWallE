@@ -2,17 +2,14 @@
   <img src="branding/bingwalle.png" width="192" alt="BingWallE: hand-drawn turquoise mountains, a winding river and a yellow sun on a dark blue rounded square" />
 </p>
 
-# BingWallE 1.5.1
+# BingWallE 1.6.0
 
 Collect Bing daily images and optional Windows Spotlight selections in one gallery.
-Version 1.5.1 fixes the first-start language and adds a resizable preview window
-with fullscreen keyboard shortcuts. Native Wayland with X11 fallback remains supported.
+Version 1.6.0 adds **My collection**, editable keywords and your own keywords.
+Native Wayland with X11 fallback and resizable preview windows remain supported.
 The app icon is drawn by the maintainer in Paint.NET.
 
-See [Wayland testing](docs/WAYLAND.md). Snap Store and Flathub packages are
-published separately and may contain an older version than the GitHub release.
-
-See [what is new in 1.5.1](docs/RELEASE-1.5.1.md).
+See [what is new in 1.6.0](docs/RELEASE-1.6.0.md).
 
 <img width="2306" height="1920" alt="grafik" src="https://github.com/user-attachments/assets/07d19ada-e73a-49aa-b36c-bb1121cbaf05" />
 
@@ -32,6 +29,38 @@ Use Refresh after changing the region.
 
 ## Features
 
+### My collection
+
+Use **Discover** to browse current Bing and optional Windows Spotlight results.
+Switch to **My collection** to see images already stored in your selected download
+folder, including older downloads. Switching back preserves the online results and
+your selection, so another online scan is unnecessary.
+
+My collection reads JPEG, PNG and WebP files from that folder. It uses embedded
+titles, sources, descriptions and keywords where available, and falls back to
+filenames for images without metadata. Local previews work offline. **Refresh**
+reloads the active view; **Open folder** still opens the folder in your file manager.
+Local images show their actual dimensions and do not have download checkboxes.
+
+### Edit keywords and add your own
+
+The preview shows keywords as chips. Use the **×** on a chip to remove a wrong or
+unwanted term, or enter a personal keyword and choose **Add** (or press Enter).
+**Recognize keywords again** runs local image recognition on demand. AI suggestions
+remain clearly identified for review, and your personal keywords are retained.
+Title and description are both used for text keywords, including animal terms such
+as wolves and coyotes.
+
+Choose **Save keywords** to write the reviewed list into a saved JPEG's EXIF/XMP
+metadata. Editing or recognizing alone does not change the file. Excluded terms
+stay excluded after reopening, recognizing again or downloading the same image
+again; explicitly adding a term back restores it. Changes to images not downloaded
+yet are applied on download. Compressed image data, dates, copyright and other
+metadata are preserved. Saving keywords into existing PNG/WebP files is not
+supported yet.
+
+### Gallery and downloads
+
 - A responsive gallery with large image cards, source labels and readable dates.
 - Native Wayland on compatible Linux sessions, with automatic X11 fallback.
 - Click an image to open a separate, resizable preview window with its description
@@ -50,6 +79,7 @@ Use Refresh after changing the region.
 - Selection counts, download progress, cancellation and retry after errors.
 - Choose a destination folder and open it directly in your file manager.
 - Light, dark or system appearance, with persistent preferences.
+- Independently remembered window sizes and maximized states for the gallery and preview.
 
 Bing provides up to eight daily images per region. Windows Spotlight optionally
 adds up to four images from its current selection. Spotlight is not a fixed daily
@@ -74,8 +104,10 @@ or Finder; on Linux it opens the containing folder. File actions refer to the
 currently selected download resolution and are available for saved images.
 Ignore keeps the image visible but excludes it from bulk selection and downloads.
 The choice is saved across refreshes and restarts; **Stop ignoring** reverses it.
+Ignored status labels are highlighted subtly in both themes.
 Delete local asks for confirmation before permanently removing that resolution's
-file. Other downloaded resolutions are kept.
+file. Other downloaded resolutions are kept. In My collection, file actions always
+use the exact local file shown, independently of the current download resolution.
 
 Enable **Refresh automatically on startup** in Settings to load the selected image sources when opening the app. This is off by default and never starts downloads.
 The app remembers its normal window size and maximized state when closed. On the
@@ -142,10 +174,10 @@ or use the Snap Store as described under [Linux installation](#linux-installatio
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.5.1-win-x64.zip` |
-| Linux x64 | `BingWallE-1.5.1-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.5.1-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.5.1-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.6.0-win-x64.zip` |
+| Linux x64 | `BingWallE-1.6.0-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.6.0-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.6.0-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -197,7 +229,7 @@ Download the Linux x64 **DEB** from the
 Open a terminal in its download folder and install the exact filename:
 
 ```bash
-sudo apt install ./BingWallE-1.5.1-linux-x64.deb
+sudo apt install ./BingWallE-1.6.0-linux-x64.deb
 ```
 
 Start **BingWallE** from the application menu or run `bingwalle`. The package
@@ -221,7 +253,7 @@ different settings folders; this is not an automatic settings migration.
 #### TAR.GZ: other Linux distributions
 
 If you prefer not to use Snap or a DEB package, download
-`BingWallE-1.5.1-linux-x64.tar.gz` from the GitHub release and extract it into a
+`BingWallE-1.6.0-linux-x64.tar.gz` from the GitHub release and extract it into a
 folder. Open a terminal in that folder and run:
 
 ```bash
@@ -275,7 +307,7 @@ an issue. A quarantine workaround does not resolve incompatible systems or damag
 
 ## Build from source
 
-The **.NET 10 SDK** is required to build BingWallE 1.5.1.
+The **.NET 10 SDK** is required to build BingWallE 1.6.0.
 The repository's `global.json` accepts stable .NET 10 SDK feature bands.
 Application, tests and recognition smoke checks target .NET 10. macOS builds
 require macOS 14 or later.
@@ -337,7 +369,7 @@ are documented in [Wayland testing](docs/WAYLAND.md).
 
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the full three-part version, for example
-**1.5.1**. Every package includes the .NET runtime.
+**1.6.0**. Every package includes the .NET runtime.
 
 | Platform | Command on that platform | Output |
 | --- | --- | --- |
@@ -358,11 +390,11 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.5.1`. Pushing a tag
+Version tags use the full package version, for example `v1.6.0`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants and the native Wayland/X11 checks succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.5.1](docs/RELEASE-1.5.1.md).
+are attached. See [release notes for 1.6.0](docs/RELEASE-1.6.0.md).
 
 ## Snap packaging and publishing
 

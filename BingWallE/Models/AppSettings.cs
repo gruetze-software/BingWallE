@@ -12,6 +12,7 @@ public class AppSettings
     public bool IncludeWindowsSpotlight { get; set; }
     public string[] IgnoredImages { get; set; } = [];
     public SavedWindowState Window { get; set; } = new();
+    public SavedWindowState PreviewWindow { get; set; } = new(980, 850);
     public string Language { get; set; } = BingWallE.Localization.UiText.SystemLanguage;
     public string Theme { get; set; } = "System";
     public string WallpaperPath { get; set; } = Path.Combine(

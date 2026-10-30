@@ -76,8 +76,10 @@ public class CollectionActionTests
         var vm = new MainWindowViewModel(new BingWallpaperClient(client), new WallpaperStore(client), store, new TestDialogs());
         vm.AutoRefreshOnStartup = true;
         vm.SaveWindowState(new(900, 600, true));
+        vm.SavePreviewWindowState(new(800, 550, true));
         vm.SelectedTheme = vm.Themes.Single(x => x.Value == "Dark");
         var result = store.Load(); Assert.Equal(new SavedWindowState(900, 600, true), result.Window);
+        Assert.Equal(new SavedWindowState(800, 550, true), result.PreviewWindow);
         Assert.True(result.AutoRefreshOnStartup);
     }
 

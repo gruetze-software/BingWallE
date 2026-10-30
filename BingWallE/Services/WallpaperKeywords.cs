@@ -13,10 +13,14 @@ public static class WallpaperKeywords
     // Match complete words, never photographer credits or fragments of unrelated words.
     private static readonly (string De, string En, string Words, string? Parent)[] Concepts =
     [
+        ("Tier", "Animal", "tier|tiere|tieren|animal|animals|wildlife", null),
+        ("Wolf", "Wolf", "wolf|wolves|wölfe|wölfen", "Tier|Animal"),
+        ("Kojote", "Coyote", "coyote|coyotes|kojote|kojoten", "Tier|Animal"),
+        ("Fuchs", "Fox", "fuchs|füchse|fox|foxes", "Tier|Animal"),
         ("Krake", "Octopus", "krake|kraken|octopus", "Tier|Animal"),
         ("Vogel", "Bird", "vogel|vögel|bird|birds|ohrenscharben|cormorant|cormorants", "Tier|Animal"),
         ("Fisch", "Fish", "fisch|fische|fish|anemone fish|puffer", "Tier|Animal"),
-        ("Säugetier", "Mammal", "elefant|elefanten|elephant|lion|löwe|tiger|whale|wal|dolphin|delfin", "Tier|Animal"),
+        ("Säugetier", "Mammal", "elefant|elefanten|elephant|elephants|lion|lions|löwe|löwen|tiger|tigers|whale|whales|wal|wale|dolphin|dolphins|delfin|delfine|wolf|wolves|wölfe|coyote|coyotes|kojote|kojoten|fox|foxes|fuchs|füchse|bear|bears|bär|bären", "Tier|Animal"),
         ("Meer", "Sea", "meer|meeres|ozean|ocean|sea|bay|bucht|seashore", null),
         ("Unterwasser", "Underwater", "unterwasser|underwater|scuba diver|coral reef|korallenriff", "Meer|Sea"),
         ("Küste", "Coast", "küste|küsten|coast|coastal|seashore", "Meer|Sea"),
@@ -29,6 +33,7 @@ public static class WallpaperKeywords
         ("Wasserfall", "Waterfall", "wasserfall|waterfall|waterfalls", "Natur|Nature"),
         ("Blumen", "Flowers", "blume|blumen|flower|flowers|daisy", "Natur|Nature"),
         ("Architektur", "Architecture", "architektur|architecture|gebäude|building|castle|schloss|burg|palace|palast|bridge|brücke", null),
+        ("Winter", "Winter", "winter|winterlich|wintry", null),
         ("Schnee", "Snow", "schnee|snow|snowy", "Winter|Winter"),
         ("Wüste", "Desert", "wüste|desert|sand dune", "Natur|Nature")
     ];
@@ -53,7 +58,7 @@ public static class WallpaperKeywords
                 }
         }
         var caption = WallpaperCredits.Split(image.Copyright).Description;
-        Classify(!string.IsNullOrWhiteSpace(image.Description) ? image.Description : string.IsNullOrWhiteSpace(caption) ? image.Title : caption, false);
+        Classify(string.Join("\n", new[] { image.Title, image.Description, caption }.Where(t => !string.IsNullOrWhiteSpace(t))), false);
         // Bing captions conventionally list locations after the subject, separated by commas.
         foreach (var location in caption.Split(',').Skip(1).Select(x => x.Trim()))
             if (location.Length is > 1 and <= 60 && location.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length <= 6)

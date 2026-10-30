@@ -56,7 +56,7 @@ public class WallpaperKeywordTests
     [Fact]
     public void DoesNotMatchWordFragmentsOrPhotographerNames()
     {
-        Assert.Empty(WallpaperKeywords.Build(Octopus with { Copyright = "A charming scene (© Forest Bird)", Title = "Mountains" }, []));
+        Assert.Empty(WallpaperKeywords.Build(Octopus with { Copyright = "A charming scene (© Forest Bird)", Title = "A charming scene" }, []));
     }
 }
 
