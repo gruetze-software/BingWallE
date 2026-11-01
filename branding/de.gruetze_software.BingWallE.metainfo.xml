@@ -64,7 +64,12 @@
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
-  <releases><release version="1.6.0" type="stable" date="2026-10-30">
+  <releases><release version="1.6.1" type="stable" date="2026-11-01">
+      <description>
+          <p>Reduce Linux package size by selecting only the matching platform libraries. Exclude debug symbols and link-time files from release packages on all platforms.</p>
+          <p xml:lang="de">Linux-Pakete durch gezielte Auswahl der Plattformbibliotheken verkleinern. Debugsymbole und Linker-Dateien auf allen Plattformen aus Release-Paketen entfernen.</p>
+      </description>
+  </release><release version="1.6.0" type="stable" date="2026-10-30">
       <description>
           <p>Browse local downloads in My collection, edit and add personal keywords, rerun local recognition and save reviewed JPEG metadata.</p>
           <p>Remember window sizes and maximized state, improve context menus and highlight ignored images.</p>

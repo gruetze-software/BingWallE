@@ -31,13 +31,21 @@ done
 NUGET_SOURCE="$(cd -- "$NUGET_SOURCE" && pwd)"
 command -v dotnet >/dev/null
 
+# Select native assets for the build machine only. Without a RID, NuGet copies
+# assets for every supported OS/CPU, including large Windows debug symbols.
+case "$(uname -m)" in
+  x86_64) RID=linux-x64 ;;
+  aarch64|arm64) RID=linux-arm64 ;;
+  *) echo "Unsupported Linux architecture: $(uname -m)" >&2; exit 1 ;;
+esac
+
 WORK="$(mktemp -d)"
 trap 'rm -rf -- "$WORK"' EXIT
 cd "$ROOT"
 
 # Restore exclusively from the caller's local feed (or the existing NuGet cache).
 # Audit requests are disabled because Flatpak builds run without network access.
-dotnet publish BingWallE/BingWallE.csproj -c Release --self-contained false \
+dotnet publish BingWallE/BingWallE.csproj -c Release -r "$RID" --self-contained false \
   --source "$NUGET_SOURCE" -p:NuGetAudit=false -p:UseAppHost=true \
   -p:PublishSingleFile=false -p:DebugType=None -o "$WORK/publish"
 test -x "$WORK/publish/bingwalle"

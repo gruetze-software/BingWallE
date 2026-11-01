@@ -94,6 +94,13 @@ jobs:
           bash scripts/install-flatpak.sh --prefix "$prefix" --nuget-source "$RUNNER_TEMP/empty-nuget-feed"
           version=$(dotnet msbuild BingWallE/BingWallE.csproj -nologo -getProperty:Version)
           test "$("$prefix/bin/bingwalle" --version)" = "BingWallE $version"
+          # A portable publish silently bundles native assets for all platforms.
+          test ! -d "$prefix/bin/runtimes"
+          test -s "$prefix/bin/libonnxruntime.so"
+          test -s "$prefix/bin/libSkiaSharp.so"
+          test -s "$prefix/bin/libHarfBuzzSharp.so"
+          test ! -e "$prefix/bin/onnxruntime.dll"
+          test -z "$(find "$prefix/bin" -type f \( -name '*.pdb' -o -name '*.dylib' -o -name '*.aar' -o -name '*.xcframework.zip' \) -print -quit)"
           app_id=de.gruetze_software.BingWallE
           for file in "share/applications/$app_id.desktop" "share/icons/hicolor/256x256/apps/$app_id.png" "share/metainfo/$app_id.metainfo.xml" "share/licenses/$app_id/LICENSE"; do
             test -s "$prefix/$file"
@@ -102,6 +109,19 @@ jobs:
       - name: macOS package
         if: matrix.platform == 'macos'
         run: bash scripts/build-macos.sh '${{ matrix.arch }}'
+      - name: Check release package contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          case '${{ matrix.platform }}' in
+            windows) python scripts/check-release-files.py windows artifacts/BingWallE-*-win-*.zip ;;
+            macos) python3 scripts/check-release-files.py macos artifacts/BingWallE-*-macos-*.zip ;;
+            linux)
+              python3 scripts/check-release-files.py linux artifacts/BingWallE-*-linux-*.tar.gz
+              dpkg-deb -x artifacts/BingWallE-*-linux-*.deb "$RUNNER_TEMP/deb-content-check"
+              python3 scripts/check-release-files.py linux "$RUNNER_TEMP/deb-content-check"
+              ;;
+          esac
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7

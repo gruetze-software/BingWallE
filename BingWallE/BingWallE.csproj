@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.6.0</Version>
+    <Version>1.6.1</Version>
     <AssemblyName>bingwalle</AssemblyName>
 
 
@@ -49,4 +49,28 @@
     <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.30.0" />
 
   </ItemGroup>
+  <!-- ONNX's NuGet props also copy Windows DLLs as content, independently of
+       the selected runtime. Keep them for Windows/portable builds only. -->
+  <ItemGroup Condition="$([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('linux-')) Or $([System.String]::Copy('$(RuntimeIdentifier)').StartsWith('osx-'))">
+    <None Remove="$(NuGetPackageRoot)/microsoft.ml.onnxruntime/**/runtimes/win-*/native/*.dll" />
+  </ItemGroup>
+  <!-- Filter dependency symbols and link-time files before single-file bundling
+       as well as ordinary publishing. Debug builds retain their symbols. -->
+  <Target Name="RemoveReleasePackagingArtifacts"
+          AfterTargets="ComputeResolvedFilesToPublishList"
+          Condition="'$(Configuration)' == 'Release' And '$(RuntimeIdentifier)' != ''">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+        Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.dbg' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.debug' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.dwarf' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.mdb' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.lib' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.exp' Or
+                   '%(ResolvedFileToPublish.Extension)' == '.a' Or
+                   $([System.String]::Copy('%(ResolvedFileToPublish.RelativePath)').Contains('.dSYM/')) Or
+                   $([System.String]::Copy('%(ResolvedFileToPublish.RelativePath)').Contains('.dSYM\'))" />
+    </ItemGroup>
+  </Target>
 </Project>

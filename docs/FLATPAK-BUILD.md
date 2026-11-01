@@ -14,6 +14,31 @@ manifest or submission text. The script and this document are AI-assisted.
 - A runtime supplied by the surrounding package. The script does not bundle .NET,
   install SDK extensions or grant any sandbox permissions.
 
+The script selects `linux-x64` on x86-64 build machines and `linux-arm64` on
+ARM64 build machines. Publishing with an explicit runtime identifier includes
+only the matching native libraries, while keeping the app framework-dependent.
+Without this selection, a portable publish includes native assets for other
+operating systems and architectures, including Windows debug symbols. Unsupported
+architectures fail before publishing instead of producing a portable package.
+ONNX Runtime also adds Windows DLLs as content through its NuGet build props;
+the project excludes those content entries for Linux and macOS targets. Managed
+assemblies and the selected platform's native inference library remain included.
+
+## Package size regression check
+
+A local comparison for 1.6.0 measured 797.66 MiB for the previous portable app
+publish versus 54.04 MiB for the Linux x64 app publish after selecting the RID
+and excluding ONNX's Windows content (about 93% smaller). These are uncompressed
+app files, not Flathub download sizes; the .NET runtime installed by the packaging
+and the shared Freedesktop runtime are additional. The complete upstream staging
+prefix, including desktop metadata and licenses, measured 54.08 MiB.
+
+CI checks that the staged app starts, includes the Linux Skia, HarfBuzz and ONNX
+libraries, and contains neither a portable `runtimes/` tree nor Windows native
+ONNX DLLs, debug symbols or Apple/Android native packages.
+
+## Running the installer
+
 Run `bash scripts/install-flatpak.sh --help` for the argument syntax. Relative
 NuGet paths are resolved against the caller's working directory; the build itself
 always uses the repository containing the script.

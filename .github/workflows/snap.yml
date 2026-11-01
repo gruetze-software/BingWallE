@@ -7,6 +7,7 @@ on:
     paths:
       - 'snap/**'
       - 'scripts/*snap*'
+      - 'scripts/check-release-files.py'
       - 'BingWallE/**'
       - 'BingWallE.Tests/**'
       - '.github/workflows/snap.yml'
@@ -14,6 +15,7 @@ on:
     paths:
       - 'snap/**'
       - 'scripts/*snap*'
+      - 'scripts/check-release-files.py'
       - 'BingWallE/**'
       - 'BingWallE.Tests/**'
       - '.github/workflows/snap.yml'
@@ -50,6 +52,7 @@ jobs:
       - name: Prepare and build Snap
         run: |
           bash scripts/prepare-snap.sh
+          python3 scripts/check-release-files.py linux artifacts/snap-payload/opt/bingwalle
           version=$(cat artifacts/snap-payload/opt/bingwalle/VERSION)
           sudo snapcraft pack --destructive-mode --output "$PWD/artifacts/bingwalle_${version}_amd64.snap"
       - name: Install and smoke test strictly confined Snap
