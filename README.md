@@ -424,6 +424,8 @@ starts the release build. The tag must match `<Version>` in the project file, an
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants and the native Wayland/X11 checks succeed. All packages and `SHA256SUMS.txt`
 are attached. See [release notes for 1.6.1](docs/RELEASE-1.6.1.md).
+The workflow appends the store badges and availability notice from
+[the shared release footer](docs/RELEASE-STORES.md) to each GitHub release.
 
 ## Snap packaging and publishing
 

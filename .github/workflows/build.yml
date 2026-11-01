@@ -194,5 +194,9 @@ jobs:
             test -s "release-assets/BingWallE-$version-$package"
           done
           (cd release-assets && sha256sum BingWallE-* > SHA256SUMS.txt)
-          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "BingWallE $version" --notes-file "docs/RELEASE-$version.md"
+          notes="$RUNNER_TEMP/release-notes.md"
+          cp "docs/RELEASE-$version.md" "$notes"
+          printf '\n' >> "$notes"
+          cat docs/RELEASE-STORES.md >> "$notes"
+          gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "BingWallE $version" --notes-file "$notes"
           gh release edit "$RELEASE_TAG" --draft=false --latest
