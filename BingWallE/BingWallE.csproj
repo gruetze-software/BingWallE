@@ -5,6 +5,11 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <OnnxRuntimeVersion>1.30.0</OnnxRuntimeVersion>
+    <!-- Newer ONNX NuGet releases no longer contain Intel macOS binaries.
+         Select both managed and native 1.23.2 assets for Intel publishing and
+         native Intel-Mac development/test builds. Other platforms keep 1.30.0. -->
+    <OnnxRuntimeVersion Condition="'$(RuntimeIdentifier)' == 'osx-x64' Or ('$(RuntimeIdentifier)' == '' And '$(NETCoreSdkRuntimeIdentifier)' == 'osx-x64')">1.23.2</OnnxRuntimeVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -46,7 +51,7 @@
     <PackageReference Include="Avalonia.Wayland" Version="12.1.4" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="ExifLibNet" Version="2.1.4" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.30.0" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="$(OnnxRuntimeVersion)" />
 
   </ItemGroup>
   <!-- ONNX's NuGet props also copy Windows DLLs as content, independently of

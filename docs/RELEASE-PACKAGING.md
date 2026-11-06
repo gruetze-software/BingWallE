@@ -56,3 +56,12 @@ must match the app's project version, and the release still requires all platfor
 jobs and packaging checks. This uses the current workflow without moving the tag
 or changing the application source. Leave `release_tag` empty for a test-only run.
 The publish command creates a new release; it does not replace an existing one.
+
+## Intel macOS inference dependency
+
+ONNX Runtime 1.30.0 no longer ships an Intel macOS native library. The project
+selects 1.23.2 for `osx-x64` publishing and for builds without a RID on an Intel
+macOS SDK. Both the managed binding and native library come from the same package
+version. Other targets keep 1.30.0. Native Intel CI runs the real model and the
+recognition shutdown check before packaging; the app retains its existing model
+hash verification and telemetry opt-out.

@@ -63,6 +63,8 @@
       <description>
           <p>Refine the app icon with more transparent space and a blue-gray outline for improved contrast. Update platform icons and store screenshot links.</p>
           <p xml:lang="de">App-Icon mit mehr transparentem Rand und graublauer Kontur für besseren Kontrast überarbeiten. Plattform-Icons und Screenshot-Links im Store aktualisieren.</p>
+          <p>Restore local image recognition on Intel Macs with a compatible inference runtime.</p>
+          <p xml:lang="de">Lokale Bilderkennung auf Intel-Macs mit einer kompatiblen Laufzeitbibliothek wiederherstellen.</p>
       </description>
   </release><release version="1.6.1" type="stable" date="2026-11-01">
       <description>

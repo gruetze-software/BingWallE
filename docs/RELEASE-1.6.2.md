@@ -8,6 +8,9 @@
 - Update the application header, About dialog, Windows ICO, macOS ICNS, Linux and
   Snap icons, and the README icon from the same 1024 px master.
 - Refresh the Flathub screenshot links to serve the updated image files directly.
+- Restore local image recognition on Intel Macs by using ONNX Runtime 1.23.2
+  there; newer NuGet releases no longer supply the required Intel macOS library.
+  Windows, Linux and Apple Silicon retain ONNX Runtime 1.30.0.
 
 This patch retains the smaller release packages introduced in 1.6.1.
 The app continues to use .NET 10 and Avalonia 12.1.4, with native Wayland and X11
