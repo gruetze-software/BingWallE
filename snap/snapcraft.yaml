@@ -5,7 +5,7 @@ adopt-info: bingwalle
 grade: stable
 confinement: strict
 license: MIT
-summary: Browse and collect Bing wallpapers in HD, Full HD and UHD
+summary: Browse and collect wallpapers
 description: |
   Discover Bing's daily photographs and keep your favourites in your own collection.
   Browse the latest eight days of images from twelve regions, inspect large previews
@@ -40,7 +40,7 @@ description: |
 
   Enjoy BingWallE? Support its development with a voluntary contribution on Ko-fi:
   https://ko-fi.com/gruetzesoftware
-website: https://github.com/gruetze-software/BingWallE
+website: https://www.gruetze-software.de
 source-code: https://github.com/gruetze-software/BingWallE
 issues: https://github.com/gruetze-software/BingWallE/issues
 icon: BingWallE/Assets/bingwalle.png
