@@ -16,9 +16,12 @@ with Image.open(source) as image:
 assets = root / 'BingWallE' / 'Assets'
 assets.mkdir(parents=True, exist_ok=True)
 # Preserve the approved artwork and alpha; use Lanczos for format-specific downsampling.
+for size in (32, 64, 128, 256, 1024):
+    master.resize((size, size), Image.Resampling.LANCZOS).save(
+        root / f'bingwalle_icon_{size}.png', optimize=True)
 master.resize((256, 256), Image.Resampling.LANCZOS).save(assets / 'bingwalle.png', optimize=True)
 large = master.resize((1024, 1024), Image.Resampling.LANCZOS)
 large.save(assets / 'bingwalle-logo.png', optimize=True)
 large.save(assets / 'bingwalle.ico', sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
 large.save(assets / 'bingwalle.icns')
-print('Generated PNG, high-resolution logo, Windows ICO and macOS ICNS from branding/bingwalle.png')
+print('Generated root PNG exports, app PNGs, Windows ICO and macOS ICNS from branding/bingwalle.png')
