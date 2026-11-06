@@ -41,7 +41,7 @@ update the Snap Store or Flathub.
 
 ## Rebuilding an existing release tag
 
-The workflow uses macOS 15 build runners; the application's declared minimum
+The workflow uses macOS 26 build runners (ARM64 and Intel); the application's declared minimum
 macOS version remains 14. GitHub retired its macOS 14 runners on 2 November 2026.
 
 If a tagged workflow can no longer run because its runner image was retired,
