@@ -38,3 +38,21 @@ the graphics backend and local image recognition. Rebuild into a fresh directory
 See [FLATPAK-BUILD.md](FLATPAK-BUILD.md) for the framework-dependent Linux installer
 and its size comparison. Publishing a GitHub release does not automatically
 update the Snap Store or Flathub.
+
+## Rebuilding an existing release tag
+
+The workflow uses macOS 15 build runners; the application's declared minimum
+macOS version remains 14. GitHub retired its macOS 14 runners on 2 November 2026.
+
+If a tagged workflow can no longer run because its runner image was retired,
+start the current workflow from `main` with `release_tag` set to the existing tag:
+
+```bash
+gh workflow run build.yml --ref main -f release_tag=v1.6.2
+```
+
+All build, desktop-test and release jobs check out the supplied tag. The version
+must match the app's project version, and the release still requires all platform
+jobs and packaging checks. This uses the current workflow without moving the tag
+or changing the application source. Leave `release_tag` empty for a test-only run.
+The publish command creates a new release; it does not replace an existing one.
