@@ -43,6 +43,7 @@ public partial class PreviewWindow : Window
     {
         if (DataContext is not MainWindowViewModel { CanEditKeywords: true, PreviewItem: { } item } vm) return;
         var mode = (sender as Button)?.Tag as string;
+        if (mode is not ("image" or "text")) return;
         KeywordClipboardData? data = null;
         try
         {
@@ -54,12 +55,9 @@ public partial class PreviewWindow : Window
             await Clipboard.SetDataAsync(data);
             data = null; // The clipboard now owns the data and its detached bitmap.
             if (ReferenceEquals(vm.PreviewItem, item))
-                vm.KeywordStatus = vm.Text.Get(mode switch
-                {
-                    "text" => "KI-Prompt kopiert. Zusätzlich die Bildvorschau im KI-Chat einfügen.",
-                    "image" => "Bildvorschau kopiert. Im KI-Chat einfügen und den Prompt ergänzen.",
-                    _ => "Bildvorschau und KI-Prompt kopiert. Falls dein Chat nur eines übernimmt, Bild und Prompt getrennt kopieren."
-                });
+                vm.KeywordStatus = vm.Text.Get(mode == "text"
+                    ? "KI-Prompt kopiert. Zusätzlich die Bildvorschau im KI-Chat einfügen."
+                    : "Bildvorschau kopiert. Im KI-Chat einfügen und den Prompt ergänzen.");
         }
         catch (System.Exception ex)
         {

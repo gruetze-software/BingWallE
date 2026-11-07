@@ -60,10 +60,6 @@
                     <ComboBox ItemsSource="{Binding Resolutions}" SelectedItem="{Binding SelectedResolution}" AutomationProperties.Name="{DynamicResource Text055}"/>
                 </StackPanel>
                 <StackPanel Spacing="7">
-                    <CheckBox Content="{DynamicResource AutoTags}" IsChecked="{Binding AutoTags}"/>
-                    <TextBlock Text="{DynamicResource AutoTagsHelp}" Classes="hint"/>
-                </StackPanel>
-                <StackPanel Spacing="7">
                     <TextBlock Text="{DynamicResource Text050}" FontWeight="SemiBold"/>
                     <ComboBox ItemsSource="{Binding Themes}" SelectedItem="{Binding SelectedTheme}" AutomationProperties.Name="{DynamicResource Text051}"/>
                 </StackPanel>

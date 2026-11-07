@@ -26,7 +26,6 @@ public partial class MainWindowViewModel : ViewModelBase
     private readonly IWallpaperStore _images;
     private readonly ISettingsStore _settings;
     private readonly IAppDialogs _dialogs;
-    private readonly IImageTagger? _tagger;
     private readonly HashSet<ImageItemViewModel> _observed = new();
     private CancellationTokenSource? _cts;
     private CancellationTokenSource? _previewCts;
@@ -57,7 +56,6 @@ public partial class MainWindowViewModel : ViewModelBase
     public string AppTitle => $"{AppInfo.DisplayName} · {T("Bildersammlung")}";
     public SelectionOption[] Languages { get; } = [new("de", "Deutsch"), new("en", "English")];
     [ObservableProperty] private SelectionOption _selectedLanguage;
-    [ObservableProperty] private bool _autoTags;
     public string DisplayVersion => AppInfo.Version;
     public SelectionOption[] Markets { get; private set; } =
     [
@@ -109,9 +107,9 @@ public partial class MainWindowViewModel : ViewModelBase
     public string SelectionSummary => T("{0} von {1} Bildern ausgewählt", SelectedCount, Wallpapers.Count);
     public string DownloadLabel => SelectedCount == 1 ? T("1 Bild herunterladen") : T("{0} Bilder herunterladen", SelectedCount);
 
-    public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs, IImageTagger? tagger = null, IBingWallpaperClient? spotlight = null)
+    public MainWindowViewModel(IBingWallpaperClient bing, IWallpaperStore images, ISettingsStore settings, IAppDialogs dialogs, IBingWallpaperClient? spotlight = null)
     {
-        _bing = bing; _spotlight = spotlight; _images = images; _settings = settings; _dialogs = dialogs; _tagger = tagger;
+        _bing = bing; _spotlight = spotlight; _images = images; _settings = settings; _dialogs = dialogs;
         var saved = settings.Load();
         _ignoredImages = new(saved.IgnoredImages ?? Array.Empty<string>(), StringComparer.Ordinal);
         WindowSettings = saved.Window ?? new();
@@ -123,7 +121,6 @@ public partial class MainWindowViewModel : ViewModelBase
         TranslateOptions();
         Text.ApplyResources();
         _statusMessage = T(_statusMessage); _buttonText = T(_buttonText); _gallerySubtitle = T(_gallerySubtitle);
-        _autoTags = saved.AutoTags;
         _targetFolder = saved.WallpaperPath;
         _selectedMarket = Markets.FirstOrDefault(x => x.Value == saved.Market) ?? Markets[0];
         _selectedResolution = Resolutions.FirstOrDefault(x => x.Value == saved.Resolution) ?? Resolutions[0];
@@ -264,10 +261,9 @@ public partial class MainWindowViewModel : ViewModelBase
                 try
                 {
                     var result = await _images.DownloadAsync(folder, WallpaperVariants.ForResolution(item.Image, resolution), cancellation.Token,
-                        AutoTags, message => StatusMessage = Text.Translate(message), item.HasKeywordChanges || item.KeywordsLoaded ? item.ExportKeywords() : null);
+                        message => StatusMessage = Text.Translate(message), item.HasKeywordChanges || item.KeywordsLoaded ? item.ExportKeywords() : null);
                     item.ActualDimensions = $"{result.Width} × {result.Height}";
                     if (result.Keywords != null) item.LoadKeywords(result.Keywords, force: true);
-                    else if (AutoTags && !item.HasKeywordChanges) item.ApplyPredictions(result.Tags);
                 }
                 catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { throw; }
                 catch (Exception ex) { item.DownloadError = ErrorMessage(ex); throw; }
@@ -415,19 +411,11 @@ public partial class MainWindowViewModel : ViewModelBase
                 _previewFilePath = path;
             }
             cancellation.Token.ThrowIfCancellationRequested();
-            _previewBytes = bytes; _previewIsJpeg = KeywordMetadata.IsJpeg(bytes);
+            _previewIsJpeg = KeywordMetadata.IsJpeg(bytes);
             NotifyKeywordActions();
             cancellation.Token.ThrowIfCancellationRequested();
             using var stream = new MemoryStream(bytes);
             LargePreview = new Bitmap(stream); PreviewStatus = "";
-            if (AutoTags && _tagger != null && !item.HasRecognition)
-            {
-                PreviewStatus = T("Bildmotive werden lokal erkannt …");
-                var predictions = await _tagger.RecognizeAsync(bytes, cancellation.Token);
-                cancellation.Token.ThrowIfCancellationRequested();
-                item.ApplyPredictions(predictions);
-                PreviewStatus = predictions.Count == 0 ? T("Keine sicheren zusätzlichen Bildmotive erkannt.") : "";
-            }
         }
         catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
         catch (Exception ex)
@@ -447,7 +435,7 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         _previewCts?.Cancel(); _previewCts = null;
         _keywordCts?.Cancel(); _keywordCts = null; IsKeywordOperationRunning = false;
-        _previewBytes = null; _previewFilePath = null; _previewIsJpeg = false;
+        _previewFilePath = null; _previewIsJpeg = false;
         var bitmap = LargePreview; LargePreview = null; bitmap?.Dispose();
         PreviewItem = null; IsPreviewLoading = false; PreviewFailed = false;
     }
@@ -469,7 +457,6 @@ public partial class MainWindowViewModel : ViewModelBase
                 Resolution = SelectedResolution.Value,
                 Theme = SelectedTheme.Value,
                 Language = SelectedLanguage.Value,
-                AutoTags = AutoTags,
                 AutoRefreshOnStartup = AutoRefreshOnStartup,
                 IncludeWindowsSpotlight = IncludeWindowsSpotlight,
                 IgnoredImages = _ignoredImages.ToArray(),
@@ -521,12 +508,6 @@ public partial class MainWindowViewModel : ViewModelBase
         HasError = false; _retryOperation = null; SavePreferences();
     }
     partial void OnAutoRefreshOnStartupChanged(bool value) => SavePreferences();
-    partial void OnAutoTagsChanged(bool value)
-    {
-        if (!value)
-            foreach (var item in AllGalleryItems().Where(x => !x.KeywordsLoaded)) item.ApplyPredictions(Array.Empty<ImageTag>(), false);
-        SavePreferences();
-    }
 
     private void TranslateOptions()
     {

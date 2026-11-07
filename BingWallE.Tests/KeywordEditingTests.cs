@@ -24,14 +24,10 @@ public class KeywordEditingTests
         Copyright: "© Jörg Müller / Getty Images", Market: "en-GB", Description: "A quiet winter morning");
 
     [Fact]
-    public void TitleAndDescriptionBothSupplyKeywordsAndRespectSourceLanguage()
+    public void CaptionsDoNotAutomaticallyAddMotifCategories()
     {
-        var keywords = WallpaperKeywords.Build(Wolves, []);
-        Assert.Contains(keywords, x => x.Label == "Wolf" && !x.FromModel);
-        Assert.Contains(keywords, x => x.Label == "Animal" && !x.FromModel);
-        Assert.Contains(keywords, x => x.Label == "Snow" || x.Label == "Winter");
-        Assert.Contains(WallpaperKeywords.Build(Wolves with { Title = "Wölfe", Market = "de-DE" }, []), x => x.Label == "Tier");
-        Assert.Contains(WallpaperKeywords.Build(Wolves with { Title = "animals" }, []), x => x.Label == "Animal");
+        Assert.Empty(WallpaperKeywords.Build(Wolves, []));
+        Assert.Empty(WallpaperKeywords.Build(Wolves with { Title = "animals", Market = "de-DE" }, []));
     }
 
     [Fact]
@@ -122,8 +118,8 @@ public class KeywordEditingTests
             { Content = new ByteArrayContent(TestImages.Jpeg) })));
         var item = new ImageItemViewModel(Wolves); item.ApplyPredictions([new("coyote", .99f)]);
         item.RemoveKeyword("Coyote"); item.AddKeyword("Personal album");
-        var store = new WallpaperStore(http, new CoyoteTagger());
-        await store.DownloadAsync(scope.Path, Wolves, TestContext.Current.CancellationToken, true, keywords: item.ExportKeywords());
+        var store = new WallpaperStore(http);
+        await store.DownloadAsync(scope.Path, Wolves, TestContext.Current.CancellationToken, keywords: item.ExportKeywords());
         var saved = KeywordMetadata.Read(File.ReadAllBytes(store.GetPath(scope.Path, Wolves)));
         Assert.Contains("Personal album", saved.Keywords); Assert.Contains("Coyote", saved.ExcludedKeywords);
         Assert.DoesNotContain(saved.Keywords, x => x.Equals("coyote", StringComparison.OrdinalIgnoreCase));
@@ -135,10 +131,10 @@ public class KeywordEditingTests
         using var scope = new TestScope();
         using var http = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
             { Content = new ByteArrayContent(TestImages.Jpeg) })));
-        var store = new WallpaperStore(http, new CoyoteTagger());
+        var store = new WallpaperStore(http);
         var state = new KeywordMetadataState(["My album", "Wolf"], ["Coyote"], [], ["My album"]);
         await store.DownloadAsync(scope.Path, Wolves, TestContext.Current.CancellationToken, keywords: state);
-        await store.DownloadAsync(scope.Path, Wolves, TestContext.Current.CancellationToken, true);
+        await store.DownloadAsync(scope.Path, Wolves, TestContext.Current.CancellationToken);
         var saved = KeywordMetadata.Read(File.ReadAllBytes(store.GetPath(scope.Path, Wolves)));
         Assert.Equal(state.Keywords, saved.Keywords); Assert.Equal(state.ExcludedKeywords, saved.ExcludedKeywords);
         Assert.Equal(state.UserKeywords, saved.UserKeywords);
@@ -151,15 +147,14 @@ public class KeywordEditingTests
         var path = Path.Combine(scope.Path, "saved.jpg");
         var before = PhotoMetadataWriter.Write(TestImages.Jpeg, Wolves, [new("coyote", .99f)]);
         File.WriteAllBytes(path, before);
-        var tagger = new CoyoteTagger(); var vm = Create(http, scope.Path, tagger);
+        var vm = Create(http, scope.Path);
         await vm.ShowCollectionCommand.ExecuteAsync(null);
         var item = Assert.Single(vm.Wallpapers);
         await vm.OpenPreviewCommand.ExecuteAsync(item);
-        Assert.True(vm.CanSaveKeywords); Assert.Equal(0, tagger.Calls);
+        Assert.True(vm.CanSaveKeywords);
         vm.RemovePreviewKeywordCommand.Execute(item.SuggestedKeywordChips.Single(x => x.Label == "Coyote"));
         vm.KeywordInput = "My wolves;night;stars"; vm.AddPreviewKeywordCommand.Execute(null);
-        await vm.RecognizePreviewKeywordsCommand.ExecuteAsync(null);
-        Assert.Equal(1, tagger.Calls); Assert.Equal(before, File.ReadAllBytes(path));
+        Assert.Equal(before, File.ReadAllBytes(path));
         Assert.DoesNotContain(item.SuggestedKeywordChips, x => x.Label == "Coyote");
         Assert.Contains(item.KeywordChips, x => x.Label == "My wolves");
         await vm.SavePreviewKeywordsCommand.ExecuteAsync(null);
@@ -179,7 +174,7 @@ public class KeywordEditingTests
     {
         using var scope = new TestScope(); using var http = Offline();
         File.WriteAllBytes(Path.Combine(scope.Path, "saved.jpg"), TestImages.Jpeg);
-        var vm = Create(http, scope.Path, new CoyoteTagger());
+        var vm = Create(http, scope.Path);
         await vm.ShowCollectionCommand.ExecuteAsync(null);
         var item = Assert.Single(vm.Wallpapers);
         await vm.OpenPreviewCommand.ExecuteAsync(item);
@@ -203,21 +198,6 @@ public class KeywordEditingTests
         vm.Shutdown();
     }
 
-    [AvaloniaFact]
-    public async Task ClosingPreviewCancelsExplicitRecognitionWithoutSaving()
-    {
-        using var scope = new TestScope(); using var http = Offline();
-        var path = Path.Combine(scope.Path, "photo.jpg"); File.WriteAllBytes(path, TestImages.Jpeg);
-        var tagger = new WaitingTagger(); var vm = Create(http, scope.Path, tagger);
-        await vm.ShowCollectionCommand.ExecuteAsync(null); await vm.OpenPreviewCommand.ExecuteAsync(vm.Wallpapers[0]);
-        var pending = vm.RecognizePreviewKeywordsCommand.ExecuteAsync(null);
-        await tagger.Started.Task.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
-        vm.ClosePreviewCommand.Execute(null);
-        await pending.WaitAsync(TimeSpan.FromSeconds(5), TestContext.Current.CancellationToken);
-        Assert.True(tagger.Canceled); Assert.False(vm.IsKeywordOperationRunning); Assert.False(vm.IsPreviewOpen);
-        Assert.Equal(TestImages.Jpeg, File.ReadAllBytes(path)); vm.Shutdown();
-    }
-
     [AvaloniaTheory]
     [InlineData("de", 640, 700)]
     [InlineData("en", 980, 850)]
@@ -228,7 +208,7 @@ public class KeywordEditingTests
         var oldTheme = Avalonia.Application.Current!.RequestedThemeVariant;
         Avalonia.Application.Current.RequestedThemeVariant = language == "en" ? ThemeVariant.Dark : ThemeVariant.Light;
         var settings = new TestSettings { Value = new() { Language = language, WallpaperPath = scope.Path, PreviewWindow = new(width, height) } };
-        var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http), settings, new TestDialogs(), new CoyoteTagger());
+        var vm = new MainWindowViewModel(new BingWallpaperClient(http), new WallpaperStore(http), settings, new TestDialogs());
         await vm.ShowCollectionCommand.ExecuteAsync(null); await vm.OpenPreviewCommand.ExecuteAsync(vm.Wallpapers[0]);
         var window = new PreviewWindow { DataContext = vm }; window.Show();
         try
@@ -261,26 +241,8 @@ public class KeywordEditingTests
     }
 
     private static HttpClient Offline() => new(new Handler((_, _) => throw new Exception("Unexpected network")));
-    private static MainWindowViewModel Create(HttpClient http, string folder, IImageTagger tagger) => new(new BingWallpaperClient(http), new WallpaperStore(http),
-        new TestSettings { Value = new() { Language = "en", WallpaperPath = folder } }, new TestDialogs(), tagger);
-    private sealed class CoyoteTagger : IImageTagger
-    {
-        public int Calls { get; private set; }
-        public Task<IReadOnlyList<ImageTag>> RecognizeAsync(byte[] image, CancellationToken ct, Action<string>? progress = null)
-        { Calls++; return Task.FromResult<IReadOnlyList<ImageTag>>([new("coyote", .99f)]); }
-    }
-    private sealed class WaitingTagger : IImageTagger
-    {
-        public TaskCompletionSource Started { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
-        public bool Canceled { get; private set; }
-        public async Task<IReadOnlyList<ImageTag>> RecognizeAsync(byte[] image, CancellationToken ct, Action<string>? progress = null)
-        {
-            Started.TrySetResult();
-            try { await Task.Delay(Timeout.InfiniteTimeSpan, ct); }
-            catch (OperationCanceledException) { Canceled = true; throw; }
-            return [];
-        }
-    }
+    private static MainWindowViewModel Create(HttpClient http, string folder) => new(new BingWallpaperClient(http), new WallpaperStore(http),
+        new TestSettings { Value = new() { Language = "en", WallpaperPath = folder } }, new TestDialogs());
     private static byte[] ScanData(byte[] jpeg)
     {
         for (var i = 2; i < jpeg.Length - 1; i++)

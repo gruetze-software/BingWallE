@@ -119,7 +119,7 @@ public class SpotlightTests
         Assert.Single(Directory.GetFiles(scope.Path));
         var file = ImageFile.FromFile(store.GetPath(scope.Path, Photo));
         Assert.Contains("Source: Windows Spotlight", file.Properties.Get(ExifTag.WindowsComment).Value.ToString());
-        Assert.Contains("Windows Spotlight", file.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
+        Assert.DoesNotContain("Windows Spotlight", file.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
         Assert.DoesNotContain("Bing;", file.Properties.Get(ExifTag.WindowsKeywords).Value.ToString());
         Assert.Equal("© Photographer", file.Properties.Get(ExifTag.Copyright).Value);
         var bytes = await File.ReadAllBytesAsync(store.GetPath(scope.Path, Photo), TestContext.Current.CancellationToken);

@@ -14,14 +14,12 @@ namespace BingWallE.ViewModels;
 public partial class MainWindowViewModel
 {
     private CancellationTokenSource? _keywordCts;
-    private byte[]? _previewBytes;
     private string? _previewFilePath;
     private bool _previewIsJpeg;
     [ObservableProperty] private string _keywordInput = "";
     [ObservableProperty] private string _keywordStatus = "";
     [ObservableProperty] private bool _isKeywordOperationRunning;
     public bool CanEditKeywords => PreviewItem != null && !PreviewFailed && !IsPreviewLoading && !IsKeywordOperationRunning;
-    public bool CanRecognizeKeywords => CanEditKeywords && _tagger != null && _previewBytes != null;
     public bool CanSaveKeywords => CanEditKeywords && _previewFilePath != null && _previewIsJpeg;
     public string KeywordSaveHint => T(_previewFilePath == null
         ? "Keyword-Änderungen werden beim Download gespeichert."
@@ -30,9 +28,9 @@ public partial class MainWindowViewModel
 
     private void NotifyKeywordActions()
     {
-        OnPropertyChanged(nameof(CanEditKeywords)); OnPropertyChanged(nameof(CanRecognizeKeywords));
+        OnPropertyChanged(nameof(CanEditKeywords));
         OnPropertyChanged(nameof(CanSaveKeywords)); OnPropertyChanged(nameof(KeywordSaveHint));
-        RecognizePreviewKeywordsCommand.NotifyCanExecuteChanged(); SavePreviewKeywordsCommand.NotifyCanExecuteChanged();
+        SavePreviewKeywordsCommand.NotifyCanExecuteChanged();
         AddPreviewKeywordCommand.NotifyCanExecuteChanged(); RemovePreviewKeywordCommand.NotifyCanExecuteChanged();
     }
     partial void OnIsPreviewLoadingChanged(bool value) => NotifyKeywordActions();
@@ -70,33 +68,6 @@ public partial class MainWindowViewModel
         if (!CanEditKeywords || keyword == null || PreviewItem == null) return;
         PreviewItem.RemoveKeyword(keyword.Label);
         KeywordStatus = T("Keyword entfernt. Noch nicht gespeichert.");
-    }
-
-    [RelayCommand(CanExecute = nameof(CanRecognizeKeywords))]
-    private async Task RecognizePreviewKeywords()
-    {
-        if (!CanRecognizeKeywords || PreviewItem == null || _previewBytes == null || _tagger == null) return;
-        var item = PreviewItem; var bytes = _previewBytes;
-        using var cancellation = new CancellationTokenSource();
-        _keywordCts = cancellation; IsKeywordOperationRunning = true;
-        KeywordStatus = T("Bildmotive werden lokal erkannt …");
-        try
-        {
-            var tags = await _tagger.RecognizeAsync(bytes, cancellation.Token, message => Dispatcher.UIThread.Post(() =>
-            {
-                if (ReferenceEquals(_keywordCts, cancellation)) KeywordStatus = Text.Progress(message);
-            }));
-            cancellation.Token.ThrowIfCancellationRequested();
-            item.ApplyPredictions(tags);
-            KeywordStatus = T("Vorschläge aktualisiert. Bitte prüfen und speichern.");
-        }
-        catch (OperationCanceledException) when (cancellation.IsCancellationRequested) { }
-        catch (Exception ex)
-        { System.Diagnostics.Trace.WriteLine(ex); if (ReferenceEquals(_keywordCts, cancellation)) KeywordStatus = ErrorMessage(ex); }
-        finally
-        {
-            if (ReferenceEquals(_keywordCts, cancellation)) { _keywordCts = null; IsKeywordOperationRunning = false; }
-        }
     }
 
     [RelayCommand(CanExecute = nameof(CanSaveKeywords))]

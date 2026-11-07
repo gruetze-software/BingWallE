@@ -16,13 +16,11 @@ dotnet run --project tools/StoreScreenshots -c Release -- fetch artifacts/store-
 dotnet publish tools/StoreScreenshots -c Release -r linux-x64 --self-contained true -o artifacts/store-renderer-linux-1.6.0
 ```
 
-Run rendering on Linux. Supply a directory containing the existing verified
-`mobilenetv2-7.onnx` file from the application's local recognition cache; the example
-assumes it has been copied to `artifacts/models`. Rendering uses cached data only:
+Run rendering on Linux with cached data only; no recognition model is needed:
 
 ```sh
 artifacts/store-renderer-linux-1.6.0/StoreScreenshots render \
-  artifacts/store-image-cache-1.6.0 branding/screenshots/1.6.0 artifacts/models
+  artifacts/store-image-cache-1.6.0 branding/screenshots/1.6.0
 ```
 
 Output:

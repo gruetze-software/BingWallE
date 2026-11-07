@@ -66,7 +66,7 @@ public partial class ImageItemViewModel
                 (model ? SuggestedKeywordChips : KeywordChips).Add(new(label));
         }
         foreach (var label in _userKeywords) Add(label, false);
-        foreach (var label in _storedKeywords.Where(x => !modelLabels.Contains(x) && !_storedModelLabels.Contains(x))) Add(label, false);
+        foreach (var label in _storedKeywords.Where(x => !WallpaperKeywords.IsSourceTag(x) && !modelLabels.Contains(x) && !_storedModelLabels.Contains(x))) Add(label, false);
         foreach (var keyword in generated.Where(x => !x.FromModel)) Add(keyword.Label, false);
         foreach (var keyword in generated.Where(x => x.FromModel)) Add(keyword.Label, true);
         OnPropertyChanged(nameof(TextKeywords)); OnPropertyChanged(nameof(ModelKeywords));

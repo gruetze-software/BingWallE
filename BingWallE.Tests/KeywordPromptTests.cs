@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
@@ -66,26 +67,17 @@ public class KeywordPromptTests
         var window = new PreviewWindow { DataContext = vm }; window.Show();
         try
         {
-            var button = window.FindControl<Button>("CopyKeywordPromptButton")!;
-            Assert.True(button.IsEnabled);
-            button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-            for (var attempt = 0; attempt < 100 && vm.KeywordStatus.Length == 0; attempt++)
-                await Task.Delay(10, TestContext.Current.CancellationToken);
-            Assert.StartsWith("Image preview and AI prompt copied.", vm.KeywordStatus);
-            var copied = await window.Clipboard!.TryGetTextAsync();
-            Assert.Contains("Analyze the attached image", copied);
-            Assert.DoesNotContain("https://example.test/original.jpg", copied);
-            using var bitmap = await window.Clipboard!.TryGetBitmapAsync();
-            Assert.NotNull(bitmap);
-            Assert.Equal(new Avalonia.PixelSize(32, 24), bitmap.PixelSize);
-            Assert.Equal(keywords, item.ExportKeywords().Keywords);
-            Assert.Equal(bytes, File.ReadAllBytes(path));
+            Assert.Null(window.FindControl<Button>("CopyKeywordPromptButton"));
+            Assert.DoesNotContain(window.GetLogicalDescendants().OfType<Button>(), b => Equals(b.Content, "Recognize keywords again"));
             vm.KeywordStatus = "";
             window.FindControl<Button>("CopyKeywordImageOnlyButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             for (var attempt = 0; attempt < 100 && vm.KeywordStatus.Length == 0; attempt++)
                 await Task.Delay(10, TestContext.Current.CancellationToken);
             Assert.StartsWith("Image preview copied.", vm.KeywordStatus);
             Assert.Null(await window.Clipboard!.TryGetTextAsync());
+            using var copiedImage = await window.Clipboard!.TryGetBitmapAsync();
+            Assert.NotNull(copiedImage);
+            Assert.Equal(new Avalonia.PixelSize(32, 24), copiedImage.PixelSize);
             vm.KeywordStatus = "";
             window.FindControl<Button>("CopyKeywordTextOnlyButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             for (var attempt = 0; attempt < 100 && vm.KeywordStatus.Length == 0; attempt++)
@@ -93,6 +85,9 @@ public class KeywordPromptTests
             Assert.StartsWith("AI prompt copied.", vm.KeywordStatus);
             Assert.Contains("Analyze the attached image", await window.Clipboard!.TryGetTextAsync());
             Assert.Null(await window.Clipboard!.TryGetBitmapAsync());
+            Assert.Equal(keywords, item.ExportKeywords().Keywords);
+            Assert.Equal(bytes, File.ReadAllBytes(path));
+            Assert.Contains(window.GetLogicalDescendants().OfType<TextBlock>(), t => t.Text?.StartsWith("1. Copy the image") == true);
         }
         finally { window.Close(); vm.Shutdown(); }
     }

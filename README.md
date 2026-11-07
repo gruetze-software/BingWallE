@@ -58,26 +58,23 @@ back during the same session.
 The preview shows keywords as chips. Enter multiple tags separated by semicolons
 (for example, `night;stars`) to add them together; each tag can contain up to 100
 characters. Spaces are trimmed and duplicate entries are skipped.
-**Copy image + AI prompt** copies a preview (up to 1024 pixels on its longest side)
-and instructions with the title and description for use in an AI chat of your
-choice. It requests up to ten keywords
-separated by semicolons, using the image region's language (German or English),
-or the interface language when no region is stored. No image URL is needed.
-Some chats paste only the image or the text; use **Copy image only** and
-**Copy prompt only** to paste them separately. The original file is unchanged,
-and BingWallE does not upload anything for this action.
-Review the response, paste it into the keyword field
-and choose **Add**, then **Save keywords** for an existing JPEG.
-Use the **×** on a chip to remove a wrong or
-unwanted term, or enter a personal keyword and choose **Add** (or press Enter).
-**Recognize keywords again** runs local image recognition on demand. AI suggestions
-remain clearly identified for review, and your personal keywords are retained.
-Title and description are both used for text keywords, including animal terms such
-as wolves and coyotes.
+Use **Copy image** to copy a preview (up to 1024 pixels on its longest side)
+and paste it into your AI chat. Then use **Copy prompt**, paste the instructions
+into the same chat and send. The prompt requests up to ten semicolon-separated
+keywords in the image region's language (German or English), or the interface
+language when no region is stored. Review the response, paste it into BingWallE's
+keyword field and choose **Add**. Use **×** on a chip to remove an unwanted term.
+BingWallE uploads nothing for these actions and leaves the original image unchanged.
+
+Automatic caption keywords now contain only comma-separated location information.
+Motif keywords are added by you or through the AI-chat workflow. Generic source
+keywords such as Bing and Wallpaper are no longer added; legacy source keywords
+are hidden and removed from the JPEG keyword fields when you explicitly save.
+The original image source remains recorded separately in metadata.
 
 Choose **Save keywords** to write the reviewed list into a saved JPEG's EXIF/XMP
-metadata. Editing or recognizing alone does not change the file. Excluded terms
-stay excluded after reopening, recognizing again or downloading the same image
+metadata. Editing alone does not change the file. Excluded terms
+stay excluded after reopening or downloading the same image
 again; explicitly adding a term back restores it. Changes to images not downloaded
 yet are applied on download. Compressed image data, dates, copyright and other
 metadata are preserved. Saving keywords into existing PNG/WebP files is not
@@ -160,32 +157,17 @@ Existing photographer/camera metadata is preserved; no author or rating is
 invented, and JPEG image data is not recompressed. Existing files gain the new
 metadata when selected and downloaded again.
 
-The large preview separates the description, copyright, keywords derived from
-the image description and additional local AI suggestions. Text keywords are available
-before downloading and do not require a model. A small German/English vocabulary
-recognizes subjects and broader categories; comma-separated locations are retained
-from the caption. For example, the Mayotte octopus caption yields **Krake, Tier,
-Meer, Mayotte, Indischer Ozean**. Underwater is not inferred from an octopus alone.
-This is a limited vocabulary, not an unrestricted language understanding system.
-German image regions use German category names; other regions use English names,
-while locations retain their original spelling. Changing the interface language does not
-change the download keywords.
+The large preview shows description, copyright and editable keywords. Automatically
+extracted caption keywords retain location names in their original spelling.
+For example, the Mayotte octopus caption yields **Mayotte;Indischer Ozean**.
+Caption parsing is conservative and uses comma-separated location fields; it does
+not infer an exact location from the image itself. User-entered and previously saved
+motif tags are retained. Changing the interface language does not translate saved tags.
 
-Enable **Recognize image subjects locally as tags** in Settings for additional
-suggestions during preview and download. The first recognition fetches the 14 MB
-[MobileNetV2 model from the ONNX Model Zoo](https://github.com/onnx/models/tree/main/validated/vision/classification/mobilenet).
-Its SHA-256 checksum is verified before use. It is cached under the current user's
-local application-data directory in `bingwalle/models`; subsequent recognition
-runs offline. Images are never uploaded for recognition. ONNX Runtime telemetry
-is explicitly disabled before native initialization, including its background uploader.
-
-The model classifies the main subject into 1,000 ImageNet categories. Only results
-with a score of at least 50% are considered. Known labels are mapped to categories;
-unmapped model labels remain in English. Scores do not guarantee correctness.
-Preview and full-resolution downloads can produce different suggestions because
-the input images differ. Uncertain recognition still leaves text-derived keywords.
-Disabling local recognition keeps text keywords and avoids loading the model.
-A failed download or recognition preserves existing files and allows a retry.
+Local image recognition, its settings and the model download have been removed.
+The app no longer bundles ONNX Runtime. On startup it removes only the retired
+MobileNet model and its interrupted downloads from the old application model cache;
+other files are retained. No model download is needed for the keyword workflow.
 
 Third-party license notices are included in `licenses/` in the repository and packages.
 
@@ -366,7 +348,7 @@ an issue. A quarantine workaround does not resolve incompatible systems or damag
 
 The **.NET 10 SDK** is required to build BingWallE 1.6.2.
 The repository's `global.json` accepts stable .NET 10 SDK feature bands.
-Application, tests and recognition smoke checks target .NET 10. macOS builds
+Application and tests target .NET 10. macOS builds
 require macOS 14 or later.
 
 Run the following commands from the repository root:

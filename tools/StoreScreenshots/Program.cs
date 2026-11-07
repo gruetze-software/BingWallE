@@ -11,7 +11,7 @@ using BingWallE.ViewModels;
 using BingWallE.Views;
 
 if (args.Length < 2 || args[0] is not ("fetch" or "render"))
-    throw new ArgumentException("Usage: StoreScreenshots fetch <cache> | render <cache> <output> <model-directory>");
+    throw new ArgumentException("Usage: StoreScreenshots fetch <cache> | render <cache> <output>");
 var cache = Path.GetFullPath(args[1]);
 if (args[0] == "fetch")
 {
@@ -32,12 +32,9 @@ if (args[0] == "fetch")
     await File.WriteAllTextAsync(Path.Combine(cache, "fetched-at.txt"), DateTimeOffset.UtcNow.ToString("O"));
     return;
 }
-if (args.Length != 4 || !OperatingSystem.IsLinux())
-    throw new ArgumentException("Render must run on Linux with cache, output and cached-model paths.");
+if (args.Length != 3 || !OperatingSystem.IsLinux())
+    throw new ArgumentException("Render must run on Linux with cache and output paths.");
 var output = Path.GetFullPath(args[2]);
-var modelDirectory = Path.GetFullPath(args[3]);
-if (!File.Exists(Path.Combine(modelDirectory, "mobilenetv2-7.onnx")))
-    throw new FileNotFoundException("Provide the existing verified recognition model; rendering must stay offline.");
 Directory.CreateDirectory(output);
 var wallpapers = JsonSerializer.Deserialize<Wallpaper[]>(File.ReadAllText(Path.Combine(cache, "images.json")))!;
 
@@ -60,10 +57,9 @@ async Task Render()
 {
     var sampleFolder = Directory.CreateTempSubdirectory("bingwalle-store-").FullName;
     using var http = new HttpClient(new OfflineHttp());
-    using var tagger = new LocalImageTagger(modelDirectory);
     var store = new WallpaperStore(http);
     var vm = new MainWindowViewModel(new BingWallpaperClient(http), store,
-        new ScreenshotSettings(sampleFolder), new NoDialogs(), tagger);
+        new ScreenshotSettings(sampleFolder), new NoDialogs());
     MainWindow? gallery = null;
     try
     {
@@ -85,10 +81,9 @@ async Task Render()
         await vm.ShowCollectionCommand.ExecuteAsync(null);
         Capture(gallery, "collection-light", ThemeVariant.Light);
 
-        // Prefer a caption with useful text keywords; inference uses the real cached ONNX model.
+        // Prefer a caption with useful location keywords.
         var selected = vm.Wallpapers.OrderByDescending(x => WallpaperKeywords.Build(x.Image, []).Count).First();
         await vm.OpenPreviewCommand.ExecuteAsync(selected);
-        await vm.RecognizePreviewKeywordsCommand.ExecuteAsync(null);
         vm.KeywordInput = "My favorites";
         vm.AddPreviewKeywordCommand.Execute(null);
         Dispatcher.UIThread.RunJobs();
@@ -102,7 +97,7 @@ async Task Render()
             "English UI, en-US image source. Actual Avalonia controls rendered using the Linux headless platform. " +
             "Real cached Bing photographs, captions and photographer credits; no generated images or UI mockups. " +
             "Collection populated from isolated temporary JPEG downloads with real embedded metadata. " +
-            "Keywords use actual text extraction and cached MobileNetV2 inference; My favorites is a manually entered sample keyword, not a model result. " +
+            "Keywords use location extraction; My favorites is a manually entered sample keyword. " +
             "No OS window decorations. Not a Mint desktop capture or a Flatpak sandbox test. " +
             $"Photographs fetched at {File.ReadAllText(Path.Combine(cache, "fetched-at.txt")).Trim()}.\n");
         Console.WriteLine("Rendered English Linux UI: gallery light/dark, My collection and keyword editing.");

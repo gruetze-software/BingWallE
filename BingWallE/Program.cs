@@ -11,12 +11,12 @@ sealed class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        Services.InferenceRuntimePolicy.EnsureConfigured();
         if (Array.Exists(args, argument => argument == "--version"))
         {
             Console.WriteLine(Models.AppInfo.DisplayName);
             return;
         }
+        Services.RetiredModelCleanup.RemoveDefaultCache();
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 

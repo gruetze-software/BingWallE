@@ -23,10 +23,10 @@ description: |
   are preserved, and JPEG image data is not recompressed.
 
   The image preview shows the description, copyright, resolution and tags.
-  Keywords derived from Bing's captions include recognised subjects, categories
-  and locations. Optional local image recognition adds further subject suggestions
-  after a one-time model download. Images are not uploaded for recognition, runtime
-  telemetry is disabled, and suggested tags may be incorrect.
+  Location keywords are extracted from captions. Add, remove and save personal
+  keywords, or copy an image preview and prompt separately into your AI chat.
+  Review the response before importing the semicolon-separated tags. BingWallE
+  does not upload images for this action and requires no recognition model.
 
   Choose German or English for the interface independently of the image download
   region. Includes light and dark themes, remembered window size and maximised

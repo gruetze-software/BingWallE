@@ -88,22 +88,8 @@ public class PhotoMetadataTests
     }
 
     [Fact]
-    public async Task FailedRecognitionLeavesExistingImageUntouched()
+    public void ResolutionFollowsSelection()
     {
-        using var scope = new TestScope();
-        var destination = Path.Combine(scope.Path, WallpaperVariants.FileName(Photo));
-        File.WriteAllText(destination, "original");
-        using var http = new HttpClient(new Handler((_, _) => Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(TestImages.Jpeg) })));
-        var store = new WallpaperStore(http, new FailingTagger());
-        await Assert.ThrowsAsync<InvalidOperationException>(() => store.DownloadAsync(scope.Path, Photo, TestContext.Current.CancellationToken, true));
-        Assert.Equal("original", File.ReadAllText(destination)); Assert.Single(Directory.GetFiles(scope.Path));
-    }
-
-    [Fact]
-    public void UncertainRecognitionProducesNoTagsAndResolutionFollowsSelection()
-    {
-        Assert.Empty(LocalImageTagger.SelectTags(new float[] { 0, 0, 0 }, new[] { "coast", "bird", "mountain" }));
-        Assert.Equal("coast", Assert.Single(LocalImageTagger.SelectTags(new float[] { 4, 0, 0 }, new[] { "coast", "bird", "mountain" })).Label);
         var item = new ImageItemViewModel(Photo);
         Assert.Contains("1920 × 1080", item.ResolutionLabel);
         item.DownloadResolution = "UHD"; Assert.Contains("UHD", item.ResolutionLabel);
@@ -162,23 +148,6 @@ public class PhotoMetadataTests
         Assert.Equal("Download", Assert.Single(xmp.Descendants(bw + "CreationDateSource")).Value);
     }
 
-    [ModelFact]
-    public async Task NativeModelRunsOnCurrentPlatform()
-    {
-        using var scope = new TestScope();
-        using var tagger = new LocalImageTagger(scope.Path);
-        using var cancellation = new CancellationTokenSource(TimeSpan.FromMinutes(4));
-        var result = await tagger.RecognizeAsync(TestImages.Jpeg, cancellation.Token);
-        Assert.All(result, x => Assert.InRange(x.Score, .5f, 1f));
-        // Reuse must work with the cached model, without downloading again.
-        var second = await tagger.RecognizeAsync(TestImages.Jpeg, TestContext.Current.CancellationToken);
-        Assert.Equal(result, second);
-    }
-
-    private sealed class FailingTagger : IImageTagger
-    {
-        public Task<IReadOnlyList<ImageTag>> RecognizeAsync(byte[] image, CancellationToken ct, Action<string>? progress = null) => throw new InvalidOperationException("test failure");
-    }
     private static byte[] ScanData(byte[] jpeg)
     {
         var offset = 2;
@@ -189,15 +158,5 @@ public class PhotoMetadataTests
             offset += 2 + (jpeg[offset + 2] << 8 | jpeg[offset + 3]);
         }
         throw new InvalidDataException("No JPEG scan");
-    }
-}
-
-public sealed class ModelFactAttribute : FactAttribute
-{
-    public ModelFactAttribute([System.Runtime.CompilerServices.CallerFilePath] string? sourceFilePath = null,
-        [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0) : base(sourceFilePath, sourceLineNumber)
-    {
-        if (Environment.GetEnvironmentVariable("BINGWALLE_TEST_MODEL") != "1")
-            Skip = "Set BINGWALLE_TEST_MODEL=1 to download and test the real local model.";
     }
 }

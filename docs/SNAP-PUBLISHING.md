@@ -74,8 +74,8 @@ Before beta release, test on Ubuntu with a normal desktop session:
 2. Scan at least two regions; download Full HD and a supported UHD image.
 3. Choose a destination using the file picker; reopen the app and download there again.
 4. Test Show, Open Path, Ignore, confirmed Delete local and project web links.
-5. Enable local recognition; complete the model download and inference, then quit.
-6. Reopen and verify settings, model cache, ignored images and window restoration.
+5. Copy image and prompt separately into an AI chat; add and save reviewed keywords.
+6. Reopen and verify keywords, settings, ignored images and window restoration.
 7. Test a mounted external drive if that is part of the intended workflow.
 
 The file picker and opening folders/web links depend on the host desktop portal

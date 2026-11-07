@@ -28,7 +28,6 @@ mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 # Keep native libraries in the bundle, where codesign can sign them explicitly.
 dotnet publish "$PROJECT" -c Release -r "osx-$ARCH" --self-contained true \
     -p:PublishSingleFile=false -p:DebugType=None -o "$APP/Contents/MacOS"
-test -s "$APP/Contents/MacOS/libonnxruntime.dylib"
 cp "$ROOT/BingWallE/Assets/bingwalle.icns" "$APP/Contents/Resources/"
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$APP/Contents/Resources/"
 cp -R "$ROOT/licenses" "$APP/Contents/Resources/"

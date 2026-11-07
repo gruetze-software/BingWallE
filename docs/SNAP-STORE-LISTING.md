@@ -31,10 +31,10 @@ no author, rating or camera capture date is invented, and the JPEG image data is
 not recompressed.
 
 The image preview shows the description, copyright, resolution and tags.
-Keywords derived from Bing's captions include recognised subjects, categories
-and locations. Optional local image recognition adds further subject suggestions
-after a one-time model download. Images are not uploaded for recognition, runtime
-telemetry is disabled, and suggested tags may be incorrect.
+Location keywords are extracted from captions. Add, remove and save personal
+keywords, or copy an image preview and prompt separately into your AI chat.
+Review the response before importing the semicolon-separated tags. BingWallE
+does not upload images for this action and requires no recognition model.
 
 Choose German or English for the interface independently of the Bing download
 region. Includes light and dark themes, remembered window size and maximised
@@ -68,10 +68,10 @@ Autoren, Bewertungen und Aufnahmedaten werden nicht erfunden. Die JPEG-Bilddaten
 werden nicht neu komprimiert.
 
 Die Bildvorschau zeigt Beschreibung, Copyright, Auflösung und Tags. Schlagwörter
-aus Bings Bildtexten umfassen erkannte Motive, Kategorien und Orte. Optional ergänzt
-eine lokale Bilderkennung weitere Motivvorschläge nach einem einmaligen
-Modell-Download. Bilder werden nicht zur Erkennung hochgeladen, die Laufzeit-
-Telemetrie ist deaktiviert. Motivvorschläge können unzutreffend sein.
+aus Bings Bildtexten enthalten Ortsangaben. Eigene Tags lassen sich hinzufügen,
+entfernen und speichern. Bildvorschau und Prompt können getrennt in einen KI-Chat
+kopiert werden. Die Antwort vor dem Übernehmen als Semikolon-Liste bitte prüfen.
+BingWallE lädt dafür keine Bilder hoch und benötigt kein Bilderkennungsmodell.
 
 Die Sprache der Anwendung (Deutsch/Englisch) und die Bing-Downloadregion sind
 unabhängig einstellbar. Mit hellem und dunklem Design, gespeicherter Fenstergröße

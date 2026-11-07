@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace BingWallE.Services;
 
-public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger = null) : IWallpaperStore
+public sealed class WallpaperStore(HttpClient httpClient) : IWallpaperStore
 {
     public bool Exists(string folder, Wallpaper image) => File.Exists(GetPath(folder, image));
 
@@ -26,7 +26,7 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
         return File.Exists(legacyPath) ? legacyPath : path;
     }
 
-    public async Task<WallpaperDownloadResult> DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken, bool generateTags = false, Action<string>? progress = null, KeywordMetadataState? keywords = null)
+    public async Task<WallpaperDownloadResult> DownloadAsync(string folder, Wallpaper image, CancellationToken cancellationToken, Action<string>? progress = null, KeywordMetadataState? keywords = null)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var path = GetPath(folder, image);
@@ -42,9 +42,7 @@ public sealed class WallpaperStore(HttpClient httpClient, IImageTagger? tagger =
             var data = await httpClient.GetByteArrayAsync(image.Url, cancellationToken);
             var downloadedAt = DateTimeOffset.Now;
             using var codec = SKCodec.Create(new MemoryStream(data)) ?? throw new InvalidDataException("Bing did not return a valid image.");
-            IReadOnlyList<ImageTag> tags = generateTags
-                ? await (tagger ?? throw new InvalidOperationException("Image recognition is unavailable.")).RecognizeAsync(data, cancellationToken, progress)
-                : Array.Empty<ImageTag>();
+            IReadOnlyList<ImageTag> tags = Array.Empty<ImageTag>();
             progress?.Invoke("Bildinformationen werden gespeichert …");
             var tagged = await Task.Run(() => PhotoMetadataWriter.Write(data, image, tags, downloadedAt, keywords), cancellationToken);
             var savedKeywords = KeywordMetadata.Read(tagged);

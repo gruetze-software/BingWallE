@@ -77,7 +77,7 @@ gh workflow run build.yml --repo gruetze-software/BingWallE --ref main -f sign_m
 
 Dieser Lauf signiert und notarisiert die macOS-Pakete, veröffentlicht aber kein
 GitHub-Release. Nach erfolgreichem Lauf die macOS-Artefakte herunterladen und
-auf deinem Mac insbesondere ersten Start, Vorschau und lokale Bilderkennung
+auf deinem Mac insbesondere ersten Start, Vorschau und das Kopieren von Bild und Prompt
 prüfen. Ein echter Test der Apple-Freigabe ist erst mit deinen Secrets möglich.
 
 ## 5. Automatik für alle folgenden Releases aktivieren

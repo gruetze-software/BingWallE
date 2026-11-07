@@ -7,7 +7,6 @@ public class AppSettings
 {
     public string Market { get; set; } = System.Globalization.CultureInfo.CurrentCulture.Name;
     public string Resolution { get; set; } = "1920x1080";
-    public bool AutoTags { get; set; }
     public bool AutoRefreshOnStartup { get; set; }
     public bool IncludeWindowsSpotlight { get; set; }
     public string[] IgnoredImages { get; set; } = [];
