@@ -55,7 +55,10 @@ back during the same session.
 
 ### Edit keywords and add your own
 
-The preview shows keywords as chips. Use the **×** on a chip to remove a wrong or
+The preview shows keywords as chips. Enter multiple tags separated by semicolons
+(for example, `night;stars`) to add them together; each tag can contain up to 100
+characters. Spaces are trimmed and duplicate entries are skipped.
+Use the **×** on a chip to remove a wrong or
 unwanted term, or enter a personal keyword and choose **Add** (or press Enter).
 **Recognize keywords again** runs local image recognition on demand. AI suggestions
 remain clearly identified for review, and your personal keywords are retained.

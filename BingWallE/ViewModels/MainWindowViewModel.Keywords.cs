@@ -47,9 +47,21 @@ public partial class MainWindowViewModel
     private void AddPreviewKeyword()
     {
         if (!CanEditKeywords || PreviewItem == null) return;
-        if (PreviewItem.AddKeyword(KeywordInput))
-        { KeywordInput = ""; KeywordStatus = T("Keyword hinzugefügt. Noch nicht gespeichert."); }
-        else KeywordStatus = T("Bitte einen neuen Begriff mit höchstens 100 Zeichen ohne Semikolon eingeben.");
+        var keywords = KeywordInput.Split(';', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToArray();
+        if (keywords.Length == 0 || keywords.Any(x => x.Length > 100 || x.Any(char.IsControl)))
+        {
+            KeywordStatus = T("Bitte Keywords mit höchstens 100 Zeichen pro Begriff eingeben. Mehrere Begriffe mit Semikolon trennen.");
+            return;
+        }
+        var added = keywords.Count(PreviewItem.AddKeyword);
+        if (added > 0)
+        {
+            KeywordInput = "";
+            KeywordStatus = added == 1 ? T("Keyword hinzugefügt. Noch nicht gespeichert.")
+                : T("{0} Keywords hinzugefügt. Noch nicht gespeichert.", added);
+        }
+        else KeywordStatus = T("Diese Keywords sind bereits vorhanden.");
     }
 
     [RelayCommand(CanExecute = nameof(CanEditKeywords))]

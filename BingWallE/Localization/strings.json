@@ -1,4 +1,6 @@
 [
+  { "key": "KeywordsAdded", "de": "{0} Keywords hinzugefügt. Noch nicht gespeichert.", "en": "{0} keywords added. Not saved yet." },
+  { "key": "KeywordsAlreadyPresent", "de": "Diese Keywords sind bereits vorhanden.", "en": "These keywords are already present." },
   { "key": "CollectionSearchHint", "de": "Titel, Beschreibung oder Keywords suchen …", "en": "Search titles, descriptions or keywords …" },
   { "key": "CollectionSourceFilter", "de": "Bildquelle", "en": "Image source" },
   { "key": "CollectionResolutionFilter", "de": "Mindestauflösung", "en": "Minimum resolution" },
@@ -799,8 +801,8 @@
   },
   {
     "key": "KeywordPlaceholder",
-    "de": "Keyword hinzufügen …",
-    "en": "Add a keyword …"
+    "de": "Keywords mit ; trennen, z. B. night;stars …",
+    "en": "Separate keywords with ;, e.g. night;stars …"
   },
   {
     "key": "KeywordAdd",
@@ -839,8 +841,8 @@
   },
   {
     "key": "KeywordInvalid",
-    "de": "Bitte einen neuen Begriff mit höchstens 100 Zeichen ohne Semikolon eingeben.",
-    "en": "Enter a new keyword of up to 100 characters, without a semicolon."
+    "de": "Bitte Keywords mit höchstens 100 Zeichen pro Begriff eingeben. Mehrere Begriffe mit Semikolon trennen.",
+    "en": "Enter keywords with up to 100 characters per term. Separate multiple terms with semicolons."
   },
   {
     "key": "KeywordRemoved",

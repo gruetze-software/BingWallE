@@ -157,7 +157,7 @@ public class KeywordEditingTests
         await vm.OpenPreviewCommand.ExecuteAsync(item);
         Assert.True(vm.CanSaveKeywords); Assert.Equal(0, tagger.Calls);
         vm.RemovePreviewKeywordCommand.Execute(item.SuggestedKeywordChips.Single(x => x.Label == "Coyote"));
-        vm.KeywordInput = "My wolves"; vm.AddPreviewKeywordCommand.Execute(null);
+        vm.KeywordInput = "My wolves;night;stars"; vm.AddPreviewKeywordCommand.Execute(null);
         await vm.RecognizePreviewKeywordsCommand.ExecuteAsync(null);
         Assert.Equal(1, tagger.Calls); Assert.Equal(before, File.ReadAllBytes(path));
         Assert.DoesNotContain(item.SuggestedKeywordChips, x => x.Label == "Coyote");
@@ -167,8 +167,39 @@ public class KeywordEditingTests
         vm.ClosePreviewCommand.Execute(null); await vm.StartStopCommand.ExecuteAsync(null);
         var reopened = Assert.Single(vm.Wallpapers);
         Assert.Contains(reopened.KeywordChips, x => x.Label == "My wolves");
+        Assert.Contains(reopened.KeywordChips, x => x.Label == "night");
+        Assert.Contains(reopened.KeywordChips, x => x.Label == "stars");
         Assert.DoesNotContain(reopened.SuggestedKeywordChips, x => x.Label == "Coyote");
         Assert.Equal(ScanData(before), ScanData(File.ReadAllBytes(path)));
+        vm.Shutdown();
+    }
+
+    [AvaloniaFact]
+    public async Task MultipleKeywordInputTrimsDeduplicatesAndValidatesBeforeAdding()
+    {
+        using var scope = new TestScope(); using var http = Offline();
+        File.WriteAllBytes(Path.Combine(scope.Path, "saved.jpg"), TestImages.Jpeg);
+        var vm = Create(http, scope.Path, new CoyoteTagger());
+        await vm.ShowCollectionCommand.ExecuteAsync(null);
+        var item = Assert.Single(vm.Wallpapers);
+        await vm.OpenPreviewCommand.ExecuteAsync(item);
+        var longKeyword = new string('x', 100);
+        vm.KeywordInput = " night ; stars ;; NIGHT ; " + longKeyword;
+        vm.AddPreviewKeywordCommand.Execute(null);
+        Assert.Equal("", vm.KeywordInput);
+        Assert.Equal("3 keywords added. Not saved yet.", vm.KeywordStatus);
+        Assert.Single(item.KeywordChips, x => x.Label == "night");
+        Assert.Contains(item.KeywordChips, x => x.Label == "stars");
+        Assert.Contains(item.KeywordChips, x => x.Label == longKeyword);
+        vm.KeywordInput = "night;STARS";
+        vm.AddPreviewKeywordCommand.Execute(null);
+        Assert.Equal("These keywords are already present.", vm.KeywordStatus);
+        vm.KeywordInput = "valid;" + new string('y', 101);
+        vm.AddPreviewKeywordCommand.Execute(null);
+        Assert.DoesNotContain(item.KeywordChips, x => x.Label == "valid");
+        Assert.NotEmpty(vm.KeywordInput);
+        vm.KeywordInput = " ; ; "; vm.AddPreviewKeywordCommand.Execute(null);
+        Assert.Contains("100 characters per term", vm.KeywordStatus);
         vm.Shutdown();
     }
 
