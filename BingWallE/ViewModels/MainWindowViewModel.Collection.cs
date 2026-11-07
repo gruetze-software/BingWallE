@@ -17,9 +17,12 @@ public partial class MainWindowViewModel
     private bool _isCollectionView;
     public bool IsCollectionView => _isCollectionView;
     public bool IsDiscoverView => !_isCollectionView;
-    private string CollectionSubtitle() => Wallpapers.Count == 1 ? T("Meine Sammlung · 1 Bild") : T("Meine Sammlung · {0} Bilder", Wallpapers.Count);
-    public string EmptyHeading => T(IsCollectionView ? "Deine Sammlung ist noch leer." : "Deine nächste Entdeckung wartet.");
-    public string EmptyHelp => T(IsCollectionView
+    private string CollectionSubtitle() => HasCollectionFilters ? T("Meine Sammlung · {0} von {1} Bildern", VisibleWallpapers.Count, Wallpapers.Count)
+        : Wallpapers.Count == 1 ? T("Meine Sammlung · 1 Bild") : T("Meine Sammlung · {0} Bilder", Wallpapers.Count);
+    public string EmptyHeading => T(IsCollectionView && Wallpapers.Count > 0 ? "Keine passenden Bilder gefunden."
+        : IsCollectionView ? "Deine Sammlung ist noch leer." : "Deine nächste Entdeckung wartet.");
+    public string EmptyHelp => T(IsCollectionView && Wallpapers.Count > 0 ? "Ändere deine Suche oder setze die Filter zurück."
+        : IsCollectionView
         ? "Hier erscheinen die Bilder im eingestellten Ordner. Wechsle zu Entdecken, um neue Bilder zu sammeln."
         : "Lade Bilder aus den gewählten Quellen mit Aktualisieren. Ein Klick auf ein Motiv öffnet die große Vorschau.");
     private sealed record GalleryState(string Status, string Subtitle, bool Error, string? Retry, double Progress);
@@ -68,6 +71,7 @@ public partial class MainWindowViewModel
         HasError = restored?.Error ?? false; _retryOperation = restored?.Retry;
         ProgressValue = restored?.Progress ?? 0;
         StatusColor = HasError ? Brushes.IndianRed : Brushes.Gray;
+        ApplyCollectionFilters();
     }
 
     private async Task ReloadCollection()
@@ -94,7 +98,8 @@ public partial class MainWindowViewModel
                     }, cancellation.Token);
                     cancellation.Token.ThrowIfCancellationRequested();
                     var item = new ImageItemViewModel(local.Image, bitmap, local.Path)
-                    { IsSaved = true, ActualDimensions = $"{local.Width} × {local.Height}" };
+                    { IsSaved = true, ActualDimensions = $"{local.Width} × {local.Height}",
+                        PixelWidth = local.Width, PixelHeight = local.Height, DownloadedAt = local.DownloadedAt };
                     item.LoadKeywords(local.Keywords);
                     Wallpapers.Add(item);
                     bitmap = null; // Ownership passes to the gallery.

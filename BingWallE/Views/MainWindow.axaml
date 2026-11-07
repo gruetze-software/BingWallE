@@ -30,6 +30,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <Window.Styles>
+        <Style Selector="ComboBox">
+            <Setter Property="ItemTemplate"><DataTemplate x:DataType="models:SelectionOption"><TextBlock Text="{Binding Label}"/></DataTemplate></Setter>
+        </Style>
         <!-- Keep gallery menus in the existing window: no cold native popup creation
              or independent popup DPI/size negotiation on the first right click. -->
         <Style Selector="Popup"><Setter Property="ShouldUseOverlayLayer" Value="True"/></Style>
@@ -79,6 +82,28 @@
                     <Button Content="{DynamicResource DiscoverView}" Command="{Binding ShowDiscoverCommand}" Classes.primary="{Binding IsDiscoverView}"/>
                     <Button Content="{DynamicResource CollectionView}" Command="{Binding ShowCollectionCommand}" Classes.primary="{Binding IsCollectionView}"/>
                 </StackPanel>
+                <StackPanel Spacing="8" IsVisible="{Binding IsCollectionView}" IsEnabled="{Binding IsIdle}">
+                    <TextBox Text="{Binding CollectionSearch, Mode=TwoWay}" PlaceholderText="{DynamicResource CollectionSearchHint}"
+                             AutomationProperties.Name="{DynamicResource CollectionSearchHint}"/>
+                    <WrapPanel>
+                        <StackPanel Spacing="4" Margin="0,0,8,6">
+                            <TextBlock Text="{DynamicResource CollectionSourceFilter}" Classes="secondary" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding CollectionSources}" SelectedIndex="{Binding CollectionSourceIndex, Mode=TwoWay}" MinWidth="150"
+                                      AutomationProperties.Name="{DynamicResource CollectionSourceFilter}"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="0,0,8,6">
+                            <TextBlock Text="{DynamicResource CollectionResolutionFilter}" Classes="secondary" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding CollectionResolutions}" SelectedIndex="{Binding CollectionResolutionIndex, Mode=TwoWay}" MinWidth="150"
+                                      AutomationProperties.Name="{DynamicResource CollectionResolutionFilter}"/>
+                        </StackPanel>
+                        <StackPanel Spacing="4" Margin="0,0,8,6">
+                            <TextBlock Text="{DynamicResource CollectionDateFilter}" Classes="secondary" FontSize="12"/>
+                            <ComboBox ItemsSource="{Binding CollectionDates}" SelectedIndex="{Binding CollectionDateIndex, Mode=TwoWay}" MinWidth="150"
+                                      ToolTip.Tip="{DynamicResource CollectionDateHint}" AutomationProperties.Name="{DynamicResource CollectionDateFilter}"/>
+                        </StackPanel>
+                        <Button Content="{DynamicResource CollectionResetFilters}" Command="{Binding ResetCollectionFiltersCommand}" VerticalAlignment="Bottom" Margin="0,0,0,6"/>
+                    </WrapPanel>
+                </StackPanel>
                 <Grid ColumnDefinitions="*,Auto">
                     <TextBlock Text="{Binding GallerySubtitle}" Classes="secondary" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" IsVisible="{Binding IsDiscoverView}">
@@ -90,7 +115,7 @@
             </StackPanel>
             <Grid Grid.Row="3">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Wallpapers}" IsEnabled="{Binding IsIdle}">
+                    <ItemsControl ItemsSource="{Binding VisibleWallpapers}" IsEnabled="{Binding IsIdle}">
                         <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="vm:ImageItemViewModel">

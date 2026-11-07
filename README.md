@@ -45,6 +45,14 @@ filenames for images without metadata. Local previews work offline. **Refresh**
 reloads the active view; **Open folder** still opens the folder in your file manager.
 Local images show their actual dimensions and do not have download checkboxes.
 
+Search your collection by title, description, filename or keywords, including
+your own tags. Combine the search with filters for image source, minimum HD /
+Full HD / UHD resolution and the last 7, 30 or 365 days. Portrait images are
+supported. Dates use the embedded download timestamp, falling back to the file's
+modification date. Results update locally as you type; **Reset** shows the complete
+collection again. Search and filters are retained when switching to Discover and
+back during the same session.
+
 ### Edit keywords and add your own
 
 The preview shows keywords as chips. Use the **×** on a chip to remove a wrong or

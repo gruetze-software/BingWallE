@@ -13,7 +13,10 @@ using SkiaSharp;
 
 namespace BingWallE.Services;
 
-public sealed record LocalWallpaper(string Path, Wallpaper Image, byte[] Bytes, int Width, int Height, KeywordMetadataState Keywords);
+public sealed record LocalWallpaper(string Path, Wallpaper Image, byte[] Bytes, int Width, int Height, KeywordMetadataState Keywords)
+{
+    public DateTimeOffset DownloadedAt { get; init; }
+}
 
 public sealed class LocalCollectionReader
 {
@@ -69,7 +72,11 @@ public sealed class LocalCollectionReader
             string.IsNullOrWhiteSpace(title) ? Path.GetFileNameWithoutExtension(path) : title,
             Value(bw + "PublicationDate") ?? "", Copyright: Value(dc + "rights") ?? copyright ?? "",
             Market: Value(bw + "Market") ?? "", Source: source, SourceId: Value(bw + "SourceId"), Description: description);
-        return new(Path.GetFullPath(path), image, bytes, codec.Info.Width, codec.Info.Height, KeywordMetadata.Read(bytes));
+        var downloadedAt = DateTimeOffset.TryParse(Value(bw + "DownloadDate"),
+            System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out var date)
+            ? date : new DateTimeOffset(File.GetLastWriteTimeUtc(path));
+        return new(Path.GetFullPath(path), image, bytes, codec.Info.Width, codec.Info.Height, KeywordMetadata.Read(bytes))
+            { DownloadedAt = downloadedAt };
     }
 
 }

@@ -47,6 +47,9 @@ public partial class ImageItemViewModel : ViewModelBase
         if (before != TextKeywords + "|" + ModelKeywords) HasKeywordChanges = true;
     }
     public string? LocalPath { get; }
+    public int PixelWidth { get; init; }
+    public int PixelHeight { get; init; }
+    public System.DateTimeOffset? DownloadedAt { get; init; }
     public bool IsLocalImage => LocalPath != null;
     public Wallpaper Image { get; }
     public string Title => Image.Title;

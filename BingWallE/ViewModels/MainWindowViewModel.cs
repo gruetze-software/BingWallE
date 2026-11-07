@@ -104,7 +104,7 @@ public partial class MainWindowViewModel : ViewModelBase
     public bool IsIdle => !IsRunning;
     public bool CanRetry => HasError && IsIdle && _retryOperation is "scan" or "download" or "collection";
     public bool HasSelection => SelectedCount > 0;
-    public bool IsEmpty => Wallpapers.Count == 0;
+    public bool IsEmpty => VisibleWallpapers.Count == 0;
     public int SelectedCount => Wallpapers.Count(x => x.IsSelected && !x.IsIgnored);
     public string SelectionSummary => T("{0} von {1} Bildern ausgewählt", SelectedCount, Wallpapers.Count);
     public string DownloadLabel => SelectedCount == 1 ? T("1 Bild herunterladen") : T("{0} Bilder herunterladen", SelectedCount);
@@ -136,13 +136,14 @@ public partial class MainWindowViewModel : ViewModelBase
             foreach (var item in Wallpapers.Where(x => !_observed.Contains(x)))
             { item.IsIgnored = _ignoredImages.Contains(IgnoreKey(item)); if (item.IsIgnored) item.IsSelected = false; item.SetLanguage(Text.Language); item.DownloadResolution = item.IsLocalImage || item.Image.Source == WallpaperSource.WindowsSpotlight ? "Original" : SelectedResolution.Value; item.PropertyChanged += ItemChanged; _observed.Add(item); }
             NotifySelection();
-            OnPropertyChanged(nameof(IsEmpty));
+            ApplyCollectionFilters();
         };
     }
 
     private void ItemChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName is nameof(ImageItemViewModel.IsSelected) or nameof(ImageItemViewModel.IsIgnored)) NotifySelection();
+        if (IsCollectionView && e.PropertyName is nameof(ImageItemViewModel.TextKeywords) or nameof(ImageItemViewModel.ModelKeywords)) ApplyCollectionFilters();
     }
     private void NotifySelection()
     {
@@ -529,7 +530,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
     private void TranslateOptions()
     {
-        foreach (var option in Markets.Concat(Resolutions).Concat(Themes)) option.Label = Text.Translate(option.Label);
+        foreach (var option in Markets.Concat(Resolutions).Concat(Themes).Concat(CollectionSources).Concat(CollectionResolutions).Concat(CollectionDates)) option.Label = Text.Translate(option.Label);
     }
     partial void OnSelectedLanguageChanged(SelectionOption value)
     {
