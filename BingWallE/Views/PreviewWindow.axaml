@@ -94,6 +94,7 @@
                             </Grid>
                             <WrapPanel>
                                 <Button Content="{DynamicResource KeywordRecognize}" Command="{Binding RecognizePreviewKeywordsCommand}" Margin="0,0,8,7"/>
+                                <Button x:Name="CopyKeywordPromptButton" Content="{DynamicResource KeywordCopyPrompt}" Click="CopyKeywordPrompt" IsEnabled="{Binding CanEditKeywords}" ToolTip.Tip="{DynamicResource KeywordCopyPromptHint}" Margin="0,0,8,7"/>
                                 <Button Content="{DynamicResource KeywordSave}" Command="{Binding SavePreviewKeywordsCommand}" Margin="0,0,0,7"/>
                             </WrapPanel>
                             <TextBlock Text="{Binding KeywordSaveHint}" TextWrapping="Wrap" Classes="secondary" FontSize="11"/>

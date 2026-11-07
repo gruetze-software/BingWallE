@@ -58,6 +58,13 @@ back during the same session.
 The preview shows keywords as chips. Enter multiple tags separated by semicolons
 (for example, `night;stars`) to add them together; each tag can contain up to 100
 characters. Spaces are trimmed and duplicate entries are skipped.
+**Copy AI prompt** copies instructions with the original image URL, title and
+description for use in an AI chat of your choice. It requests up to ten keywords
+separated by semicolons, using the image region's language (German or English),
+or the interface language when no region is stored. For local images without an
+internet URL, the prompt asks you to attach the image. BingWallE does not upload
+anything for this action. Review the response, paste it into the keyword field
+and choose **Add**, then **Save keywords** for an existing JPEG.
 Use the **×** on a chip to remove a wrong or
 unwanted term, or enter a personal keyword and choose **Add** (or press Enter).
 **Recognize keywords again** runs local image recognition on demand. AI suggestions

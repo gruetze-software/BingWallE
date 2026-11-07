@@ -1,7 +1,9 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using BingWallE.Models;
+using BingWallE.Services;
 using BingWallE.ViewModels;
 
 namespace BingWallE.Views;
@@ -36,5 +38,23 @@ public partial class PreviewWindow : Window
     {
         if (e.Key == Key.Enter && DataContext is MainWindowViewModel vm && vm.AddPreviewKeywordCommand.CanExecute(null))
         { vm.AddPreviewKeywordCommand.Execute(null); e.Handled = true; }
+    }
+
+    private async void CopyKeywordPrompt(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not MainWindowViewModel { CanEditKeywords: true, PreviewItem: { } item } vm) return;
+        try
+        {
+            if (Clipboard == null) throw new System.InvalidOperationException("Clipboard unavailable.");
+            await Clipboard.SetValueAsync(DataFormat.Text, KeywordPromptBuilder.Build(item.Image, item.Description, vm.Text));
+            if (ReferenceEquals(vm.PreviewItem, item))
+                vm.KeywordStatus = vm.Text.Get("KI-Prompt kopiert. In deinen KI-Chat einfügen und die Antwort hier als Keywords übernehmen.");
+        }
+        catch (System.Exception ex)
+        {
+            System.Diagnostics.Trace.WriteLine(ex);
+            if (ReferenceEquals(vm.PreviewItem, item))
+                vm.KeywordStatus = vm.Text.Get("Der KI-Prompt konnte nicht in die Zwischenablage kopiert werden.");
+        }
     }
 }
