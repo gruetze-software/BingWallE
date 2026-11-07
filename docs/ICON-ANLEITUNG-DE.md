@@ -87,8 +87,14 @@ Für BingWallE bedeutet das:
 
 Blende **Raster und alle Hilfshintergründe aus**. Die Ebenen-Arbeitsdatei als PDN
 speichern und den fertigen Master als **1024 × 1024 PNG mit Transparenz** nach
-`branding/bingwalle.png` exportieren. Das Schachbrett darf nicht ins Bild gerendert
-werden.
+`bingwalle_icon_1024.png` exportieren. Die eigenen Exporte für Windows/Linux
+liegen daneben als `bingwalle_icon_32.png`, `bingwalle_icon_64.png`,
+`bingwalle_icon_128.png` und `bingwalle_icon_256.png`.
+Das Schachbrett darf nicht ins Bild gerendert werden.
+
+Die abweichende Apple-Vorlage separat als **1024 × 1024 PNG** unter
+`bingwalle_icon_apple.png` speichern. Sie wird ausschließlich unter macOS angezeigt.
+Sie darf auch ein vollständig deckendes RGB-Bild sein.
 
 Flathub nennt SVG oder eine quadratische PNG ab 256 × 256 Pixeln als Format.
 Unser 1024er Master liefert genügend Auflösung für die bestehenden Plattformdateien.
@@ -102,10 +108,17 @@ Das vorhandene Skript erzeugt daraus:
 
 | Datei | Verwendung |
 | --- | --- |
-| `BingWallE/Assets/bingwalle.png` | 256er PNG für Linux, Flatpak und Anwendungskopf |
-| `BingWallE/Assets/bingwalle-logo.png` | 1024er PNG für den About-Dialog |
+| `branding/bingwalle.png` | Desktop-Master für README und Branding |
+| `BingWallE/Assets/bingwalle.png` | 256er PNG für Linux, Flatpak und Windows-/Linux-Anwendungskopf |
+| `BingWallE/Assets/bingwalle-logo.png` | 1024er PNG für den Windows-/Linux-About-Dialog |
 | `BingWallE/Assets/bingwalle.ico` | Windows, mehrere Größen |
-| `BingWallE/Assets/bingwalle.icns` | macOS |
+| `BingWallE/Assets/bingwalle.icns` | macOS-Bundle, Dock und Finder, aus der Apple-Vorlage |
+| `BingWallE/Assets/bingwalle-apple.png` | macOS-Anwendungskopf und Fenster-Icon |
+| `BingWallE/Assets/bingwalle-apple-logo.png` | macOS-About-Dialog |
+
+Das Skript überschreibt keine PNG-Vorlagen im Projektordner. Die Windows-ICO
+wird automatisch mit 16, 24, 32, 48, 64, 128 und 256 Pixeln erzeugt; ein gesonderter
+ICO-Upload ist nicht nötig. Die Apple-ICNS enthält die macOS-/Retina-Größen.
 
 Danach Titelleiste, About-Dialog, Linux-Menü und Store-Vorschau kontrollieren.
 Das Skript konvertiert und skaliert das Motiv; es korrigiert keinen zu großen

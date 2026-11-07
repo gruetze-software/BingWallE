@@ -33,7 +33,7 @@ cp "$ROOT/BingWallE/Assets/bingwalle.icns" "$APP/Contents/Resources/"
 cp "$ROOT/LICENSE" "$ROOT/README.md" "$APP/Contents/Resources/"
 cp -R "$ROOT/licenses" "$APP/Contents/Resources/"
 mkdir -p "$APP/Contents/Resources/branding"
-cp "$ROOT/branding/bingwalle.png" "$APP/Contents/Resources/branding/"
+cp "$ROOT/bingwalle_icon_apple.png" "$APP/Contents/Resources/branding/bingwalle.png"
 cat > "$APP/Contents/Info.plist" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">

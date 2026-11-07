@@ -3,7 +3,7 @@
         xmlns:vm="using:BingWallE.ViewModels"
         xmlns:models="using:BingWallE.Models"
         x:Class="BingWallE.Views.MainWindow" x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/bingwalle.ico" Title="{Binding AppTitle}" Width="1040" Height="820" MinWidth="640" MinHeight="480"
+        Icon="{OnPlatform Default=/Assets/bingwalle.ico, macOS=/Assets/bingwalle-apple.png}" Title="{Binding AppTitle}" Width="1040" Height="820" MinWidth="640" MinHeight="480"
         WindowStartupLocation="CenterScreen" Background="{DynamicResource GalleryBackground}">
     <Window.Resources>
         <ResourceDictionary>
@@ -45,7 +45,7 @@
         <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
             <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <Image Source="/Assets/bingwalle.png" RenderOptions.BitmapInterpolationMode="HighQuality" Width="56" Height="56"/>
+                    <Image Source="{OnPlatform Default=/Assets/bingwalle.png, macOS=/Assets/bingwalle-apple.png}" RenderOptions.BitmapInterpolationMode="HighQuality" Width="56" Height="56"/>
                     <StackPanel Spacing="4" VerticalAlignment="Center">
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <TextBlock Text="BingWallE" FontSize="28" FontWeight="SemiBold"/>

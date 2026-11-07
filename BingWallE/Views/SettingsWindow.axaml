@@ -3,7 +3,7 @@
         xmlns:vm="using:BingWallE.ViewModels"
         xmlns:models="using:BingWallE.Models"
         x:Class="BingWallE.Views.SettingsWindow" x:DataType="vm:MainWindowViewModel"
-        Title="{DynamicResource SettingsTitle}" Icon="/Assets/bingwalle.ico"
+        Title="{DynamicResource SettingsTitle}" Icon="{OnPlatform Default=/Assets/bingwalle.ico, macOS=/Assets/bingwalle-apple.png}"
         Width="620" Height="740" MinWidth="520" MinHeight="520"
         WindowStartupLocation="CenterOwner" Background="{DynamicResource SettingsBackground}">
     <Window.Resources>

@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:vm="using:BingWallE.ViewModels"
     x:Class="BingWallE.Views.PreviewWindow" x:DataType="vm:MainWindowViewModel"
-    Icon="/Assets/bingwalle.ico" Title="{Binding PreviewItem.Title}"
+    Icon="{OnPlatform Default=/Assets/bingwalle.ico, macOS=/Assets/bingwalle-apple.png}" Title="{Binding PreviewItem.Title}"
     Width="980" Height="850" MinWidth="480" MinHeight="420" CanResize="True"
     WindowStartupLocation="CenterOwner" Background="{DynamicResource GalleryBackground}">
     <Window.Resources>
