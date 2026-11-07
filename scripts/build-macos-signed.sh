@@ -8,9 +8,16 @@ for name in MACOS_CERTIFICATE_P12_BASE64 MACOS_CERTIFICATE_PASSWORD APPLE_API_KE
   [[ -n "${!name:-}" ]] || { echo "Missing signing setting: $name" >&2; exit 1; }
 done
 umask 077
+ORIGINAL_KEYCHAINS=()
+while IFS= read -r keychain; do
+  keychain="${keychain#*\"}"
+  keychain="${keychain%\"*}"
+  [[ -z "$keychain" ]] || ORIGINAL_KEYCHAINS+=("$keychain")
+done < <(security list-keychains -d user)
 WORK="$(mktemp -d "$RUNNER_TEMP/bingwalle-signing.XXXXXX")"
 export MACOS_SIGNING_KEYCHAIN="$WORK/signing.keychain-db"
 cleanup() {
+  security list-keychains -d user -s "${ORIGINAL_KEYCHAINS[@]}" >/dev/null 2>&1 || true
   security delete-keychain "$MACOS_SIGNING_KEYCHAIN" >/dev/null 2>&1 || true
   rm -rf -- "$WORK"
 }
@@ -24,6 +31,7 @@ KEYCHAIN_PASSWORD="$(openssl rand -hex 32)"
 security create-keychain -p "$KEYCHAIN_PASSWORD" "$MACOS_SIGNING_KEYCHAIN"
 security set-keychain-settings -lut 21600 "$MACOS_SIGNING_KEYCHAIN"
 security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$MACOS_SIGNING_KEYCHAIN"
+security list-keychains -d user -s "$MACOS_SIGNING_KEYCHAIN" "${ORIGINAL_KEYCHAINS[@]}"
 security import "$WORK/certificate.p12" -P "$MACOS_CERTIFICATE_PASSWORD" \
   -t cert -f pkcs12 -k "$MACOS_SIGNING_KEYCHAIN" -T /usr/bin/codesign
 security set-key-partition-list -S apple-tool:,apple:,codesign: -s \

@@ -17,9 +17,12 @@ command = Path(sys.argv[0]).name
 args = sys.argv[1:]
 log = Path(os.environ['TEST_LOG'])
 event = [command] + args[:2]
+if command == 'security' and args[0] == 'list-keychains': event = [command] + args
 with log.open('a') as out: out.write(json.dumps(event) + '\n')
 if command == 'uname': print('Darwin')
 elif command == 'security':
+    if args[0] == 'list-keychains' and '-s' not in args:
+        print('    "/original keychains/login.keychain-db"')
     if args[0] == 'create-keychain': Path(args[-1]).touch()
     if args[0] == 'delete-keychain': Path(args[-1]).unlink(missing_ok=True)
     if args[0] == 'import' and os.environ.get('MOCK_IMPORT_FAILURE'): sys.exit(1)
@@ -96,6 +99,8 @@ class SigningTests(unittest.TestCase):
     def assert_cleaned(self):
         self.assertEqual(list(self.runner.glob('bingwalle-signing.*')), [])
         self.assertTrue(any(e[:2] == ['security', 'delete-keychain'] for e in self.events()))
+        self.assertIn(['security', 'list-keychains', '-d', 'user', '-s',
+                       '/original keychains/login.keychain-db'], self.events())
 
     def test_success_cleans_keychain_and_does_not_inherit_raw_secrets(self):
         result = self.run_script('build-macos-signed.sh', 'arm64')
