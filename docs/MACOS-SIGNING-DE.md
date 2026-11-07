@@ -96,7 +96,10 @@ Ab dann genügt der bisherige Release-Ablauf mit einem neuen Versions-Tag. Der
 Workflow signiert und notarisiert die macOS-Downloads automatisch. Dieselbe
 Automatik gilt für einen manuellen Veröffentlichungslauf mit `release_tag`.
 Der betreffende Tag muss die neuen Signierskripte enthalten. Bereits
-veröffentlichte Pakete wie 1.6.2 werden nicht nachträglich verändert.
+veröffentlichte Pakete werden durch diese Automatik nicht verändert. Die vier
+macOS-Downloads von 1.6.2 wurden am 7. November 2026 ausdrücklich durch signierte
+und notarisierte Pakete ersetzt, zusammen mit aktualisierten Prüfsummen. Der
+Versions-Tag und die Windows-/Linux-Pakete blieben unverändert.
 
 Normale Push-/PR-Tests verwenden keine Apple-Secrets und bleiben ad-hoc signiert.
 Wenn die Signierautomatik aktiviert ist und Zugangsdaten fehlen oder Apple die
@@ -106,8 +109,8 @@ Rückfall auf ad-hoc signierte Release-Pakete.
 ## Technischer Ablauf
 
 `scripts/build-macos-signed.sh` importiert das Zertifikat in einen temporären
-Schlüsselbund. `scripts/build-macos.sh` signiert zunächst die eingebetteten
-Mach-O-Dateien und dann die App mit Zeitstempel und Hardened Runtime. Die App
+Schlüsselbund. `scripts/build-macos.sh` signiert zunächst alle eingebetteten
+Dateien im Code-Verzeichnis und dann die App mit Zeitstempel und Hardened Runtime. Die App
 erhält die für .NET/Avalonia erforderliche `allow-jit`-Berechtigung, aber keine
 Debugging-Berechtigung und keine pauschale Ausnahme von der Library Validation.
 

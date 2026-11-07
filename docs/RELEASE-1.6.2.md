@@ -18,3 +18,12 @@ fallback on Linux. The minimum macOS version remains 14.
 
 GitHub releases do not automatically update the Snap Store or Flathub;
 those stores are published separately.
+
+## Signed macOS downloads
+
+On 7 November 2026, the macOS ARM64 and Intel ZIP and DMG downloads were replaced
+with Developer ID-signed and Apple-notarized packages. Both architectures passed
+signature, notarization-ticket and Gatekeeper checks in the
+[signed build](https://github.com/gruetze-software/BingWallE/actions/runs/42360123161).
+The application version and features are unchanged. The release checksums were
+updated; Windows and Linux downloads and the version tag remain unchanged.

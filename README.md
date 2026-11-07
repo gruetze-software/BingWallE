@@ -304,12 +304,15 @@ Choose **arm64** for Apple Silicon or **x64** for an Intel Mac. Open the DMG and
 **BingWallE.app** onto the **Applications** shortcut. ZIP packages are also available;
 extract the app and move it to Applications.
 
-Releases through **1.6.2** are ad-hoc signed and verified, but are not signed with
-an Apple Developer certificate or notarized by Apple. The release workflow now
-supports automatic Developer ID signing and notarization once the maintainer has
-completed the [one-time Apple setup](docs/MACOS-SIGNING-DE.md). Test builds remain
-ad-hoc signed unless signing is explicitly requested. For older or ad-hoc builds,
-macOS may block the first launch or report that the app is damaged.
+The **1.6.2 macOS downloads were reissued on 7 November 2026** with Apple Developer
+ID signatures and Apple notarization for both Apple Silicon and Intel. Download
+the replacement ZIP or DMG if you obtained an earlier copy of 1.6.2. The application
+version and features are unchanged. Automatic signing and notarization are enabled
+for future releases; the [maintainer setup](docs/MACOS-SIGNING-DE.md) is documented.
+
+Older releases and test builds remain ad-hoc signed unless signing is explicitly
+requested. The following quarantine workarounds apply to those older or ad-hoc
+copies, which macOS may block on first launch or report as damaged.
 
 First try opening the app, then allow it in **System Settings → Privacy & Security →
 Open Anyway**, if that option is offered. Only do this for a copy downloaded from the
