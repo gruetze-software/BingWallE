@@ -65,3 +65,12 @@ macOS SDK. Both the managed binding and native library come from the same packag
 version. Other targets keep 1.30.0. Native Intel CI runs the real model and the
 recognition shutdown check before packaging; the app retains its existing model
 hash verification and telemetry opt-out.
+
+## Apple signing and notarization
+
+See [the one-time setup guide](MACOS-SIGNING-DE.md). With the Apple secrets present
+and `MACOS_SIGNING_ENABLED=true`, release builds automatically sign and notarize
+both macOS variants. Push/PR tests remain ad-hoc signed; a manual `sign_macos`
+workflow run tests the Apple path without publishing a release. Signing failures
+block publication instead of falling back to ad-hoc signing. Release-file checks
+also reject P12, P8 and keychain files.

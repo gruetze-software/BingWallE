@@ -5,6 +5,17 @@ case "$ARCH" in arm64|x64) ;; *) echo "Usage: $0 [arm64|x64]" >&2; exit 1 ;; esa
 [[ "$(uname -s)" == Darwin ]] || { echo "This script requires macOS (codesign, hdiutil, ditto)." >&2; exit 1; }
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+SIGNING_MODE="${MACOS_SIGNING_MODE:-adhoc}"
+case "$SIGNING_MODE" in
+  adhoc) SIGN_ARGS=(--force --sign -) ;;
+  developer-id)
+    for name in MACOS_SIGNING_IDENTITY MACOS_SIGNING_KEYCHAIN MACOS_NOTARY_KEY_PATH APPLE_API_KEY_ID APPLE_API_ISSUER_ID; do
+      [[ -n "${!name:-}" ]] || { echo "Missing signing setting: $name" >&2; exit 1; }
+    done
+    SIGN_ARGS=(--force --sign "$MACOS_SIGNING_IDENTITY" --keychain "$MACOS_SIGNING_KEYCHAIN" --timestamp --options runtime)
+    ;;
+  *) echo "Unknown macOS signing mode: $SIGNING_MODE" >&2; exit 2 ;;
+esac
 PROJECT="$ROOT/BingWallE/BingWallE.csproj"
 VERSION="$(dotnet msbuild "$PROJECT" -nologo -getProperty:Version)"
 [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid version: $VERSION" >&2; exit 1; }
@@ -45,13 +56,35 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 </dict></plist>
 PLIST
 chmod 755 "$APP/Contents/MacOS/bingwalle"
-find "$APP/Contents/MacOS" -type f -name '*.dylib' -exec codesign --force --sign - {} \;
-codesign --force --deep --sign - "$APP"
+while IFS= read -r -d '' binary; do
+  if [[ "$(file -b "$binary")" == *Mach-O* ]]; then
+    codesign "${SIGN_ARGS[@]}" "$binary"
+  fi
+done < <(find "$APP/Contents/MacOS" -type f -print0)
+if [[ "$SIGNING_MODE" == developer-id ]]; then
+  codesign "${SIGN_ARGS[@]}" --entitlements "$ROOT/branding/macos-entitlements.plist" "$APP"
+else
+  codesign "${SIGN_ARGS[@]}" "$APP"
+fi
 codesign --verify --deep --strict "$APP"
 plutil -lint "$APP/Contents/Info.plist"
+if [[ ( "$ARCH" == arm64 && "$(uname -m)" == arm64 ) || ( "$ARCH" == x64 && "$(uname -m)" == x86_64 ) ]]; then
+  test "$("$APP/Contents/MacOS/bingwalle" --version)" = "BingWallE $VERSION"
+fi
+if [[ "$SIGNING_MODE" == developer-id ]]; then
+  ditto -c -k --sequesterRsrc --keepParent "$APP" "$STAGE/notarization.zip"
+  bash "$ROOT/scripts/notarize-macos.sh" "$STAGE/notarization.zip" "$APP"
+  spctl --assess --type execute "$APP"
+fi
 ditto -c -k --sequesterRsrc --keepParent "$APP" "$ROOT/artifacts/BingWallE-$VERSION-macos-$ARCH.zip"
 DMG_ROOT="$STAGE/dmg"
 mkdir -p "$DMG_ROOT"
 ditto "$APP" "$DMG_ROOT/BingWallE.app"
 ln -s /Applications "$DMG_ROOT/Applications"
 hdiutil create -volname "BingWallE $SHORT_VERSION" -srcfolder "$DMG_ROOT" -ov -format UDZO "$ROOT/artifacts/BingWallE-$VERSION-macos-$ARCH.dmg"
+if [[ "$SIGNING_MODE" == developer-id ]]; then
+  DMG="$ROOT/artifacts/BingWallE-$VERSION-macos-$ARCH.dmg"
+  codesign --force --sign "$MACOS_SIGNING_IDENTITY" --keychain "$MACOS_SIGNING_KEYCHAIN" --timestamp "$DMG"
+  bash "$ROOT/scripts/notarize-macos.sh" "$DMG" "$DMG"
+  spctl --assess --type open --context context:primary-signature "$DMG"
+fi

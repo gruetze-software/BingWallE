@@ -27,6 +27,9 @@ BingWallE/publish-win/bingwalle.pdb
 artifacts/
 TestResults/
 *.trx
+*.p12
+*.p8
+*.keychain-db
 publish/
 publish-linux/
 publish-win/

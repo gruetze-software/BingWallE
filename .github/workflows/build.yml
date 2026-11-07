@@ -12,6 +12,11 @@ on:
         required: false
         type: string
         default: ''
+      sign_macos:
+        description: 'Test Apple signing and notarization without publishing (requires Apple secrets)'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -24,7 +29,9 @@ jobs:
   build:
     name: ${{ matrix.rid }}
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 25
+    timeout-minutes: ${{ matrix.platform == 'macos' && 90 || 25 }}
+    env:
+      MACOS_SIGN_REQUESTED: ${{ matrix.platform == 'macos' && github.event_name != 'pull_request' && ((github.event_name == 'workflow_dispatch' && inputs.sign_macos) || (vars.MACOS_SIGNING_ENABLED == 'true' && (startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release_tag != '')))) }}
     strategy:
       fail-fast: false
       matrix:
@@ -115,8 +122,20 @@ jobs:
           done
           diff -r licenses "$prefix/share/licenses/$app_id/third-party"
       - name: macOS package
-        if: matrix.platform == 'macos'
+        if: matrix.platform == 'macos' && env.MACOS_SIGN_REQUESTED != 'true'
         run: bash scripts/build-macos.sh '${{ matrix.arch }}'
+      - name: Test macOS signing control flow
+        if: matrix.platform == 'macos'
+        run: python3 scripts/test-macos-signing.py
+      - name: Sign and notarize macOS package
+        if: matrix.platform == 'macos' && env.MACOS_SIGN_REQUESTED == 'true'
+        env:
+          MACOS_CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: bash scripts/build-macos-signed.sh '${{ matrix.arch }}'
       - name: Check release package contents
         shell: bash
         run: |
@@ -193,6 +212,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+          MACOS_SIGNING_ENABLED: ${{ vars.MACOS_SIGNING_ENABLED }}
         shell: bash
         run: |
           set -euo pipefail
@@ -208,5 +228,8 @@ jobs:
           cp "docs/RELEASE-$version.md" "$notes"
           printf '\n' >> "$notes"
           cat docs/RELEASE-STORES.md >> "$notes"
+          if [[ "$MACOS_SIGNING_ENABLED" == true ]]; then
+            printf '\nmacOS downloads are Developer ID signed and notarized by Apple.\n' >> "$notes"
+          fi
           gh release create "$RELEASE_TAG" release-assets/* --verify-tag --draft --title "BingWallE $version" --notes-file "$notes"
           gh release edit "$RELEASE_TAG" --draft=false --latest

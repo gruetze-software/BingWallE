@@ -11,6 +11,8 @@ def unwanted(name, platform):
     path = PurePosixPath(name.replace("\\", "/"))
     parts = [part.lower() for part in path.parts]
     leaf = path.name.lower()
+    if path.suffix.lower() in {".p12", ".p8", ".keychain-db"}:
+        return "private signing material"
     if path.suffix.lower() in {".pdb", ".dbg", ".debug", ".dwarf", ".mdb", ".lib", ".exp", ".a"}:
         return "debug symbols or link-time files"
     if any(part.endswith(".dsym") for part in parts):
