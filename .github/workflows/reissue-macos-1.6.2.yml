@@ -1,0 +1,71 @@
+name: Reissue signed macOS 1.6.2 downloads
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: reissue-macos-1.6.2
+  cancel-in-progress: false
+
+jobs:
+  reissue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: gruetze-software/BingWallE
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - name: Verify signed build provenance
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          run = json.loads(subprocess.check_output(['gh', 'api', 'repos/gruetze-software/BingWallE/actions/runs/42360123161']))
+          assert run['conclusion'] == 'success'
+          assert run['head_sha'] == 'a656d02021b056e3b4de36d109fa0088a21d0a9c'
+          jobs = json.loads(subprocess.check_output(['gh', 'api', 'repos/gruetze-software/BingWallE/actions/runs/42360123161/jobs?per_page=100']))['jobs']
+          signed = [step for job in jobs for step in job['steps'] if step['name'] == 'Sign and notarize macOS package']
+          assert len(signed) == 2 and all(step['conclusion'] == 'success' for step in signed)
+          PY
+      - name: Download signed Apple Silicon packages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          github-token: ${{ github.token }}
+          run-id: 42360123161
+          artifact-ids: 13569168585
+          path: artifacts/release-1.6.2-signed/arm64
+      - name: Download signed Intel packages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          github-token: ${{ github.token }}
+          run-id: 42360123161
+          artifact-ids: 13569332167
+          path: artifacts/release-1.6.2-signed/x64
+      - name: Back up current release downloads
+        run: |
+          mkdir -p artifacts/release-1.6.2-signed/backup
+          gh release view v1.6.2 --json body,assets,url > artifacts/release-1.6.2-signed/release-before.json
+          gh release download v1.6.2 --pattern '*macos*' --pattern SHA256SUMS.txt --dir artifacts/release-1.6.2-signed/backup
+      - name: Verify application and prepare replacement checksums
+        run: python3 scripts/reissue-macos-1.6.2.py
+      - name: Replace four macOS downloads and checksums
+        run: |
+          gh release upload v1.6.2 artifacts/release-1.6.2-signed/arm64/BingWallE-1.6.2-macos-arm64.zip artifacts/release-1.6.2-signed/arm64/BingWallE-1.6.2-macos-arm64.dmg artifacts/release-1.6.2-signed/x64/BingWallE-1.6.2-macos-x64.zip artifacts/release-1.6.2-signed/x64/BingWallE-1.6.2-macos-x64.dmg artifacts/release-1.6.2-signed/SHA256SUMS.txt --clobber
+          gh release edit v1.6.2 --notes-file artifacts/release-1.6.2-signed/release-notes.md
+      - name: Verify published assets
+        run: python3 scripts/reissue-macos-1.6.2.py --verify-published
+      - name: Preserve audit record and original packages
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: macos-1.6.2-reissue-audit
+          path: |
+            artifacts/release-1.6.2-signed/backup
+            artifacts/release-1.6.2-signed/*.json
+            artifacts/release-1.6.2-signed/*.md
+            artifacts/release-1.6.2-signed/SHA256SUMS.txt
+          retention-days: 30
