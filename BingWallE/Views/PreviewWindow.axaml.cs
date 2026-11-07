@@ -1,6 +1,5 @@
 using Avalonia.Controls;
 using Avalonia.Input;
-using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using BingWallE.Models;
 using BingWallE.Services;
@@ -43,18 +42,31 @@ public partial class PreviewWindow : Window
     private async void CopyKeywordPrompt(object? sender, RoutedEventArgs e)
     {
         if (DataContext is not MainWindowViewModel { CanEditKeywords: true, PreviewItem: { } item } vm) return;
+        var mode = (sender as Button)?.Tag as string;
+        KeywordClipboardData? data = null;
         try
         {
             if (Clipboard == null) throw new System.InvalidOperationException("Clipboard unavailable.");
-            await Clipboard.SetValueAsync(DataFormat.Text, KeywordPromptBuilder.Build(item.Image, item.Description, vm.Text));
+            var image = mode == "text" ? null : vm.LargePreview
+                ?? throw new System.InvalidOperationException("Preview unavailable.");
+            var prompt = mode == "image" ? null : KeywordPromptBuilder.Build(item.Image, item.Description, vm.Text);
+            data = new KeywordClipboardData(image, prompt);
+            await Clipboard.SetDataAsync(data);
+            data = null; // The clipboard now owns the data and its detached bitmap.
             if (ReferenceEquals(vm.PreviewItem, item))
-                vm.KeywordStatus = vm.Text.Get("KI-Prompt kopiert. In deinen KI-Chat einfügen und die Antwort hier als Keywords übernehmen.");
+                vm.KeywordStatus = vm.Text.Get(mode switch
+                {
+                    "text" => "KI-Prompt kopiert. Zusätzlich die Bildvorschau im KI-Chat einfügen.",
+                    "image" => "Bildvorschau kopiert. Im KI-Chat einfügen und den Prompt ergänzen.",
+                    _ => "Bildvorschau und KI-Prompt kopiert. Falls dein Chat nur eines übernimmt, Bild und Prompt getrennt kopieren."
+                });
         }
         catch (System.Exception ex)
         {
             System.Diagnostics.Trace.WriteLine(ex);
             if (ReferenceEquals(vm.PreviewItem, item))
-                vm.KeywordStatus = vm.Text.Get("Der KI-Prompt konnte nicht in die Zwischenablage kopiert werden.");
+                vm.KeywordStatus = vm.Text.Get("Kopieren in die Zwischenablage fehlgeschlagen.");
         }
+        finally { data?.Dispose(); }
     }
 }

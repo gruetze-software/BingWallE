@@ -95,6 +95,8 @@
                             <WrapPanel>
                                 <Button Content="{DynamicResource KeywordRecognize}" Command="{Binding RecognizePreviewKeywordsCommand}" Margin="0,0,8,7"/>
                                 <Button x:Name="CopyKeywordPromptButton" Content="{DynamicResource KeywordCopyPrompt}" Click="CopyKeywordPrompt" IsEnabled="{Binding CanEditKeywords}" ToolTip.Tip="{DynamicResource KeywordCopyPromptHint}" Margin="0,0,8,7"/>
+                                <Button x:Name="CopyKeywordImageOnlyButton" Content="{DynamicResource KeywordCopyImageOnly}" Tag="image" Click="CopyKeywordPrompt" IsEnabled="{Binding CanEditKeywords}" Margin="0,0,8,7"/>
+                                <Button x:Name="CopyKeywordTextOnlyButton" Content="{DynamicResource KeywordCopyTextOnly}" Tag="text" Click="CopyKeywordPrompt" IsEnabled="{Binding CanEditKeywords}" Margin="0,0,8,7"/>
                                 <Button Content="{DynamicResource KeywordSave}" Command="{Binding SavePreviewKeywordsCommand}" Margin="0,0,0,7"/>
                             </WrapPanel>
                             <TextBlock Text="{Binding KeywordSaveHint}" TextWrapping="Wrap" Classes="secondary" FontSize="11"/>

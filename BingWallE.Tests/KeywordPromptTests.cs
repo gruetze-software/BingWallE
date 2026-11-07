@@ -2,6 +2,8 @@ using Avalonia.Controls;
 using Avalonia.Headless.XUnit;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
+using SkiaSharp;
 using BingWallE.Localization;
 using BingWallE.Models;
 using BingWallE.Services;
@@ -18,12 +20,13 @@ public class KeywordPromptTests
     [InlineData("de", "en-US", "Englisch", "Titel:")]
     [InlineData("en", "", "English", "Title:")]
     [InlineData("de", "", "Deutsch", "Titel:")]
-    public void PromptUsesOriginalImageUrlAndSourceLanguage(string ui, string market, string keywordLanguage, string titlePrefix)
+    public void PromptUsesAttachedImageAndSourceLanguage(string ui, string market, string keywordLanguage, string titlePrefix)
     {
         var text = new UiText(); text.SetLanguage(ui);
         var image = new Wallpaper("https://example.test/photo.jpg?id=42", "Two wolves", "", Market: market);
         var prompt = KeywordPromptBuilder.Build(image, "A winter scene", text);
-        Assert.Contains(image.Url, prompt);
+        Assert.DoesNotContain(image.Url, prompt);
+        Assert.Contains(ui == "en" ? "attached image" : "angehängte Bild", prompt);
         Assert.Contains(titlePrefix + " Two wolves", prompt);
         Assert.Contains("A winter scene", prompt);
         Assert.Contains(keywordLanguage, prompt);
@@ -40,7 +43,7 @@ public class KeywordPromptTests
     {
         var text = new UiText(); text.SetLanguage("en");
         var prompt = KeywordPromptBuilder.Build(new Wallpaper(url, "My photo", "", Market: ""), "Landscape", text);
-        Assert.StartsWith("Please attach the image", prompt);
+        Assert.StartsWith("Analyze the attached image", prompt);
         if (url.Length > 0) Assert.DoesNotContain(url, prompt);
         Assert.DoesNotContain("private", prompt);
     }
@@ -68,12 +71,57 @@ public class KeywordPromptTests
             button.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             for (var attempt = 0; attempt < 100 && vm.KeywordStatus.Length == 0; attempt++)
                 await Task.Delay(10, TestContext.Current.CancellationToken);
-            Assert.StartsWith("AI prompt copied.", vm.KeywordStatus);
+            Assert.StartsWith("Image preview and AI prompt copied.", vm.KeywordStatus);
             var copied = await window.Clipboard!.TryGetTextAsync();
-            Assert.Contains("https://example.test/original.jpg", copied);
+            Assert.Contains("Analyze the attached image", copied);
+            Assert.DoesNotContain("https://example.test/original.jpg", copied);
+            using var bitmap = await window.Clipboard!.TryGetBitmapAsync();
+            Assert.NotNull(bitmap);
+            Assert.Equal(new Avalonia.PixelSize(32, 24), bitmap.PixelSize);
             Assert.Equal(keywords, item.ExportKeywords().Keywords);
             Assert.Equal(bytes, File.ReadAllBytes(path));
+            vm.KeywordStatus = "";
+            window.FindControl<Button>("CopyKeywordImageOnlyButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            for (var attempt = 0; attempt < 100 && vm.KeywordStatus.Length == 0; attempt++)
+                await Task.Delay(10, TestContext.Current.CancellationToken);
+            Assert.StartsWith("Image preview copied.", vm.KeywordStatus);
+            Assert.Null(await window.Clipboard!.TryGetTextAsync());
+            vm.KeywordStatus = "";
+            window.FindControl<Button>("CopyKeywordTextOnlyButton")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+            for (var attempt = 0; attempt < 100 && vm.KeywordStatus.Length == 0; attempt++)
+                await Task.Delay(10, TestContext.Current.CancellationToken);
+            Assert.StartsWith("AI prompt copied.", vm.KeywordStatus);
+            Assert.Contains("Analyze the attached image", await window.Clipboard!.TryGetTextAsync());
+            Assert.Null(await window.Clipboard!.TryGetBitmapAsync());
         }
         finally { window.Close(); vm.Shutdown(); }
+    }
+
+    [AvaloniaTheory]
+    [InlineData(2400, 1200, 1024, 512)]
+    [InlineData(1200, 2400, 512, 1024)]
+    [InlineData(32, 24, 32, 24)]
+    public async Task ClipboardPreviewIsReducedIndependentAndSurvivesDisposingOriginal(int width, int height, int expectedWidth, int expectedHeight)
+    {
+        using var pixels = new SKBitmap(width, height);
+        pixels.Erase(SKColors.CornflowerBlue);
+        using var png = pixels.Encode(SKEncodedImageFormat.Png, 100);
+        using var stream = new MemoryStream(png.ToArray());
+        var original = new Bitmap(stream);
+        var window = new PreviewWindow(); window.Show();
+        try
+        {
+            await window.Clipboard!.SetDataAsync(new KeywordClipboardData(original, "Test prompt"));
+            original.Dispose();
+            using var copied = await window.Clipboard!.TryGetBitmapAsync();
+            Assert.NotNull(copied);
+            Assert.Equal(new Avalonia.PixelSize(expectedWidth, expectedHeight), copied.PixelSize);
+            Assert.Equal("Test prompt", await window.Clipboard!.TryGetTextAsync());
+            using var saved = new MemoryStream();
+            copied.Save(saved, PngBitmapEncoderOptions.Default);
+            Assert.True(saved.Length > 0);
+            await window.Clipboard!.ClearAsync();
+        }
+        finally { original.Dispose(); window.Close(); }
     }
 }
