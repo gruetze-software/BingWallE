@@ -57,9 +57,10 @@ cat > "$APP/Contents/Info.plist" <<PLIST
 PLIST
 chmod 755 "$APP/Contents/MacOS/bingwalle"
 while IFS= read -r -d '' binary; do
-  if [[ "$(file -b "$binary")" == *Mach-O* ]]; then
-    codesign "${SIGN_ARGS[@]}" "$binary"
-  fi
+  # The main executable is signed with its enclosing bundle, after dependencies.
+  [[ "$binary" != "$APP/Contents/MacOS/bingwalle" ]] || continue
+  # Apple's code directory also treats .NET DLLs in Contents/MacOS as code.
+  codesign "${SIGN_ARGS[@]}" "$binary"
 done < <(find "$APP/Contents/MacOS" -type f -print0)
 if [[ "$SIGNING_MODE" == developer-id ]]; then
   codesign "${SIGN_ARGS[@]}" --entitlements "$ROOT/branding/macos-entitlements.plist" "$APP"
