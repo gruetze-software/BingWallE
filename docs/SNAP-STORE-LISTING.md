@@ -31,7 +31,8 @@ no author, rating or camera capture date is invented, and the JPEG image data is
 not recompressed.
 
 The image preview shows the description, copyright, resolution and tags.
-Location keywords are extracted from captions. Add, remove and save personal
+Subject, category and location keywords are extracted from titles and captions.
+Add, remove and save personal
 keywords, or copy an image preview and prompt separately into your AI chat.
 Review the response before importing the semicolon-separated tags. BingWallE
 does not upload images for this action and requires no recognition model.
@@ -68,7 +69,8 @@ Autoren, Bewertungen und Aufnahmedaten werden nicht erfunden. Die JPEG-Bilddaten
 werden nicht neu komprimiert.
 
 Die Bildvorschau zeigt Beschreibung, Copyright, Auflösung und Tags. Schlagwörter
-aus Bings Bildtexten enthalten Ortsangaben. Eigene Tags lassen sich hinzufügen,
+aus Bildtiteln und Beschreibungen enthalten erkannte Motive, Kategorien und Ortsangaben.
+Eigene Tags lassen sich hinzufügen,
 entfernen und speichern. Bildvorschau und Prompt können getrennt in einen KI-Chat
 kopiert werden. Die Antwort vor dem Übernehmen als Semikolon-Liste bitte prüfen.
 BingWallE lädt dafür keine Bilder hoch und benötigt kein Bilderkennungsmodell.

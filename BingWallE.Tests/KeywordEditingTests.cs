@@ -24,10 +24,14 @@ public class KeywordEditingTests
         Copyright: "© Jörg Müller / Getty Images", Market: "en-GB", Description: "A quiet winter morning");
 
     [Fact]
-    public void CaptionsDoNotAutomaticallyAddMotifCategories()
+    public void TitleAndDescriptionAutomaticallySupplySubjectsInTheImageRegionsLanguage()
     {
-        Assert.Empty(WallpaperKeywords.Build(Wolves, []));
-        Assert.Empty(WallpaperKeywords.Build(Wolves with { Title = "animals", Market = "de-DE" }, []));
+        var tags = WallpaperKeywords.Build(Wolves, []);
+        Assert.Contains(tags, x => x.Label == "Wolf" && !x.FromModel);
+        Assert.Contains(tags, x => x.Label == "Animal" && !x.FromModel);
+        Assert.Contains(tags, x => x.Label == "Winter" && !x.FromModel);
+        Assert.DoesNotContain(tags, x => x.Label is "Bing" or "Wallpaper");
+        Assert.Contains(WallpaperKeywords.Build(Wolves with { Title = "animals", Market = "de-DE" }, []), x => x.Label == "Tier");
     }
 
     [Fact]

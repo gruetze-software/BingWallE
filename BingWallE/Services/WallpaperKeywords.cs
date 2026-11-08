@@ -58,6 +58,8 @@ public static class WallpaperKeywords
                 }
         }
         var caption = WallpaperCredits.Split(image.Copyright).Description;
+        Classify(string.Join("\n", new[] { image.Title, image.Description, caption }
+            .Where(value => !string.IsNullOrWhiteSpace(value))), false);
         // Bing captions conventionally list locations after the subject, separated by commas.
         foreach (var location in caption.Split(',').Skip(1).Select(x => x.Trim()))
             if (location.Length is > 1 and <= 60 && location.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length <= 6)

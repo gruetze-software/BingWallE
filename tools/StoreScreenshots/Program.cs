@@ -97,7 +97,7 @@ async Task Render()
             "English UI, en-US image source. Actual Avalonia controls rendered using the Linux headless platform. " +
             "Real cached Bing photographs, captions and photographer credits; no generated images or UI mockups. " +
             "Collection populated from isolated temporary JPEG downloads with real embedded metadata. " +
-            "Keywords use location extraction; My favorites is a manually entered sample keyword. " +
+            "Keywords use title and caption text extraction; My favorites is a manually entered sample keyword. " +
             "No OS window decorations. Not a Mint desktop capture or a Flatpak sandbox test. " +
             $"Photographs fetched at {File.ReadAllText(Path.Combine(cache, "fetched-at.txt")).Trim()}.\n");
         Console.WriteLine("Rendered English Linux UI: gallery light/dark, My collection and keyword editing.");

@@ -66,8 +66,9 @@ language when no region is stored. Review the response, paste it into BingWallE'
 keyword field and choose **Add**. Use **×** on a chip to remove an unwanted term.
 BingWallE uploads nothing for these actions and leaves the original image unchanged.
 
-Automatic caption keywords now contain only comma-separated location information.
-Motif keywords are added by you or through the AI-chat workflow. Generic source
+Automatic keywords recognize subjects and categories from the title and description
+using a small German/English vocabulary, and retain comma-separated location names.
+Your own tags and the optional AI-chat workflow supplement these suggestions. Generic source
 keywords such as Bing and Wallpaper are no longer added; legacy source keywords
 are hidden and removed from the JPEG keyword fields when you explicitly save.
 The original image source remains recorded separately in metadata.
@@ -158,9 +159,11 @@ invented, and JPEG image data is not recompressed. Existing files gain the new
 metadata when selected and downloaded again.
 
 The large preview shows description, copyright and editable keywords. Automatically
-extracted caption keywords retain location names in their original spelling.
-For example, the Mayotte octopus caption yields **Mayotte;Indischer Ozean**.
-Caption parsing is conservative and uses comma-separated location fields; it does
+extracted keywords include recognized subjects, broader categories and location names.
+For example, the Mayotte octopus caption yields **Krake;Tier;Meer;Mayotte;Indischer Ozean**.
+Subject tags follow the image region's language; locations retain their original spelling.
+The vocabulary is limited, so not every description produces subject tags. Caption
+parsing uses comma-separated location fields; it does
 not infer an exact location from the image itself. User-entered and previously saved
 motif tags are retained. Changing the interface language does not translate saved tags.
 
