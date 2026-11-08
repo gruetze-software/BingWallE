@@ -59,7 +59,16 @@
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
-  <releases><release version="1.6.2" type="stable" date="2026-11-06">
+  <releases><release version="1.6.3" type="stable" date="2026-11-08">
+      <description>
+          <p>Search My collection by title, description, filename and keywords. Combine source, minimum resolution and saved-date filters.</p>
+          <p xml:lang="de">Meine Sammlung nach Titel, Beschreibung, Dateiname und Keywords durchsuchen. Filter für Quelle, Mindestauflösung und Speicherdatum kombinieren.</p>
+          <p>Add multiple keywords separated by semicolons. Copy the image preview and AI prompt separately, with automatic subject and location tags retained. Remove the local recognition model and runtime.</p>
+          <p xml:lang="de">Mehrere Keywords mit Semikolon hinzufügen. Bildvorschau und KI-Prompt getrennt kopieren; automatische Motiv- und Orts-Tags bleiben erhalten. Lokales Erkennungsmodell und dessen Laufzeit entfernen.</p>
+          <p>Refresh platform icons, including dedicated Apple artwork for macOS.</p>
+          <p xml:lang="de">Plattform-Icons aktualisieren, einschließlich eines eigenen Apple-Motivs für macOS.</p>
+      </description>
+  </release><release version="1.6.2" type="stable" date="2026-11-06">
       <description>
           <p>Refine the app icon with more transparent space and a blue-gray outline for improved contrast. Update platform icons and store screenshot links.</p>
           <p xml:lang="de">App-Icon mit mehr transparentem Rand und graublauer Kontur für besseren Kontrast überarbeiten. Plattform-Icons und Screenshot-Links im Store aktualisieren.</p>

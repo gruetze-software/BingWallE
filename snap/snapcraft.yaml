@@ -54,8 +54,6 @@ apps:
     desktop: usr/share/applications/de.gruetze_software.BingWallE.desktop
     extensions: [gnome]
     plugs: [home, network, removable-media]
-    environment:
-      ORT_DISABLE_TELEMETRY: '1'
 
 parts:
   bingwalle:

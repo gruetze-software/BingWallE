@@ -2,16 +2,17 @@
   <img src="branding/bingwalle.png" width="160" alt="BingWallE icon" />
 </p>
 
-# BingWallE 1.6.2
+# BingWallE 1.6.3
 
 Collect Bing daily images and optional Windows Spotlight selections in one gallery.
-Version 1.6.2 refines the app icon with a blue-gray outline and more space around its edges.
-It retains the smaller release packages introduced in 1.6.1.
-Version 1.6.0 added **My collection**, editable keywords and your own keywords.
+Version 1.6.3 adds search and filters to **My collection**, semicolon-separated
+keywords and separate image/prompt copying for optional AI assistance. It removes
+the local recognition model and runtime, and refreshes the platform icons with a
+dedicated Apple design for macOS.
 Native Wayland with X11 fallback and resizable preview windows remain supported.
 The app icon is drawn by the maintainer in Paint.NET.
 
-See [what is new in 1.6.2](docs/RELEASE-1.6.2.md).
+See [what is new in 1.6.3](docs/RELEASE-1.6.3.md).
 
 <img src="branding/screenshots/1.6.1/gallery-light.png" width="724" alt="BingWallE MainForm Light" />
 
@@ -183,10 +184,10 @@ or install from Flathub or the Snap Store as described under [Linux installation
 
 | Platform | Package |
 | --- | --- |
-| Windows x64 | `BingWallE-1.6.2-win-x64.zip` |
-| Linux x64 | `BingWallE-1.6.2-linux-x64.deb` or `.tar.gz` |
-| macOS Apple Silicon | `BingWallE-1.6.2-macos-arm64.dmg` or `.zip` |
-| macOS Intel | `BingWallE-1.6.2-macos-x64.dmg` or `.zip` |
+| Windows x64 | `BingWallE-1.6.3-win-x64.zip` |
+| Linux x64 | `BingWallE-1.6.3-linux-x64.deb` or `.tar.gz` |
+| macOS Apple Silicon | `BingWallE-1.6.3-macos-arm64.dmg` or `.zip` |
+| macOS Intel | `BingWallE-1.6.3-macos-x64.dmg` or `.zip` |
 
 On Windows, extract the ZIP and run `bingwalle.exe`. Windows packages are not
 signed with a code-signing certificate.
@@ -265,7 +266,7 @@ Download the Linux x64 **DEB** from the
 Open a terminal in its download folder and install the exact filename:
 
 ```bash
-sudo apt install ./BingWallE-1.6.2-linux-x64.deb
+sudo apt install ./BingWallE-1.6.3-linux-x64.deb
 ```
 
 Start **BingWallE** from the application menu or run `bingwalle`. The package
@@ -289,7 +290,7 @@ different settings folders; this is not an automatic settings migration.
 #### TAR.GZ: other Linux distributions
 
 If you prefer not to use Snap or a DEB package, download
-`BingWallE-1.6.2-linux-x64.tar.gz` from the GitHub release and extract it into a
+`BingWallE-1.6.3-linux-x64.tar.gz` from the GitHub release and extract it into a
 folder. Open a terminal in that folder and run:
 
 ```bash
@@ -310,11 +311,10 @@ Choose **arm64** for Apple Silicon or **x64** for an Intel Mac. Open the DMG and
 **BingWallE.app** onto the **Applications** shortcut. ZIP packages are also available;
 extract the app and move it to Applications.
 
-The **1.6.2 macOS downloads were reissued on 7 November 2026** with Apple Developer
-ID signatures and Apple notarization for both Apple Silicon and Intel. Download
-the replacement ZIP or DMG if you obtained an earlier copy of 1.6.2. The application
-version and features are unchanged. Automatic signing and notarization are enabled
-for future releases; the [maintainer setup](docs/MACOS-SIGNING-DE.md) is documented.
+The **1.6.3 macOS downloads** are Apple Developer ID signed and notarized by Apple,
+with the dedicated Apple icon for both Apple Silicon and Intel. Automatic signing
+and notarization are enabled for releases; the
+[maintainer setup](docs/MACOS-SIGNING-DE.md) is documented.
 
 Older releases and test builds remain ad-hoc signed unless signing is explicitly
 requested. The following quarantine workarounds apply to those older or ad-hoc
@@ -349,7 +349,7 @@ an issue. A quarantine workaround does not resolve incompatible systems or damag
 
 ## Build from source
 
-The **.NET 10 SDK** is required to build BingWallE 1.6.2.
+The **.NET 10 SDK** is required to build BingWallE 1.6.3.
 The repository's `global.json` accepts stable .NET 10 SDK feature bands.
 Application and tests target .NET 10. macOS builds
 require macOS 14 or later.
@@ -411,7 +411,7 @@ are documented in [Wayland testing](docs/WAYLAND.md).
 
 The scripts read the version from `BingWallE/BingWallE.csproj` and write their output
 to `artifacts/`. The app displays the full three-part version, for example
-**1.6.2**. Every package includes the .NET runtime.
+**1.6.3**. Every package includes the .NET runtime.
 
 | Platform | Command on that platform | Output |
 | --- | --- | --- |
@@ -432,11 +432,11 @@ the appropriate platform script. macOS packaging requires macOS and its `codesig
 It creates Windows ZIP, Linux TAR.GZ/DEB and macOS ZIP/DMG packages for Intel and
 Apple Silicon. Test reports and packages are available as workflow artifacts.
 
-Version tags use the full package version, for example `v1.6.2`. Pushing a tag
+Version tags use the full package version, for example `v1.6.3`. Pushing a tag
 starts the release build. The tag must match `<Version>` in the project file, and
 `docs/RELEASE-<version>.md` must exist. The workflow publishes the GitHub release
 only after all four build variants and the native Wayland/X11 checks succeed. All packages and `SHA256SUMS.txt`
-are attached. See [release notes for 1.6.2](docs/RELEASE-1.6.2.md).
+are attached. See [release notes for 1.6.3](docs/RELEASE-1.6.3.md).
 The workflow appends the store badges and availability notice from
 [the shared release footer](docs/RELEASE-STORES.md) to each GitHub release.
 
