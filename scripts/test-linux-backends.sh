@@ -21,12 +21,27 @@ dotnet build tools/DesktopSmoke/DesktopSmoke.csproj -c Release --warnaserror
 SMOKE="$ROOT/tools/DesktopSmoke/bin/Release/net10.0/DesktopSmoke.dll"
 weston --backend=headless-backend.so --use-gl --width=1280 --height=960   --socket=bingwalle-test --idle-time=0 --no-config >"$LOGS/weston.log" 2>&1 &
 WESTON_PID=$!
-for attempt in {1..100}; do
-  if [[ -S "$XDG_RUNTIME_DIR/bingwalle-test" ]] && WAYLAND_DISPLAY=bingwalle-test timeout 1s weston-info >"$LOGS/wayland-globals.log" 2>&1; then break; fi
+ready=false
+deadline=$((SECONDS + 60))
+while (( SECONDS < deadline )); do
   if ! kill -0 "$WESTON_PID" 2>/dev/null; then cat "$LOGS/weston.log"; exit 1; fi
-  sleep 0.1
+  # A cold software renderer can need more than 15 seconds on hosted runners.
+  # Wait for an actual connection and the window protocols, not just the socket.
+  if [[ -S "$XDG_RUNTIME_DIR/bingwalle-test" ]] \
+    && WAYLAND_DISPLAY=bingwalle-test timeout 2s weston-info >"$LOGS/wayland-globals.log" 2>&1 \
+    && grep -Fq wl_compositor "$LOGS/wayland-globals.log" \
+    && grep -Fq xdg_wm_base "$LOGS/wayland-globals.log"; then
+    ready=true
+    break
+  fi
+  sleep 0.2
 done
-test -S "$XDG_RUNTIME_DIR/bingwalle-test"
+if [[ "$ready" != true ]]; then
+  echo 'Weston did not become ready within 60 seconds.' >&2
+  cat "$LOGS/weston.log"
+  if [[ -f "$LOGS/wayland-globals.log" ]]; then cat "$LOGS/wayland-globals.log"; fi
+  exit 1
+fi
 run_check() {
   local name="$1"; shift
   if ! timeout 30s "$@" >"$LOGS/$name.log" 2>&1; then cat "$LOGS/$name.log"; return 1; fi
