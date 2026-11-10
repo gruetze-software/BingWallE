@@ -171,7 +171,7 @@ jobs:
       - name: Install desktop test dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y weston xvfb libegl1 libgles2 libgl1-mesa-dri libwayland-egl1 libxkbcommon0
+          sudo apt-get install -y weston wayland-utils xvfb libegl1 libgles2 libgl1-mesa-dri libwayland-egl1 libxkbcommon0
       - name: Test native Wayland, X11 and automatic fallback
         run: bash scripts/test-linux-backends.sh
       - name: Upload Linux display logs

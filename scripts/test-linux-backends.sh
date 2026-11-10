@@ -3,6 +3,12 @@
 set -euo pipefail
 ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
+for desktop_tool in dotnet weston wayland-info xvfb-run timeout; do
+  if ! command -v "$desktop_tool" >/dev/null; then
+    echo "Missing desktop test dependency: $desktop_tool" >&2
+    exit 1
+  fi
+done
 LOGS="$ROOT/artifacts/linux-backends"
 mkdir -p "$LOGS"
 WORK="$(mktemp -d)"
@@ -28,7 +34,7 @@ while (( SECONDS < deadline )); do
   # A cold software renderer can need more than 15 seconds on hosted runners.
   # Wait for an actual connection and the window protocols, not just the socket.
   if [[ -S "$XDG_RUNTIME_DIR/bingwalle-test" ]] \
-    && WAYLAND_DISPLAY=bingwalle-test timeout 2s weston-info >"$LOGS/wayland-globals.log" 2>&1 \
+    && WAYLAND_DISPLAY=bingwalle-test timeout 2s wayland-info >"$LOGS/wayland-globals.log" 2>&1 \
     && grep -Fq wl_compositor "$LOGS/wayland-globals.log" \
     && grep -Fq xdg_wm_base "$LOGS/wayland-globals.log"; then
     ready=true
