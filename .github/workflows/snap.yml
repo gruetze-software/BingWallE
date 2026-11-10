@@ -44,7 +44,17 @@ jobs:
           dotnet test -c Release --no-build
       - name: Install Snapcraft and GUI test dependencies
         run: |
-          sudo snap install snapcraft --classic
+          for attempt in 1 2 3; do
+            if sudo snap install snapcraft --classic; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error::Snapcraft installation failed after three attempts. Check the Snap Store/CDN download errors above."
+              exit 1
+            fi
+            echo "::warning::Snapcraft installation failed (attempt $attempt/3); retrying in $((attempt * 20)) seconds."
+            sleep "$((attempt * 20))"
+          done
           sudo apt-get update
           sudo apt-get install -y xvfb dbus-x11
       - name: Prepare and build Snap
