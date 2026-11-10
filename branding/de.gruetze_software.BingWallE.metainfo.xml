@@ -45,22 +45,22 @@
     <screenshot type="default">
       <caption>Browse recent Bing images with photographer credits</caption>
       <caption xml:lang="de">Aktuelle Bing-Bilder mit Fotografen-Nachweisen entdecken</caption>
-      <image type="source" width="999" height="886">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwall164_light.png</image>
+      <image type="source" width="999" height="886">https://raw.githubusercontent.com/gruetze-software/BingWallE/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_light.png</image>
     </screenshot>
     <screenshot>
       <caption>Discover wallpapers in the dark theme</caption>
       <caption xml:lang="de">Wallpaper im dunklen Design entdecken</caption>
-      <image type="source" width="999" height="886">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_dark.png</image>
+      <image type="source" width="999" height="886">https://raw.githubusercontent.com/gruetze-software/BingWallE/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_dark.png</image>
     </screenshot>
     <screenshot>
       <caption>Edit keywords, remove suggestions and add your own or with ki prompt</caption>
       <caption xml:lang="de">Keywords bearbeiten, Vorschläge entfernen und eigene Begriffe hinzufügen optional mit Hilfe eines KI Prompts</caption>
-      <image type="source" width="760" height="891">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_preview_light.png</image>
+      <image type="source" width="760" height="891">https://raw.githubusercontent.com/gruetze-software/BingWallE/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwall164_preview_light.png</image>
     </screenshot>
     <screenshot>
       <caption>Settings in the App</caption>
       <caption xml:lang="de">Dialog für Einstellungen</caption>
-      <image type="source" width="620" height="815">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_settings_light.png</image>
+      <image type="source" width="620" height="815">https://raw.githubusercontent.com/gruetze-software/BingWallE/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_settings_light.png</image>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
