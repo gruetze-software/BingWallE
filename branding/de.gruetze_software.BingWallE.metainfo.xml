@@ -59,7 +59,12 @@
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
-  <releases><release version="1.6.3" type="stable" date="2026-11-08">
+  <releases><release version="1.6.4" type="stable" date="2026-11-10">
+      <description>
+          <p>Move the compact region summary and Refresh button beside Discover and My collection, leaving more space for images. Keep the layout usable in narrow windows and both interface languages.</p>
+          <p xml:lang="de">Kompakte Regionsanzeige und Aktualisieren neben Entdecken und Meine Sammlung anordnen, damit mehr Platz für Bilder bleibt. Das Layout funktioniert auch bei schmalen Fenstern und in beiden Oberflächensprachen.</p>
+      </description>
+  </release><release version="1.6.3" type="stable" date="2026-11-08">
       <description>
           <p>Search My collection by title, description, filename and keywords. Combine source, minimum resolution and saved-date filters.</p>
           <p xml:lang="de">Meine Sammlung nach Titel, Beschreibung, Dateiname und Keywords durchsuchen. Filter für Quelle, Mindestauflösung und Speicherdatum kombinieren.</p>

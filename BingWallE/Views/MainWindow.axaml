@@ -45,7 +45,7 @@
         <Style Selector="Button.photo"><Setter Property="Padding" Value="0"/><Setter Property="Background" Value="Transparent"/><Setter Property="BorderThickness" Value="0"/><Setter Property="HorizontalContentAlignment" Value="Stretch"/></Style>
     </Window.Styles>
     <Grid>
-        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="24" IsEnabled="{Binding !IsPreviewOpen}">
             <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                 <StackPanel Orientation="Horizontal" Spacing="12">
                     <Image Source="{OnPlatform Default=/Assets/bingwalle.png, macOS=/Assets/bingwalle-apple.png}" RenderOptions.BitmapInterpolationMode="HighQuality" Width="56" Height="56"/>
@@ -64,24 +64,28 @@
                     <Button Content="{DynamicResource SettingsTitle}" Click="OpenSettings" IsEnabled="{Binding IsIdle}"/>
                 </StackPanel>
             </Grid>
-            <Border Grid.Row="1" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
-                <Grid ColumnDefinitions="*,Auto">
-                    <StackPanel Spacing="5" VerticalAlignment="Center" IsVisible="{Binding IsDiscoverView}">
-                        <TextBlock Text="{DynamicResource DownloadLanguage}" Classes="secondary" FontSize="11"/>
-                        <TextBlock Text="{Binding SelectedMarket.Label}" FontWeight="SemiBold"/>
+            <StackPanel Grid.Row="1" Spacing="12" Margin="0,0,0,12">
+                <Grid x:Name="GalleryToolbar" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <StackPanel x:Name="GalleryNavigation" Orientation="Horizontal" Spacing="8" IsEnabled="{Binding IsIdle}" VerticalAlignment="Center">
+                        <Button Content="{DynamicResource DiscoverView}" Command="{Binding ShowDiscoverCommand}" Classes.primary="{Binding IsDiscoverView}"/>
+                        <Button x:Name="CollectionNavigationButton" Content="{DynamicResource CollectionView}" Command="{Binding ShowCollectionCommand}" Classes.primary="{Binding IsCollectionView}"/>
                     </StackPanel>
-                    <StackPanel Spacing="5" VerticalAlignment="Center" IsVisible="{Binding IsCollectionView}" Margin="0,0,12,0">
-                        <TextBlock Text="{DynamicResource CollectionView}" FontWeight="SemiBold"/>
-                        <TextBlock Text="{Binding TargetFolder}" Classes="secondary" FontSize="12" TextTrimming="CharacterEllipsis"/>
-                    </StackPanel>
-                    <Button Grid.Column="1" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}" VerticalAlignment="Center" MinWidth="130" Classes="primary"/>
+                    <Border x:Name="SourceSummary" Grid.Column="1" HorizontalAlignment="Left" MaxWidth="340"
+                            Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="12,7" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                            <StackPanel Spacing="2" VerticalAlignment="Center" IsVisible="{Binding IsDiscoverView}" MinWidth="0">
+                                <TextBlock Text="{DynamicResource CompactRegion}" ToolTip.Tip="{DynamicResource DownloadLanguage}" Classes="secondary" FontSize="10"/>
+                                <TextBlock Text="{Binding SelectedMarket.Label}" ToolTip.Tip="{Binding SelectedMarket.Label}" FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                            <StackPanel Spacing="2" VerticalAlignment="Center" IsVisible="{Binding IsCollectionView}" MinWidth="0">
+                                <TextBlock Text="{DynamicResource Text064}" Classes="secondary" FontSize="10"/>
+                                <TextBlock Text="{Binding TargetFolder}" ToolTip.Tip="{Binding TargetFolder}" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                            <Button x:Name="RefreshButton" Grid.Column="1" Content="{Binding ButtonText}" Command="{Binding StartStopCommand}"
+                                    VerticalAlignment="Center" MinWidth="100" Padding="12,7" Classes="primary"/>
+                        </Grid>
+                    </Border>
                 </Grid>
-            </Border>
-            <StackPanel Grid.Row="2" Spacing="12" Margin="0,16,0,12">
-                <StackPanel Orientation="Horizontal" Spacing="8" IsEnabled="{Binding IsIdle}">
-                    <Button Content="{DynamicResource DiscoverView}" Command="{Binding ShowDiscoverCommand}" Classes.primary="{Binding IsDiscoverView}"/>
-                    <Button Content="{DynamicResource CollectionView}" Command="{Binding ShowCollectionCommand}" Classes.primary="{Binding IsCollectionView}"/>
-                </StackPanel>
                 <StackPanel Spacing="8" IsVisible="{Binding IsCollectionView}" IsEnabled="{Binding IsIdle}">
                     <TextBox Text="{Binding CollectionSearch, Mode=TwoWay}" PlaceholderText="{DynamicResource CollectionSearchHint}"
                              AutomationProperties.Name="{DynamicResource CollectionSearchHint}"/>
@@ -113,7 +117,7 @@
                     </StackPanel>
                 </Grid>
             </StackPanel>
-            <Grid Grid.Row="3">
+            <Grid x:Name="GalleryViewport" Grid.Row="2">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <ItemsControl ItemsSource="{Binding VisibleWallpapers}" IsEnabled="{Binding IsIdle}">
                         <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
@@ -155,7 +159,7 @@
                     <TextBlock Text="{Binding EmptyHelp}" Classes="secondary" TextWrapping="Wrap" TextAlignment="Center"/>
                 </StackPanel>
             </Grid>
-            <Border Grid.Row="4" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" Margin="0,10,0,0" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
+            <Border Grid.Row="3" Background="{DynamicResource CardBackground}" CornerRadius="10" Padding="16" Margin="0,10,0,0" BorderBrush="{DynamicResource CardStroke}" BorderThickness="1">
                 <StackPanel Spacing="10">
                     <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                         <TextBlock Text="{DynamicResource Text064}" Classes="secondary" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"/>

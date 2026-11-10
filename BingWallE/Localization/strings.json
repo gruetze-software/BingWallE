@@ -1,4 +1,5 @@
 [
+  { "key": "CompactRegion", "de": "Region", "en": "Region" },
   { "key": "KeywordCopyHelp", "de": "1. Bild kopieren und im KI-Chat einfügen. 2. Prompt kopieren, dort einfügen und absenden. 3. Die Antwort hier als Keywords einfügen, hinzufügen und mit Keywords speichern sichern.", "en": "1. Copy the image and paste it into your AI chat. 2. Copy the prompt, paste it there and send. 3. Paste the response here as keywords, choose Add, then Save keywords." },
   { "key": "KeywordCopyImageOnly", "de": "Bild kopieren", "en": "Copy image" },
   { "key": "KeywordCopyTextOnly", "de": "Prompt kopieren", "en": "Copy prompt" },
