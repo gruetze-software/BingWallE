@@ -2,15 +2,7 @@
   <img src="branding/bingwalle.png" width="160" alt="BingWallE icon" />
 </p>
 
-# BingWallE 1.6.4
-
-Collect Bing daily images and optional Windows Spotlight selections in one gallery.
-Version 1.6.4 places the compact region summary and Refresh button beside
-**Discover** and **My collection**, giving the image gallery more room.
-Search, collection filters, editable keywords and optional AI-chat assistance
-remain available, alongside the dedicated Apple icon for macOS.
-Native Wayland with X11 fallback and resizable preview windows remain supported.
-The app icon is drawn by the maintainer in Paint.NET.
+BingWallE is a desktop collector for Bing and Windows Spotlight wallpapers, built with C#, .NET 10 and Avalonia 12.1.4. The interface is available in German and English. Open Settings to select the application language, image download region, Bing resolution, optional Windows Spotlight images and theme. On first start, the interface follows the system UI language (German, or English as the fallback). Language changes take effect immediately; your choice is saved for the next start. The download region is independent of the application language: choose Germany for German image titles and descriptions, or the USA / United Kingdom for English content. This region also controls the optional Spotlight source. Use Refresh after changing the region.
 
 See [what is new in 1.6.4](docs/RELEASE-1.6.4.md).
 
@@ -21,15 +13,6 @@ See [what is new in 1.6.4](docs/RELEASE-1.6.4.md).
 [Download the latest release](https://github.com/gruetze-software/BingWallE/releases/latest) ·
 [Flathub](https://flathub.org/apps/de.gruetze_software.BingWallE) ·
 [Builds and tests](https://github.com/gruetze-software/BingWallE/actions/workflows/build.yml)
-
-BingWallE is a desktop collector for Bing and Windows Spotlight wallpapers, built with C#, .NET 10 and
-Avalonia 12.1.4. The interface is available in **German and English**. Open **Einstellungen / Settings** to select the application language, image download
-region, Bing resolution, optional Windows Spotlight images and theme. On first start, the interface follows the system UI language (German, or English
-as the fallback). Language changes take effect immediately; your choice is saved for the next start.
-The download region is independent of the application language: choose Germany
-for German image titles and descriptions, or the USA / United Kingdom for English content.
-This region also controls the optional Spotlight source.
-Use Refresh after changing the region.
 
 ## Features
 
@@ -127,51 +110,18 @@ or Finder; on Linux it opens the containing folder. File actions refer to the
 currently selected download resolution and are available for saved images.
 Ignore keeps the image visible but excludes it from bulk selection and downloads.
 The choice is saved across refreshes and restarts; **Stop ignoring** reverses it.
-Ignored status labels are highlighted subtly in both themes.
-Delete local asks for confirmation before permanently removing that resolution's
-file. Other downloaded resolutions are kept. In My collection, file actions always
-use the exact local file shown, independently of the current download resolution.
+Ignored status labels are highlighted subtly in both themes. Delete local asks for confirmation before permanently removing that resolution's file. Other downloaded resolutions are kept. In My collection, file actions always use the exact local file shown, independently of the current download resolution.
 
-Enable **Refresh automatically on startup** in Settings to load the selected image sources when opening the app. This is off by default and never starts downloads.
-The app remembers its normal window size and maximized state when closed. On the
-next launch it restores them, fitting the normal size to the available screen work
-area and display scaling. A minimized window is restored normally or maximized,
-according to its last non-minimized state.
+Enable **Refresh automatically on startup** in Settings to load the selected image sources when opening the app. This is off by default and never starts downloads. The app remembers its normal window size and maximized state when closed. On the
+next launch it restores them, fitting the normal size to the available screen work area and display scaling. A minimized window is restored normally or maximized, according to its last non-minimized state.
 
-BingWallE focuses on collecting images. Automatic downloads and changing the
-desktop wallpaper are not implemented.
+BingWallE focuses on collecting images. Automatic downloads and changing the desktop wallpaper are not implemented.
 
-## Image information and local tagging
+## Image information and tagging
 
-Each gallery card and preview shows the requested download resolution. After a
-successful download it shows the actual pixel dimensions returned by the image.
-UHD dimensions vary by image; the app does not assume that every UHD file is 3840 × 2160.
+Each gallery card and preview shows the requested download resolution. After a successful download it shows the actual pixel dimensions returned by the image. UHD dimensions vary by image; the app does not assume that every UHD file is 3840 × 2160.
 
-New downloads embed the image title, description, copyright, source and keywords
-using EXIF (including Windows Explorer fields) and standard XMP. Comments contain
-the image description and source name. Publication date (when supplied), source
-identity, source links, content region and model scores are
-stored separately in application-specific XMP fields. Missing creation or capture
-dates use the download time, with their fallback origin recorded in XMP; existing
-dates remain unchanged. New filenames use ASCII letters, digits and underscores;
-original titles stay in the metadata, and earlier filenames remain recognized.
-Existing photographer/camera metadata is preserved; no author or rating is
-invented, and JPEG image data is not recompressed. Existing files gain the new
-metadata when selected and downloaded again.
-
-The large preview shows description, copyright and editable keywords. Automatically
-extracted keywords include recognized subjects, broader categories and location names.
-For example, the Mayotte octopus caption yields **Krake;Tier;Meer;Mayotte;Indischer Ozean**.
-Subject tags follow the image region's language; locations retain their original spelling.
-The vocabulary is limited, so not every description produces subject tags. Caption
-parsing uses comma-separated location fields; it does
-not infer an exact location from the image itself. User-entered and previously saved
-motif tags are retained. Changing the interface language does not translate saved tags.
-
-Local image recognition, its settings and the model download have been removed.
-The app no longer bundles ONNX Runtime. On startup it removes only the retired
-MobileNet model and its interrupted downloads from the old application model cache;
-other files are retained. No model download is needed for the keyword workflow.
+New downloads embed the image title, description, copyright, source and keywords using EXIF (including Windows Explorer fields) and standard XMP. Comments contain the image description and source name. Publication date (when supplied), source identity, source links, content region and model scores are stored separately in application-specific XMP fields. Missing creation or capture dates use the download time, with their fallback origin recorded in XMP; existing dates remain unchanged. New filenames use ASCII letters, digits and underscores; original titles stay in the metadata, and earlier filenames remain recognized. Existing photographer/camera metadata is preserved; no author or rating is invented, and JPEG image data is not recompressed. Existing files gain the new metadata when selected and downloaded again. Each gallery card and preview displays the requested download resolution. Once a download is complete, the actual pixel dimensions of the image are shown. UHD dimensions vary by image; the app does not assume that every UHD file is exactly 3840 × 2160 pixels.
 
 Third-party license notices are included in `licenses/` in the repository and packages.
 
