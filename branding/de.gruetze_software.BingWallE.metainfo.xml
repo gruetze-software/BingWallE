@@ -16,8 +16,8 @@
     <li xml:lang="de">Lade Bing-Bilder in HD, Full HD oder UHD herunter. Blickpunkt-Bilder behalten ihre Originalauflösung.</li>
     <li>Browse downloaded images offline in 'My collection'.</li>
     <li xml:lang="de">Durchsuche deine heruntergeladenen Bilder offline unter 'Meine Sammlung'.</li>
-    <li>Edit keywords, add your own and review optional local AI suggestions.</li>
-    <li xml:lang="de">Bearbeite Schlagwörter, füge eigene hinzu und prüfe optionale Vorschläge der lokalen KI.</li>
+    <li>Edit keywords, add your own and review optional suggestions or use your own AI with the Prompt-Buttons.</li>
+    <li xml:lang="de">Bearbeite Schlagwörter, füge eigene hinzu und prüfe optionale Vorschläge oder benutze die Prompt-Schaltflächen für deine eigene KI.</li>
   </ul>
 </description>
   <launchable type="desktop-id">de.gruetze_software.BingWallE.desktop</launchable>
@@ -45,17 +45,22 @@
     <screenshot type="default">
       <caption>Browse recent Bing images with photographer credits</caption>
       <caption xml:lang="de">Aktuelle Bing-Bilder mit Fotografen-Nachweisen entdecken</caption>
-      <image type="source" width="999" height="790">https://raw.githubusercontent.com/gruetze-software/BingWallE/94f5430cbe3721e1882fea3efcfc78f4fbda8d77/branding/screenshots/1.6.1/gallery-light.png</image>
+      <image type="source" width="999" height="886">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwall164_light.png</image>
     </screenshot>
     <screenshot>
       <caption>Discover wallpapers in the dark theme</caption>
       <caption xml:lang="de">Wallpaper im dunklen Design entdecken</caption>
-      <image type="source" width="999" height="790">https://raw.githubusercontent.com/gruetze-software/BingWallE/94f5430cbe3721e1882fea3efcfc78f4fbda8d77/branding/screenshots/1.6.1/gallery-dark.png</image>
+      <image type="source" width="999" height="886">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_dark.png</image>
     </screenshot>
     <screenshot>
-      <caption>Edit keywords, remove suggestions and add your own</caption>
-      <caption xml:lang="de">Keywords bearbeiten, Vorschläge entfernen und eigene Begriffe hinzufügen</caption>
-      <image type="source" width="760" height="891">https://raw.githubusercontent.com/gruetze-software/BingWallE/94f5430cbe3721e1882fea3efcfc78f4fbda8d77/branding/screenshots/1.6.1/keywords-dark.png</image>
+      <caption>Edit keywords, remove suggestions and add your own or with ki prompt</caption>
+      <caption xml:lang="de">Keywords bearbeiten, Vorschläge entfernen und eigene Begriffe hinzufügen optional mit Hilfe eines KI Prompts</caption>
+      <image type="source" width="760" height="891">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_preview_light.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Settings in the App</caption>
+      <caption xml:lang="de">Dialog für Einstellungen</caption>
+      <image type="source" width="620" height="815">https://github.com/gruetze-software/BingWallE/tree/92109f951a937fc356a89e9223f48f8eba9fab61/branding/screenshots/1.6.4/bingwalle164_settings_light.png</image>
     </screenshot>
   </screenshots>
   <content_rating type="oars-1.1" />
@@ -68,8 +73,8 @@
       <description>
           <p>Search My collection by title, description, filename and keywords. Combine source, minimum resolution and saved-date filters.</p>
           <p xml:lang="de">Meine Sammlung nach Titel, Beschreibung, Dateiname und Keywords durchsuchen. Filter für Quelle, Mindestauflösung und Speicherdatum kombinieren.</p>
-          <p>Add multiple keywords separated by semicolons. Copy the image preview and AI prompt separately, with automatic subject and location tags retained. Remove the local recognition model and runtime.</p>
-          <p xml:lang="de">Mehrere Keywords mit Semikolon hinzufügen. Bildvorschau und KI-Prompt getrennt kopieren; automatische Motiv- und Orts-Tags bleiben erhalten. Lokales Erkennungsmodell und dessen Laufzeit entfernen.</p>
+          <p>Review and edit automatic keywords, add personal tags or get additional suggestions from an AI chat.</p>
+          <p xml:lang="de">Prüfe und bearbeite automatische Schlagwörter, ergänze eigene Tags oder hole zusätzliche Vorschläge aus einem KI-Chat.</p>
           <p>Refresh platform icons, including dedicated Apple artwork for macOS.</p>
           <p xml:lang="de">Plattform-Icons aktualisieren, einschließlich eines eigenen Apple-Motivs für macOS.</p>
       </description>
